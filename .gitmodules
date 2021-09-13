@@ -1,0 +1,6 @@
+[submodule "tephra2"]
+	path = tephra2
+	url = git@github.com:joshlvmh/tephra2.git
+[submodule "tephraProb"]
+	path = tephraProb
+	url = git@github.com:joshlvmh/tephraProb.git
