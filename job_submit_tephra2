@@ -1,0 +1,32 @@
+#!/bin/bash
+
+#SBATCH --job-name tephra2
+#SBATCH --partition veryshort
+#SBATCH --nodes 1
+#SBATCH --ntasks-per-node 2
+#SBATCH --time 03:00:00
+#SBATCH --mem 100000M
+
+###SBATCH --array=0-14
+
+cd $SLURM_SUBMIT_DIR
+
+module load apps/matlab/2018a
+
+options="-nodesktop -noFigureWindows -nosplash"
+
+echo Running on host `hostname`
+echo Time is `date`
+echo Directory is `pwd`
+echo Slurm job IS is $SLURM_JOBID
+echo This job runs on the following machines:
+echo $SLURM_JOB_NODELIST
+
+matlab $optiins -r TephraProb_wrapper_JC
+
+##mpirun -np 32 -hostfile $SLURM_JOB_NODELIST ./MODEL/tephra2-inversion_2020 ./MODEL/tephra2-inversion-conf_
+
+##chunk=`printf "%02d" $SLURM_ARRAY_TASK_ID`
+##srun parallel -j 16 -a T2_stor.txt$chunk
+
+echo Finish time is `date`
