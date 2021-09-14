@@ -21,6 +21,6 @@ wind/
 
 ## References
 
-[1] https://github.com/geoscience-community-codes/tephra2
-[2] https://github.com/e5k/TephraProb
-[3] https://github.com/ecmwf/cdsapi
+[1] https://github.com/geoscience-community-codes/tephra2 
+[2] https://github.com/e5k/TephraProb 
+[3] https://github.com/ecmwf/cdsapi 
