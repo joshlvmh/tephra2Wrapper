@@ -14,3 +14,8 @@ wind/
 - wind.py: CDSAPI [1] script
 - netcdf_conv.py: NETCDF4 to .gen tephra2 text files
 - job_wind.sh: array job for CDSAPI
+
+
+## References
+
+[1] https://github.com/ecmwf/cdsapi
