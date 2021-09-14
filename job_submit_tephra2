@@ -9,7 +9,7 @@
 
 ###SBATCH --array=0-14
 
-cd $SLURM_SUBMIT_DIR
+cd $SLURM_SUBMIT_DIR/tephra2
 
 module load apps/matlab/2018a
 
@@ -22,9 +22,9 @@ echo Slurm job IS is $SLURM_JOBID
 echo This job runs on the following machines:
 echo $SLURM_JOB_NODELIST
 
-matlab $optiins -r TephraProb_wrapper_JC
+##matlab $optiins -r TephraProb_wrapper_JC
 
-##mpirun -np 32 -hostfile $SLURM_JOB_NODELIST ./MODEL/tephra2-inversion_2020 ./MODEL/tephra2-inversion-conf_
+mpirun -np 32 -hostfile $SLURM_JOB_NODELIST ./MODEL/tephra2-inversion_2020 ./MODEL/tephra2-inversion-conf_
 
 ##chunk=`printf "%02d" $SLURM_ARRAY_TASK_ID`
 ##srun parallel -j 16 -a T2_stor.txt$chunk
