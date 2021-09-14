@@ -1,15 +1,17 @@
 # tephra2Wrapper
-Helper functions and wrapper for tephra2 simulation
-
-Submodules:
-- tephra2 model
-- TephraProb wrapper
+Helper functionality and wrapper for tephra2 simulation
 
 ## Usage
 ```
 git submodule update --init --recursive
 sbatch job_submit_tephra2
 ```
+
+## Content
+
+Submodules:
+- tephra2 model
+- TephraProb wrapper
 
 wind/
 - wind.py: CDSAPI [1] script
