@@ -59,45 +59,49 @@ def create_grid(grid):
     max_lon = max([TL_lon, TR_lon])
 
   elif (grid.cross_zn and grid.cross_eq) == '1':
+    [TL_lat, TL_lon] = utm.to_latlon(grid.min_east, grid.max_north, grid.zone_NW)
+    [TR_lat, TR_lon] = utm.to_latlon(grid.max_east, grid.max_north, grid.zone_NE)
+    [BL_lat, BL_lon] = utm.to_latlon(grid.min_east, grid.min_north, grid.zone_SW)
+    [BR_lat, BR_lon] = utm.to_latlon(grid.max_east, grid.min_north, grid.zone_SE)
+
+    min_lat = min([TL_lat, BL_lat])
+    max_lat = max([TR_lat, BR_lat])
+    min_lon = min([BL_lon, BR_lon])
+    max_lon = max([TL_lon, TR_lon])
+
+  elif (grid.cross_zn == '1'):
     [TL_lat, TL_lon] = utm.to_latlon(grid.min_east, grid.max_north, grid.zone_W)
     [TR_lat, TR_lon] = utm.to_latlon(grid.max_east, grid.max_north, grid.zone_E)
     [BL_lat, BL_lon] = utm.to_latlon(grid.min_east, grid.min_north, grid.zone_W)
     [BR_lat, BR_lon] = utm.to_latlon(grid.max_east, grid.min_north, grid.zone_E)
 
-    min_lat = 
-    m
-    m
-    m
-
-  elif (grid.cross_zn == '1'):
-    []
-    []
-    []
-    []
-
-    m
-    m
-    m
-    m
+    min_lat = min([TL_lat, BL_lat])
+    max_lat = max([TR_lat, BR_lat])
+    min_lon = min([BL_lon, BR_lon])
+    max_lon = max([TL_lon, TR_lon])
 
   else:
-    []
-    []
-    []
-    []
+    [TL_lat, TL_lon] = utm.to_latlon(grid.min_east, grid.max_north, grid.zone_N)
+    [TR_lat, TR_lon] = utm.to_latlon(grid.max_east, grid.max_north, grid.zone_N)
+    [BL_lat, BL_lon] = utm.to_latlon(grid.min_east, grid.min_north, grid.zone_S)
+    [BR_lat, BR_lon] = utm.to_latlon(grid.max_east, grid.min_north, grid.zone_S)
 
-    m
-    m
-    m
-    m
+    min_lat = min([TL_lat, BL_lat])
+    max_lat = max([TR_lat, BR_lat])
+    min_lon = min([BL_lon, BR_lon])
+    max_lon = max([TL_lon, TR_lon])
 
-  []
-  []
+  [min_e, min_n] = utm.from_latlon(min_lat, min_lon, grid.vent_zone)
+  [max_e, max_n] = utm.from_latlon(max_lat, max_lon, grid.vent_zone)
 
-  correction
+  if grid.cross_eq == 1:
+      if grid.vent_zone < 0:
+          max_n = max_n + 1e7
+      else:
+          min_n = -(1e7-min_n)
 
-  x_vec
-  y_vec
+  x_vec = min_e : grid.res : max_e
+  y_vec = min_n : grid.res : max_n
 
 
 def set_params(params):
