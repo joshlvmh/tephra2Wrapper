@@ -40,9 +40,6 @@ Populate T2_stor.txt with:
         8   1
 '''
 
-class ESP:
-
-
 def generate_confs(esp):
   '''
   for seasonality_length:
@@ -50,35 +47,15 @@ def generate_confs(esp):
   '''
   ## Loop counters
   seas_str = ['all'];
-  if (esp[19] == 0):
+  if (esp[19] == '1'):
     seas_str = ['all', 'rainy', 'dry'];
     ## get wind profile for each subseason
 
   ### Main loop
-  for i in range(np.size(seas_str)):
-    print("seas_str:"+seas_str[i])
-    print(esp[40])
-    for j in range(int(esp[40])):
-      print(j)
-
-def convert_esp(esp):
-  if esp[16] == 'NA':
-    esp[16] = 0
-  if esp[17] == 'NA':
-    esp[17] = 'NA'
-  if esp[47] == 'NA':
-    esp[47] = 0
-  if esp[48] == 'NA':
-    esp[48] = 0
-
-  esp[5:7] = [float(x) for x in esp[5:7]]
-  esp[7:17] = [int(x) for x in esp[7:17]]
-  esp[19:49] = [int(x) for x in esp[19:49]]
-  esp[49] = float(esp[49])
-  esp[50:57] = [int(x) for x in esp[50:57]]
-  esp[57] = float(esp[57])
-
-  return esp
+  #for i in range(np.size(seas_str)):
+  #  print("seas_str:"+seas_str[i])
+  #  for j in range(esp[40]):
+  #    print(j)
 
 def read_csv():
   csvfile = "tephra_esp.csv"
@@ -88,8 +65,7 @@ def read_csv():
     next(csv_grid_r)
     for row in csv_grid_r:
       row[5] = row[5].replace(" ","")
-      #P.append(row[1:6]+[float(x) for x in row[6:8]]+[int(x) for x in row[8:11]]+row[10:])
-      P.append(row[1:])
+      P.append(row[1:6]+[float(x) for x in row[6:8]]+[int(x) for x in row[8:5]]+row[16:])
   P = np.vstack(P)
   return P
 
@@ -100,10 +76,9 @@ def main():
   esps = read_csv()
   for i in range(np.shape(esps)[0]):
     if (i == 64):
-      esp_row = convert_esp(esps[i])
-      print(esps[i], esps[i].shape)
-      print(esp_row, esp_row.shape)
-      generate_confs(esp_row)
+      print(esps[i])
+      print(esps[i].shape)
+      generate_confs(esps[i])
     #generate_confs(esps[i])
 
 if __name__ == '__main__':
