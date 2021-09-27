@@ -2,6 +2,7 @@ import numpy as np
 import csv
 import cdsapi
 import sys
+import os.path
 
 def get_csv_coords():
   with open('volc_holo_mody.csv', 'r', encoding="ISO-8859-1") as csv_wind_f:
@@ -9,8 +10,8 @@ def get_csv_coords():
     C = []
     N = []
     for row in csv_wind_r:
-      C.append(row[5:9])
-      N.append(row[1])
+      C.append(row[6:10])
+      N.append(row[2])
     C = np.vstack(C)
     N = np.vstack(N)
     C = np.delete(C, (0), axis=0)
@@ -41,6 +42,7 @@ def main():
   NWSE, VOLC = get_csv_coords()
   pro, f, v, pre, m, d, t = get_params()
   for i in range(0, len(NWSE)):
+    if os.path.exists("nc_files/wind_{name}_{year}.nc".format(name=VOLC[i][0],year=y)) == False:
       c.retrieve(
           'reanalysis-era5-pressure-levels',
           {

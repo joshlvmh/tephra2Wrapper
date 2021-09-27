@@ -5,10 +5,11 @@ import math
 import os
 
 ## PARAMS
-filename = "wind_NAME_YEAR.nc"
-filepath = os.environ['HOME']+"/../zs20225/wind/nc_files/"
-outpath  = os.environ['HOME']+"/../zs20225/wind/gen_files/"
-#outpath  = os.environ['HOME']+"/fellowship/tephra2Wrapper/wind/gen_files/"
+filename = "wind_ID_YEAR.nc"
+#filepath = os.environ['HOME']+"/../zs20225/wind/nc_files/"
+filepath = os.environ['HOME']+"/fellowship/tephra2Wrapper/wind/"
+#outpath  = os.environ['HOME']+"/../zs20225/wind/gen_files/"
+outpath  = os.environ['HOME']+"/fellowship/tephra2Wrapper/wind/gen_files/"
 csvfile  = "volc_holo_mody.csv"
 
 def wind_convert(ncfp, y_index, v_index, volc):
@@ -67,15 +68,16 @@ def main():
   '''
   volc = read_csv()
 
-  for i in len(volc)):
-    print(volc[0][2])
+  for i in range(len(volc)):
     if float(volc[i][2]) < 0:
       volc[i][2] += 360
-    for j in range(2012,2022):
-      nc_file = filename.replace("YEAR", str(j))
-      nc_file = nc_file.replace("NAME", volc[0][0])
-      ncfp = netCDF4.Dataset(filepath+nc_file)
-      wind_convert(ncfp, j, i, volc[i])
+    if (volc[i][1] == '262000'):
+      print(volc[i][0])
+      for j in range(2021,2022):
+        nc_file = filename.replace("YEAR", str(j))
+        nc_file = nc_file.replace("ID", volc[i][1])
+        ncfp = netCDF4.Dataset(filepath+nc_file)
+        wind_convert(ncfp, j, i, volc[i])
 
 if __name__ == '__main__':
   main()

@@ -24,3 +24,9 @@ wind/
 [1] https://github.com/geoscience-community-codes/tephra2  
 [2] https://github.com/e5k/TephraProb  
 [3] https://github.com/ecmwf/cdsapi  
+
+
+## TODO
+
+[1] Check grid/ for cross_eq,cross_zn combinations
+[2] Check wind for 2021 - fewer, expver [1 5]

@@ -41,6 +41,30 @@ Populate T2_stor.txt with:
 '''
 
 class ESP:
+  run_name = ''
+  out_name = ''
+  grid_pth = ''
+  wind_pth = ''
+  volcano_name = ''
+  vent_easting = 0.0
+  vent_northing = 0.0
+  vent_zone = 0
+  vent_ht = 0
+  min_ht = 0
+  max_ht = 0
+  min_mass = 0
+  max_mass = 0
+  min_dur = 0
+  max_dur = 0
+  constrain = 0
+  nb_wind = 0
+  wind_start = '01-Jan-2012 00:00:00'
+  wind_per_day = 4
+  seasonality = 0
+  wind_start_rainy = 0
+  wind_start_dry = 0
+  constrain_eruption_date = 0
+  
 
 
 def generate_confs(esp):
