@@ -30,7 +30,7 @@ esps/
 - espPlinian.py: Config generation
 - tephra_esp.csv: input parameters
 
-``
+```
 .  
 |-- README.md  
 |-- esps  
@@ -57,7 +57,7 @@ esps/
     |-- volc_holo_mody.csv: input  
     |-- wind.py: CDSAPI ERA5 requests  
     `-- wind_262000_2021.nc: output  
-``
+```
 
 ## References
 
