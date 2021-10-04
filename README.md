@@ -32,8 +32,8 @@ esps/
 
 ```
 .  
-|__ README.md  
-|__ esps  
+|-- README.md  
+|-- esps  
 |   |-- espPlinian.py: config generation  
 |   `-- tephra_esp.csv: input parameters  
 |-- grid  
