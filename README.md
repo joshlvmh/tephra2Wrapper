@@ -15,7 +15,7 @@ Submodules:
 
 /
 - job_submit_tephra2: runs the model
-- {*}.csv: inputs
+- *.csv: inputs
 
 wind/
 - wind.py: CDSAPI [3] script
