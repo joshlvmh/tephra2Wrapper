@@ -45,7 +45,6 @@ esps/
 |   `-- ..: model  
 |-- tephraProb  
 |   `-- ..: reference  
-|-- tree.sh  
 |-- volc_holo_VEI.csv: input  
 |-- volc_holo_mody.csv: input  
 `-- wind  
