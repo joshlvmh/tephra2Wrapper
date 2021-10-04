@@ -13,23 +13,6 @@ Submodules:
 - tephra2 model [1]
 - TephraProb wrapper, for reference [2]
 
-/
-- job_submit_tephra2: runs the model
-- *.csv: inputs
-
-wind/
-- wind.py: CDSAPI [3] script
-- netcdf_conv.py: NETCDF4 to .gen tephra2 text files
-- job_wind.sh: array job for CDSAPI
-
-grid/
-- grid_gen.py: UTM grid generation for tephra2
-- *.utm: outputs
-
-esps/
-- espPlinian.py: Config generation
-- tephra_esp.csv: input parameters
-
 ```
 .  
 |-- README.md  
@@ -40,21 +23,21 @@ esps/
 |   |-- grid_gen.py: UTM grid generation for tephra2  
 |   |-- krak.utm: output  
 |   `-- volc_grids.csv: input  
-|-- job_submit_tephra2: runs model  
+|-- job_submit_tephra2: runs the model  
 |-- tephra2  
-|   `-- ..: model  
+|   `-- ..: [1]  
 |-- tephraProb  
-|   `-- ..: reference  
+|   `-- ..: [2]  
 |-- volc_holo_VEI.csv: input  
 |-- volc_holo_mody.csv: input  
 `-- wind  
     |-- gen_files  
     |   `-- 262000  
     |       `-- ..: outputs  
-    |-- job_wind.sh: wind conversion submission  
+    |-- job_wind.sh: array job for CDSAPI  
     |-- netcdf_conv.py: netCDF4 -> ASCII conversion  
     |-- volc_holo_mody.csv: input  
-    |-- wind.py: CDSAPI ERA5 requests  
+    |-- wind.py: CDSAPI [3] ERA5 script  
     `-- wind_262000_2021.nc: output  
 ```
 
