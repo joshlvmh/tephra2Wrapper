@@ -9,10 +9,6 @@ sbatch job_submit_tephra2
 
 ## Content
 
-Submodules:
-- tephra2 model [1]
-- TephraProb wrapper, for reference [2]
-
 ```
 .  
 |-- README.md  
@@ -24,10 +20,10 @@ Submodules:
 |   |-- krak.utm: output  
 |   `-- volc_grids.csv: input  
 |-- job_submit_tephra2: runs the model  
-|-- tephra2  
-|   `-- ..: [1]  
-|-- tephraProb  
-|   `-- ..: [2]  
+|-- tephra2: submodule  
+|   `-- ..: model [1]  
+|-- tephraProb: submodule  
+|   `-- ..: for reference [2]  
 |-- volc_holo_VEI.csv: input  
 |-- volc_holo_mody.csv: input  
 `-- wind  
