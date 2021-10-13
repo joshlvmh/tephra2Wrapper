@@ -191,14 +191,13 @@ def generate_confs(esp):
         ## nb_sim == 1 so no loop
         W = []
         wind_prof = open(esp.wind_pth+'262000_'+wind_file(wind_vec_all[1267])+'.gen', 'r')
-        print(wind_prof)
         for line in wind_prof:
-          print([f(v) for (f, v) in zip((int, float, float, lambda v: v == 'True'), line.strip().split())])
-        print(wind_prof)
+          W.append([f(v) for (f, v) in zip((int, float, float, lambda v: v == 'True'), line.strip().split())])
+        print(W[0][0])
         break
         
-      continue
       break
+    break
 ''' --------------------------------------------------------------------------------------------------------------------- '''
 
 def read_csv():
