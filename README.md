@@ -13,7 +13,7 @@ sbatch job_submit_tephra2
 .  
 |-- README.md  
 |-- esps  
-|   |-- espPlinian.py: config generation  
+|   |-- espPlinian.py: config generation [4]  
 |   `-- tephra_esp.csv: input parameters  
 |-- grid  
 |   |-- grid_gen.py: UTM grid generation for tephra2  
@@ -42,3 +42,6 @@ sbatch job_submit_tephra2
 [1] https://github.com/geoscience-community-codes/tephra2  
 [2] https://github.com/e5k/TephraProb  
 [3] https://github.com/ecmwf/cdsapi  
+
+[4]
+Degruyter, W., and Bonadonna, C. (2012), Improving on mass flow rate estimates of volcanic eruptions, Geophys. Res. Lett., 39, L16308, doi:10.1029/2012GL052566.

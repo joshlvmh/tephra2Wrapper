@@ -1,6 +1,9 @@
 import csv
 import numpy as np
 from datetime import date, datetime
+import math
+from scipy.stats import norm
+import warnings
 
 '''
 Populate T2_stor.txt with:
@@ -124,14 +127,6 @@ def generate_confs(esp):
   #wind_vec_all = ((wind_vec_all-(date.toordinal(d)+366))*esp.wind_per_day)+1  #### [1, 2, 3 ... 14196] ??? can optimise a lot if seasonality == 0
   #### change so format is ['2012_10_19_18'... or similar for wind file names]
 
-  '''
-  wind_vec = 12
-  wind_prof = open(esp.wind_pth+'262000_'+wind_file(wind_vec_all[wind_vec])+'.gen', 'r')
-  print(wind_prof)
-  for line in wind_prof:
-    print([f(v) for (f, v) in zip((int, float, float, lambda v: v == 'True'), line.strip().split())])
-  # create structured array to hold these different datatypes
-  '''
   ### Main loop
   for i in range(np.size(seas_str)):
     mass_stor_tot     = np.zeros((esp.nb_runs, 1))
@@ -188,16 +183,123 @@ def generate_confs(esp):
         ## long_lasting == 0, ht_sample == 0
         ht_tmp[:,0] = esp.min_ht+((esp.max_ht)-(esp.min_ht))*np.random.rand(1)
 
-        ## nb_sim == 1 so no loop
-        W = []
-        wind_prof = open(esp.wind_pth+'262000_'+wind_file(wind_vec_all[1267])+'.gen', 'r')
-        for line in wind_prof:
-          W.append([f(v) for (f, v) in zip((int, float, float, lambda v: v == 'True'), line.strip().split())])
-        print(W[0][0])
-        break
-        
-      break
-    break
+        for k in range(nb_sim):
+          W = []
+          wind_prof = open(esp.wind_pth+'262000_'+wind_file(wind_vec_all[1267])+'.gen', 'r')
+          for line in wind_prof:
+            W.append([f(v) for (f, v) in zip((int, float, float, lambda v: v == 'True'), line.strip().split())])
+          W = np.vstack(W)
+          print(W[0][0])
+
+          level  = np.absolute(W[:,0]-esp.trop_height).argmin()
+          level2 = np.absolute(W[:,0]-ht_tmp[k]).argmin()
+          level3 = np.absolute(W[:,0]-esp.vent_ht).argmin()
+          print(level, level2, level3, ht_tmp)
+
+          speed_tmp[k] = W[level,1]
+          mer_tmp[k] = get_mer((ht_tmp[k] - esp.vent_ht), speed_tmp[k])
+          with warnings.catch_warnings(): # fix this
+            warnings.simplefilter("ignore", category=RuntimeWarning)
+            dir_tmp[k] = np.median(W[level3:level2,2])
+
+          if (esp.constrain == 0):
+            if (esp.mass_sample == 0):
+              mass_tmp[k] = (esp.min_mass + (esp.max_mass - esp.min_mass) * np.random.rand(1)) / (nb_sim+1);
+            else:
+              mass_tmp[k] = 10 ** (math.log10(esp.min_mass) + ((math.log10(esp.max_mass)) - (math.log10(esp.min_mass))) * np.random.rand(1)) / (nb_sim+1)
+          else:
+            mass_tmp[k] = mer_tmp[k]*dur_tmp[k]
+
+        if (esp.constrain_wind_dir == 1):
+          if ((esp.min_wind_dir < esp.max_wind_dir) and (np.median(dir_tmp) > esp.min_wind_dir and np.median(dir_tmp) < esp.max_wind_dir)):
+            test_wind = 1
+          elif ((esp.min_wind_dir > esp.max_wind_dir) and ((np.median(dir_tmp) > esp.min_wind_dir and np.median(dir_tmp) <= 360) or (np.median(dir_tmp) < esp.max_wind_dir and np.median(dir_tmp) >= 0))):
+            test_wind = 1
+          else:
+            test_wind = 0
+        else:
+          test_wind = 1
+
+        if ((np.sum(mass_tmp) > esp.min_mass and np.sum(mass_tmp) < esp.max_mass and test_wind == 1) or esp.constrain == 0):
+          print("Valid run")
+          test_run = 1
+          count_run = count_run + 1
+
+          gs_med  = (esp.min_med_phi + (esp.max_med_phi-esp.min_med_phi) * np.random.rand(1))
+          gs_std  = (esp.min_std_phi + (esp.max_std_phi-esp.min_std_phi) * np.random.rand(1))
+          gs_coef = (esp.min_agg+(esp.max_agg-esp.min_agg) * np.random.rand(1))
+          gs_pdf  = norm.pdf(np.arange(esp.max_phi,esp.min_phi+1),gs_med,gs_std)
+          gs      = [(np.arange(esp.max_phi,esp.min_phi).conj().T), gs_pdf.conj().T]
+          gs_tmp  = aggregate(gs, gs_coef, esp.max_diam)
+
+          gs_cum = gs_pdf
+          for k in range(gs_tmp.shape[0]):
+            gs_cum[k] = np.sum(gs_tmp[0:k])/np.sum(gs_tmp)
+          if (gs_cum == norm.cdf(gs_pdf)):
+            print("norm.cdf works")
+
+        break # while (test_run)
+      break   # for nb_runs
+    break     # for seas
+  print("Finished config_gen")
+
+def aggregate(GS, prc, max_diam):
+  totgs_agg = GS
+  idx_min   = np.where(GS[:,0] == max_diam)
+  sum_ag    = 0
+
+  for i in range(idx_min-1,GS.shape[0]):
+    agg = prc * GS[i,1]
+    totgs_agg[i,1] = totgs_agg[i,1]-agg
+    sum_ag = sum_agg + agg
+
+  idx = np.where(GS[:,0] == -1)
+  sum_ag = sum_ag / len(np.arange(idx,idx_min))
+
+  totgs_agg[idx-1:idx_min-1, 1] = totgs_agg[idx-1:idx_min-1, 1] + sum_ag
+  totgs_agg = totgs_agg[:,1]
+  return totgs_agg
+
+def get_mer(H, Vmax): # Degruyter & Bonadonna
+  # constants
+  g       = 9.81
+  z_1     = 2.8
+  R_d     = 287
+  C_d     = 998
+  C_s     = 1250
+  theta_0 = 1300
+  # entrainments
+  alpha = 0.1
+  beta  = 0.5
+  # height of plume above vent (m)
+  dummyH = H
+  # atmosphere temperature profile (Woods, 1988)
+  theta_a0 = 288
+  P_0      = 101325
+  rho_a0   = P_0/(R_d*theta_a0)
+  H1       = 12000
+  H2       = 20000
+  tempGrad_1 = -6.5/1000
+  tempGrad_2 = 0
+  tempGrad_3 = 2/1000
+
+  gprime = g * (C_s * theta_0 - C_d * theta_a0) / (C_d * theta_a0)
+
+  G1 = pow(g, 2) / (C_d * theta_a0) * (1 + C_d / g * tempGrad_1)
+  G2 = pow(g, 2) / (C_d * theta_a0) * (1 + C_d / g * tempGrad_2)
+  G3 = pow(g, 2) / (C_d * theta_a0) * (1 + C_d / g * tempGrad_3)
+
+  Gbar = G1 * np.ones(np.shape(dummyH))
+  Gbar[dummyH>H1] = (G1 * H1 + G2 * (dummyH[dummyH>H1] - H1)) / dummyH[dummyH>H1]
+  Gbar[dummyH>H1] = (G1 * H1 + G2 * (H2 - H1) + G3 * (dummyH[dummyH>H2] - H2)) / dummyH[dummyH>H2]
+  Nbar = Gbar ** (1/2)
+
+  Vbar = Vmax * dummyH / H1 / 2
+  Vbar[dummyH>H1] = 1/dummyH[dummyH>H1] * (Vmax * H1/2 + Vmax * (dummyH[dummyH>H1]-H1) - 0.9*Vmax/(H2-H1) * (dummyH[dummyH>H1]-H1) ** 2 / 2)
+  Vbar[dummyH>H2] = 1 / dummyH[dummyH>H2] * (Vmax * H1 / 2 + 0.55 * Vmax * (H2-H1) + 0.1 * Vmax * (dummyH[dummyH>H2]-H2))
+  Mdot = math.pi * rho_a0 / gprime * ((pow(2,(5/2)) * pow(alpha,2) * Nbar ** 3 / z_1 ** 4) * dummyH ** 4 + (pow(beta,2) * Nbar ** 2 * Vbar/6) * dummyH ** 3)
+
+  return Mdot
 ''' --------------------------------------------------------------------------------------------------------------------- '''
 
 def read_csv():
