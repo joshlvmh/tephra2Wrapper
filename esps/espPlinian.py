@@ -5,7 +5,7 @@ from datetime import date, datetime
 '''
 Populate T2_stor.txt with:
     ./binary .conf .utm .gen .gsd > .out
-
+Generate .conf and .gsd:
     .conf contains:
         PLUME_HEIGHT
         ERUPTION_MASS
@@ -30,15 +30,15 @@ Populate T2_stor.txt with:
         -3
         -2
         -1
-        0
-        1
-        2
-        3
-        4
-        5
-        6
-        7   0.99~
-        8   1
+         0
+         1
+         2
+         3
+         4
+         5
+         6
+         7   0.99~
+         8   1
 '''
 
 class ESP:
@@ -113,10 +113,6 @@ def wind_file(ordinal):
   return file_string
 
 def generate_confs(esp):
-  '''
-  for seasonality_length:
-    for nb_runs:
-  '''
   d = datetime.strptime(esp.wind_start, '%d-%b-%Y %H:%M:%S')
   wind_vec_all = np.arange(date.toordinal(d)+366, (date.toordinal(d)+366+esp.nb_wind/esp.wind_per_day), 1/esp.wind_per_day)
 
@@ -128,6 +124,7 @@ def generate_confs(esp):
   #wind_vec_all = ((wind_vec_all-(date.toordinal(d)+366))*esp.wind_per_day)+1  #### [1, 2, 3 ... 14196] ??? can optimise a lot if seasonality == 0
   #### change so format is ['2012_10_19_18'... or similar for wind file names]
 
+  '''
   wind_vec = 12
   wind_prof = open(esp.wind_pth+'262000_'+wind_file(wind_vec_all[wind_vec])+'.gen', 'r')
   print(wind_prof)
@@ -161,7 +158,7 @@ def generate_confs(esp):
       test_run = 0
 
       while (test_run == 0):
-        count_tot++
+        count_tot = count_tot + 1
         dur = esp.min_dur*3600 + (esp.max_dur*3600-esp.min_dur*3600)*np.random.rand(1)
 
         ### long_lasting == 0
@@ -178,12 +175,13 @@ def generate_confs(esp):
         check_seas = 0
         while (check_seas == 0):
           ## constrain_eruption_date == 0
-          date_start = wind_vec_seas(np.random.randint(len(wind_vec_seas)))
+         # date_start = wind_vec_seas[np.random.randint(len(wind_vec_seas))]
+          date_start = np.random.randint(len(wind_vec_seas))
           ## long_lasting == 0
           dur_tmp[0] = dur
-          wind_vec = [date_start] #(date_start:(date_start+nb_sim-1))
+          wind_vec = [wind_vec_seas[date_start]] #(date_start:(date_start+nb_sim-1))
 
-          if (len(unique(intersect(wind_vec_seas, wind_vec))) == len(unique(wind_vec)):
+          if (len(list(filter(lambda x: x in wind_vec_seas, wind_vec))) == len(list(set(wind_vec)))):
             check_seas = 1
           else:
             continue
@@ -191,10 +189,16 @@ def generate_confs(esp):
         ht_tmp[:,0] = esp.min_ht+((esp.max_ht)-(esp.min_ht))*np.random.rand(1)
 
         ## nb_sim == 1 so no loop
-        wind_prof = load(esp.wind_path+'262000_'+wind_file(wind_vec_all[wind_vec])+'.gen', 'r')
+        W = []
+        wind_prof = open(esp.wind_pth+'262000_'+wind_file(wind_vec_all[1267])+'.gen', 'r')
+        print(wind_prof)
+        for line in wind_prof:
+          print([f(v) for (f, v) in zip((int, float, float, lambda v: v == 'True'), line.strip().split())])
+        print(wind_prof)
+        break
         
       continue
-'''
+      break
 ''' --------------------------------------------------------------------------------------------------------------------- '''
 
 def read_csv():
