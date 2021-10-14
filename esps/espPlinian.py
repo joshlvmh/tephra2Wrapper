@@ -4,44 +4,13 @@ from datetime import date, datetime
 import math
 from scipy.stats import norm
 import warnings
+import pytest
+import os
 
 '''
+Generate .confs & select .gens
 Populate T2_stor.txt with:
-    ./binary .conf .utm .gen .gsd > .out
-Generate .conf and .gsd:
-    .conf contains:
-        PLUME_HEIGHT
-        ERUPTION_MASS
-        VENT_EASTING
-        VENT_NORTHING
-        VENT_ELEVATION
-        EDDY_CONST
-        DIFFUSION_COEFFICIENT
-        FALL_TIME_THRESHOLD
-        LITHIC_DENSITY
-        PUMICE_DENSITY
-        COL_STEPS
-        PART_STEPS
-        PLUME_MODEL
-        ALPHA
-        BETA
-
-    .gsd eg:
-        -6  0.01~
-        -5
-        -4
-        -3
-        -2
-        -1
-         0
-         1
-         2
-         3
-         4
-         5
-         6
-         7   0.99~
-         8   1
+    ./binary .conf .utm .gen > .out
 '''
 
 class RUN:
@@ -88,15 +57,14 @@ class RUN:
     self.eruption_mass = er_ma[0]
     self.median_grainsize = med_g[0]
     self.std_grainsize = std_g[0]
-    return self
 
 class ESP:
   run_nb = 0 # init this
-  run_type = 'P'
+  run_type = 'P' # needed?
   def __init__(self, esp_row):
     self.run_name = esp_row[0]
     self.out_name = esp_row[1]
-    self.grid_pth = esp_row[2] # path to volc_id.utm
+    self.grid_pth = '../grid/krak.utm' #esp_row[2] # path to volc_id.utm
     self.wind_pth = '../wind/gen_files/262000/' #esp_row[3] # path to volc_id/.gen files
     self.volcano_name = esp_row[4]
     self.vent_easting = float(esp_row[5])
@@ -113,9 +81,9 @@ class ESP:
     self.nb_wind = (lambda: esp_row[16], lambda: 14196)[esp_row[16] == 'NA']()
     self.wind_start = '01-Jan-2012 00:00:00'
     self.wind_per_day = 4
-    self.seasonality = int(esp_row[19])
-    self.wind_start_rainy = int(esp_row[20])
-    self.wind_start_dry = int(esp_row[21])
+    self.seasonality = 1 #int(esp_row[19])
+    self.wind_start_rainy = 'November' #int(esp_row[20])
+    self.wind_start_dry = 'April' #int(esp_row[21])
     self.constrain_eruption_date = int(esp_row[22])
     self.eruption_date = int(esp_row[23])
     self.constrain_wind_dir = int(esp_row[24])
@@ -153,6 +121,24 @@ class ESP:
     self.alpha = int(esp_row[56])
     self.beta = float(esp_row[57])
 
+    self.check_vals()
+
+  def check_vals(self):
+    ## filepaths exist
+    ## will this be necessary long term?
+    assert(os.path.exists(self.wind_pth))
+    assert(os.path.exists(self.grid_pth))
+    assert(self.max_ht >= self.min_ht)
+    assert(self.max_mass >= self.min_mass)
+    assert(self.max_dur >= self.min_dur)
+    assert(self.min_phi >= self.max_phi)
+    assert(self.max_med_phi >= self.min_med_phi)
+    assert(self.max_std_phi >= self.min_std_phi)
+    assert(self.max_agg >= self.min_agg)
+    if (self.seasonality == 1 and self.constrain_eruption_date == 1):
+      self.seasonality = 0
+      print("Both seasonality and constrain eruption date were set to 1. Seasonality set to 0.")
+
 ''' ----------------------------------------------------- MAIN ---------------------------------------------------------- '''
 
 def wind_file(ordinal):
@@ -165,13 +151,32 @@ def generate_confs(esp):
   d = datetime.strptime(esp.wind_start, '%d-%b-%Y %H:%M:%S')
   wind_vec_all = np.arange(date.toordinal(d)+366, (date.toordinal(d)+366+esp.nb_wind/esp.wind_per_day), 1/esp.wind_per_day)
 
-  ## Loop counters
   seas_str = ['all'];
   if (esp.seasonality == 1):
-    seas_str = ['all', 'rainy', 'dry'];
-    ## get wind profile for each subseason, seperate function
-  #wind_vec_all = ((wind_vec_all-(date.toordinal(d)+366))*esp.wind_per_day)+1  #### [1, 2, 3 ... 14196] ??? can optimise a lot if seasonality == 0
-  #### change so format is ['2012_10_19_18'... or similar for wind file names]
+    seas_str = ['all', 'rainy', 'dry']
+    m_dry = datetime.strptime(esp.wind_start_dry, '%B').month
+    m_rainy = datetime.strptime(esp.wind_start_rainy, '%B').month
+
+    if (m_rainy > m_dry):
+      range_dry = np.arange(m_dry, m_rainy)
+      range_rainy = np.arange(1,13)
+      range_rainy = np.setdiff1d(range_rainy, range_dry)
+    else:
+      range_rainy = np.arange(m_rainy, m_dry)
+      range_dry = np.arange(1,13)
+      range_dry = np.setdiff1d(range_dry, range_rainy)
+
+    wind_vec_rainy = np.fromiter((x for x in wind_vec_all if datetime.fromordinal(int(x-366)).month in range_rainy), dtype = wind_vec_all.dtype)
+    wind_vec_dry = np.fromiter((x for x in wind_vec_all if datetime.fromordinal(int(x-366)).month in range_dry), dtype = wind_vec_all.dtype)
+
+    if esp.long_lasting == 1 and .... #### HERE
+
+  # make CONF folder
+  parent = '' # update?
+  child = 'confs'
+  path = os.path.join(parent, child)
+  if not os.path.exists(path):
+    os.mkdir(path)
 
   ### Main loop
   for i in range(np.size(seas_str)):
@@ -190,7 +195,12 @@ def generate_confs(esp):
 
     runs = [RUN(esp) for i in range(esp.nb_runs)]
 
-    #### make output folders
+    # make output folder
+    parent = 'confs/' # update?
+    child = seas_str[i]
+    path = os.path.join(parent, child)
+    if not os.path.exists(path):
+      os.mkdir(path)
 
     wind_vec_seas = wind_vec_all  ### modify for other seasons if needed
 
@@ -296,12 +306,12 @@ def generate_confs(esp):
           ## save intermediate data to structure?
 
           run_1 = RUN(esp)
-          run_1 = run_1.set_vals(ht_tmp[k], mass_tmp[k], gs_med, gs_std)
+          run_1.set_vals(ht_tmp[k], mass_tmp[k], gs_med, gs_std)
           p_r = vars(run_1)
           print(p_r)
 
           #runs[0] = run_1
-          runs[0] = runs[0].set_vals(ht_tmp[k], mass_tmp[k], gs_med, gs_std)
+          runs[0].set_vals(ht_tmp[k], mass_tmp[k], gs_med, gs_std)
           print(vars(runs[0]))
 
           # global storage
