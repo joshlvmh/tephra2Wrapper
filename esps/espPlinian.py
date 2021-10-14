@@ -44,6 +44,52 @@ Generate .conf and .gsd:
          8   1
 '''
 
+class RUN:
+  '''
+  vent_easting
+  vent_northing
+  vent_elevation
+  plume_height # ht_tmp
+  alpha
+  beta
+  eruption_mass # mass_tmp
+  max_grainsize
+  min_grainsize
+  median_grainsize
+  std_grainsize
+  eddy_const
+  diffusion_coefficient
+  fall_time_threshold
+  lithic_density
+  pumice_density
+  col_steps
+  part_steps
+  plume_model
+  '''
+  def __init__(self, esp):
+    self.vent_easting = esp.vent_easting
+    self.vent_northing = esp.vent_northing
+    self.vent_elevation = esp.vent_ht
+    self.alpha = esp.alpha
+    self.beta = esp.beta
+    self.max_grainsize = esp.max_phi
+    self.min_grainsize = esp.min_phi
+    self.eddy_const = esp.eddy_const
+    self.diffusion_coefficient = esp.diff_coeff
+    self.fall_time_threshold = esp.ft_thresh
+    self.lithic_density = esp.lithic_dens
+    self.pumice_density = esp.pumice_dens
+    self.col_steps = esp.col_step
+    self.part_steps = esp.part_step
+    self.plume_model = 2
+
+  def set_vals(self, pl_ht, er_ma, med_g, std_g):
+    self.plume_height = pl_ht[0]
+    self.eruption_mass = er_ma[0]
+    self.median_grainsize = med_g[0]
+    self.std_grainsize = std_g[0]
+    return self
+
 class ESP:
   run_nb = 0 # init this
   run_type = 'P'
@@ -63,7 +109,7 @@ class ESP:
     self.max_mass = int(esp_row[12])
     self.min_dur = int(esp_row[13])
     self.max_dur = int(esp_row[14])
-    self.constrain = int(esp_row[15])
+    self.constrain = 0 # int(esp_row[15]) -- not running with mass values and constrain == 1
     self.nb_wind = (lambda: esp_row[16], lambda: 14196)[esp_row[16] == 'NA']()
     self.wind_start = '01-Jan-2012 00:00:00'
     self.wind_per_day = 4
@@ -76,8 +122,8 @@ class ESP:
     self.min_wind_dir = int(esp_row[25])
     self.max_wind_dir = int(esp_row[26])
     self.trop_height = int(esp_row[27])
-    self.max_phi = int(esp_row[28])
-    self.min_phi = int(esp_row[29])
+    self.max_phi = int(esp_row[29]) # swap when table correct
+    self.min_phi = int(esp_row[28]) # ..
     self.min_med_phi = int(esp_row[30])
     self.max_med_phi = int(esp_row[31])
     self.min_std_phi = int(esp_row[32])
@@ -98,7 +144,7 @@ class ESP:
     self.par = (lambda: esp_row[47], lambda: 0)[esp_row[47] == 'NA']()
     self.par_cpu = (lambda: esp_row[48], lambda: 0)[esp_row[48] == 'NA']()
     self.eddy_const = float(esp_row[49])
-    self.diff_coefff = int(esp_row[50])
+    self.diff_coeff = int(esp_row[50])
     self.ft_thresh = int(esp_row[51])
     self.lithic_dens = int(esp_row[52])
     self.pumice_dens = int(esp_row[53])
@@ -141,6 +187,8 @@ def generate_confs(esp):
 
     count_tot = 0
     count_run = 0
+
+    runs = [RUN(esp) for i in range(esp.nb_runs)]
 
     #### make output folders
 
@@ -204,11 +252,15 @@ def generate_confs(esp):
 
           if (esp.constrain == 0):
             if (esp.mass_sample == 0):
-              mass_tmp[k] = (esp.min_mass + (esp.max_mass - esp.min_mass) * np.random.rand(1)) / (nb_sim+1);
+              mass_tmp[k] = (esp.min_mass + (esp.max_mass - esp.min_mass) * np.random.rand(1)) / (nb_sim);
+              print("MASS")
+              print(mass_tmp[k], esp.min_mass, esp.max_mass)
             else:
               mass_tmp[k] = 10 ** (math.log10(esp.min_mass) + ((math.log10(esp.max_mass)) - (math.log10(esp.min_mass))) * np.random.rand(1)) / (nb_sim+1)
           else:
             mass_tmp[k] = mer_tmp[k]*dur_tmp[k]
+            print("MASS")
+            print(mer_tmp[k], dur_tmp[k])
 
         if (esp.constrain_wind_dir == 1):
           if ((esp.min_wind_dir < esp.max_wind_dir) and (np.median(dir_tmp) > esp.min_wind_dir and np.median(dir_tmp) < esp.max_wind_dir)):
@@ -228,32 +280,66 @@ def generate_confs(esp):
           gs_med  = (esp.min_med_phi + (esp.max_med_phi-esp.min_med_phi) * np.random.rand(1))
           gs_std  = (esp.min_std_phi + (esp.max_std_phi-esp.min_std_phi) * np.random.rand(1))
           gs_coef = (esp.min_agg+(esp.max_agg-esp.min_agg) * np.random.rand(1))
-          gs_pdf  = norm.pdf(np.arange(esp.max_phi,esp.min_phi+1),gs_med,gs_std)
-          gs      = [(np.arange(esp.max_phi,esp.min_phi).conj().T), gs_pdf.conj().T]
-          gs_tmp  = aggregate(gs, gs_coef, esp.max_diam)
+         # gs_pdf  = norm.pdf(np.arange(esp.max_phi,esp.min_phi+1),gs_med,gs_std)
+         # gs      = [(np.arange(esp.max_phi,esp.min_phi).conj().T), gs_pdf.conj().T]
+         # gs_tmp  = aggregate(gs, gs_coef, esp.max_diam)
 
-          gs_cum = gs_pdf
-          for k in range(gs_tmp.shape[0]):
-            gs_cum[k] = np.sum(gs_tmp[0:k])/np.sum(gs_tmp)
-          if (gs_cum == norm.cdf(gs_pdf)):
-            print("norm.cdf works")
+        #  gs_cum = gs_pdf
+        #  for k in range(gs_tmp.shape[0]):
+        #    gs_cum[k] = np.sum(gs_tmp[0:k])/np.sum(gs_tmp)
+        #  if (gs_cum == norm.cdf(gs_pdf)):
+        #    print("norm.cdf works")
+          #### max, min, std, and med needed for t2 new conf
 
-        break # while (test_run)
+          ## dont need log file or tgsd file
+
+          ## save intermediate data to structure?
+
+          run_1 = RUN(esp)
+          run_1 = run_1.set_vals(ht_tmp[k], mass_tmp[k], gs_med, gs_std)
+          p_r = vars(run_1)
+          print(p_r)
+
+          #runs[0] = run_1
+          runs[0] = runs[0].set_vals(ht_tmp[k], mass_tmp[k], gs_med, gs_std)
+          print(vars(runs[0]))
+
+          # global storage
+          mass_stor_tot[j] = np.sum(mass_tmp)
+          mass_stor_tot_all.append(mass_tmp)
+          dur_stor_tot[j] = dur/3600
+          mer_stor_tot.append(mer_tmp)
+          date_stor_tot[j,:] = wind_file(wind_vec_all[1267])
+          med_stor_tot[j] = gs_med
+          std_stor_tot[j] = gs_std
+          agg_stor_tot[j] = gs_coef
+          if (esp.long_lasting == 0):
+            height_stor_tot.append(np.unique(ht_tmp))
+          else:
+            height_stor_tot.append(ht_tmp)
+
+          ### write figures
+
+          ### write conf
+
+          # dump all runs[j] into 000j.conf file
+          # move specific wind file copy to 000j.txt file
+       # break # while (test_run)
       break   # for nb_runs
-    break     # for seas
+   # break     # for seas
   print("Finished config_gen")
 
 def aggregate(GS, prc, max_diam):
   totgs_agg = GS
-  idx_min   = np.where(GS[:,0] == max_diam)
+  idx_min   = np.where(GS[:][0] == max_diam)
   sum_ag    = 0
 
-  for i in range(idx_min-1,GS.shape[0]):
-    agg = prc * GS[i,1]
+  for i in range(idx_min[0]-1,np.shape(GS[0])): #.shape[0]):
+    agg = prc * GS[i][1]
     totgs_agg[i,1] = totgs_agg[i,1]-agg
     sum_ag = sum_agg + agg
 
-  idx = np.where(GS[:,0] == -1)
+  idx = np.where(GS[:][0] == -1)
   sum_ag = sum_ag / len(np.arange(idx,idx_min))
 
   totgs_agg[idx-1:idx_min-1, 1] = totgs_agg[idx-1:idx_min-1, 1] + sum_ag
