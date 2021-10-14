@@ -42,6 +42,5 @@ sbatch job_submit_tephra2
 [1] https://github.com/geoscience-community-codes/tephra2  
 [2] https://github.com/e5k/TephraProb  
 [3] https://github.com/ecmwf/cdsapi  
-
 [4]
 Degruyter, W., and Bonadonna, C. (2012), Improving on mass flow rate estimates of volcanic eruptions, Geophys. Res. Lett., 39, L16308, doi:10.1029/2012GL052566.
