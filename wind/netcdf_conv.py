@@ -3,13 +3,14 @@ import csv
 import numpy as np
 import math
 import os
+import xarray as xr
 
 ## PARAMS
 filename = "wind_ID_YEAR.nc"
-#filepath = os.environ['HOME']+"/../zs20225/wind/nc_files/"
-filepath = os.environ['HOME']+"/fellowship/tephra2Wrapper/wind/"
-#outpath  = os.environ['HOME']+"/../zs20225/wind/gen_files/"
-outpath  = os.environ['HOME']+"/fellowship/tephra2Wrapper/wind/gen_files/"
+filepath = os.environ['HOME']+"/../zs20225/wind/nc_files/"
+#filepath = os.environ['HOME']+"/fellowship/tephra2Wrapper/wind/"
+outpath  = os.environ['HOME']+"/../zs20225/wind/gen_files/"
+#outpath  = os.environ['HOME']+"/fellowship/tephra2Wrapper/wind/gen_files/"
 csvfile  = "volc_holo_mody.csv"
 
 def wind_convert(ncfp, y_index, v_index, volc):
@@ -72,11 +73,17 @@ def main():
     if float(volc[i][2]) < 0:
       volc[i][2] += 360
     if (volc[i][1] == '262000'):
-      print(volc[i][0])
-      for j in range(2021,2022):
+      for j in range(2012,2022):
         nc_file = filename.replace("YEAR", str(j))
         nc_file = nc_file.replace("ID", volc[i][1])
-        ncfp = netCDF4.Dataset(filepath+nc_file)
+        if (j == 2021): # remove expver dimension
+          ERA5 = xr.open_mfdataset(filepath+nc_file,combine='by_coords')
+          ERA5_combine =ERA5.sel(expver=1).combine_first(ERA5.sel(expver=5))
+          ERA5_combine.load()
+          ERA5_combine.to_netcdf(filepath+"copy"+nc_file)
+          ncfp = netCDF4.Dataset(filepath+"copy"+nc_file)
+        else:
+          ncfp = netCDF4.Dataset(filepath+nc_file)
         wind_convert(ncfp, j, i, volc[i])
 
 if __name__ == '__main__':
