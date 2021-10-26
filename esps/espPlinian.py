@@ -51,12 +51,44 @@ class RUN:
     self.col_steps = esp.col_step
     self.part_steps = esp.part_step
     self.plume_model = 2
+    self.run_digits = len(str(abs(esp.nb_runs)))
 
   def set_vals(self, pl_ht, er_ma, med_g, std_g):
-    self.plume_height = pl_ht[0]
-    self.eruption_mass = er_ma[0]
+    self.plume_height = pl_ht
+    self.eruption_mass = er_ma
     self.median_grainsize = med_g[0]
     self.std_grainsize = std_g[0]
+
+  def write_conf(self, seas, j, nb_sim):
+    sim_digits = len(str(abs(nb_sim)))
+    if (True): #esp.write_conf == 1):
+      for k in range(nb_sim): # increase self.... to [nb_sim] - check works
+        lines = ['VENT_EASTING '+str(self.vent_easting),
+                 'VENT_NORTHING '+str(self.vent_northing),
+                 'VENT_ELEVATION '+str(self.vent_elevation),
+                 'PLUME_HEIGHT '+str(self.plume_height[k,0]),
+                 'ALPHA '+str(self.alpha),
+                 'BETA '+str(self.beta),
+                 'ERUPTION_MASS '+str(self.eruption_mass[k,0]),
+                 'MAX_GRAINSIZE '+str(self.max_grainsize),
+                 'MIN_GRAINSIZE '+str(self.min_grainsize),
+                 'MEDIAN_GRAINSIZE '+str(self.median_grainsize),
+                 'STD_GRAINSIZE '+str(self.std_grainsize),
+                 'EDDY_CONST '+str(self.eddy_const),
+                 'DIFFUSION_COEFFICIENT '+str(self.diffusion_coefficient),
+                 'FALL_TIME_THRESHOLD '+str(self.fall_time_threshold),
+                 'LITHIC_DENSITY '+str(self.lithic_density),
+                 'PUMICE_DENSITY '+str(self.pumice_density),
+                 'COL_STEPS '+str(self.col_steps),
+                 'PART_STEPS '+str(self.part_steps),
+                 'PLUME_MODEL '+str(self.plume_model)]
+        with open('confs/'+seas+'/'+f"{j:0{self.run_digits}}"+'_'+f"{k:0{sim_digits}}"+'.txt', 'w+') as f:
+          f.writelines('\n'.join(lines))
+
+  def write_t2(self, conf, wind, utm):
+    binary = './tephra2_2021'
+    line = binary + ' ' + conf + grid + wind + '> ' + out
+    # add to t2 
 
 class ESP:
   run_nb = 0 # init this
@@ -64,7 +96,7 @@ class ESP:
   def __init__(self, esp_row):
     self.run_name = esp_row[0]
     self.out_name = esp_row[1]
-    self.grid_pth = '../grid/krak.utm' #esp_row[2] # path to volc_id.utm
+    self.grid_pth = '../grid/krak.utm' #esp_row[2] # path to volc_id.utm # remove these, have globals, set volc_id tho
     self.wind_pth = '../wind/gen_files/262000/' #esp_row[3] # path to volc_id/.gen files
     self.volcano_name = esp_row[4]
     self.vent_easting = float(esp_row[5])
@@ -81,7 +113,7 @@ class ESP:
     self.nb_wind = (lambda: esp_row[16], lambda: 14196)[esp_row[16] == 'NA']()
     self.wind_start = '01-Jan-2012 00:00:00'
     self.wind_per_day = 4
-    self.seasonality = 1 #int(esp_row[19])
+    self.seasonality = int(esp_row[19])
     self.wind_start_rainy = 'November' #int(esp_row[20])
     self.wind_start_dry = 'April' #int(esp_row[21])
     self.constrain_eruption_date = int(esp_row[22])
@@ -103,7 +135,7 @@ class ESP:
     self.ht_sample = int(esp_row[38])
     self.mass_sample = int(esp_row[39])
     self.nb_runs = int(esp_row[40])
-    self.write_conf = int(esp_row[41])
+    self.write_conf = 1 #int(esp_row[41])
     self.write_gs = int(esp_row[42])
     self.write_fig_sep = int(esp_row[43])
     self.write_fig_all = int(esp_row[44])
@@ -169,17 +201,26 @@ def generate_confs(esp):
     wind_vec_rainy = np.fromiter((x for x in wind_vec_all if datetime.fromordinal(int(x-366)).month in range_rainy), dtype = wind_vec_all.dtype)
     wind_vec_dry = np.fromiter((x for x in wind_vec_all if datetime.fromordinal(int(x-366)).month in range_dry), dtype = wind_vec_all.dtype)
 
-    if esp.long_lasting == 1 and .... #### HERE
+    ### change len() to np.size /shape
+    if (esp.long_lasting == 1 and (esp.max_dur/esp.wind_per_day > len(wind_vec_dry) or esp.max_dur/esp.wind_per_day > len(wind_vec_rainy))):
+      raise Exception('The eruption lasts longer than the seasons. Seasonality cannot be used in this case.')
 
-  # make CONF folder
+  # make config and t2 output folders
   parent = '' # update?
   child = 'confs'
   path = os.path.join(parent, child)
   if not os.path.exists(path):
     os.mkdir(path)
+  child = 'out'
+  path = os.path.join(parent, child)
+  if not os.path.exists(path):
+    os.mkdir(path)
+
+  ### make FIG and KML folders?
 
   ### Main loop
   for i in range(np.size(seas_str)):
+    ### remove those don't end up using
     mass_stor_tot     = np.zeros((esp.nb_runs, 1))
     mass_stor_tot_all = []
     height_stor_tot   = []
@@ -193,29 +234,43 @@ def generate_confs(esp):
     count_tot = 0
     count_run = 0
 
-    runs = [RUN(esp) for i in range(esp.nb_runs)]
+    runs = [RUN(esp) for j in range(esp.nb_runs)]
 
-    # make output folder
+    # make config output folder
     parent = 'confs/' # update?
     child = seas_str[i]
+    path = os.path.join(parent, child)
+    conf_path = path
+    if not os.path.exists(path):
+      os.mkdir(path)
+    # make t2 output folder
+    parent = 'out/'
     path = os.path.join(parent, child)
     if not os.path.exists(path):
       os.mkdir(path)
 
-    wind_vec_seas = wind_vec_all  ### modify for other seasons if needed
+    if (seas_str[i] == 'all'):
+      wind_vec_seas = wind_vec_all
+    elif (seas_str[i] == 'dry'):
+      wind_vec_seas = wind_vec_dry
+    elif (seas_str[i] == 'rainy'):
+      wind_vec_seas = wind_vec_rainy
+    else:
+      raise Exception('seas_str incorrectly set.')
+      return
 
     for j in range(esp.nb_runs):
-      ## out folders for each
-      ## write_conf, write_fig_sep == 0
-
+      ## folders per run? or if long lasting change from 0001 to 0001_1 etc?
       test_run = 0
 
       while (test_run == 0):
         count_tot = count_tot + 1
         dur = esp.min_dur*3600 + (esp.max_dur*3600-esp.min_dur*3600)*np.random.rand(1)
 
-        ### long_lasting == 0
-        nb_sim = 1
+        if (esp.long_lasting == 0):
+          nb_sim = 1
+        else:
+          nb_sim = math.ceil((dur/3600)/(24/esp.wind_per_day))
 
         dur_tmp = np.zeros((nb_sim, 1))
 
@@ -227,34 +282,56 @@ def generate_confs(esp):
 
         check_seas = 0
         while (check_seas == 0):
-          ## constrain_eruption_date == 0
-         # date_start = wind_vec_seas[np.random.randint(len(wind_vec_seas))]
-          date_start = np.random.randint(len(wind_vec_seas))
-          ## long_lasting == 0
-          dur_tmp[0] = dur
-          wind_vec = [wind_vec_seas[date_start]] #(date_start:(date_start+nb_sim-1))
+          if (esp.constrain_eruption_date == 0):
+            date_start = np.random.randint(len(wind_vec_seas))
+          else:
+            date_start = date.toordinal(datetime.strptime(esp.eruption_date, '%d-%b-%Y %H:%M:%S')) + 366
+          date_start = wind_vec_seas[date_start]
+
+          if (esp.long_lasting == 0):
+            dur_tmp[0] = dur
+          else:
+            for k in range(nb_sim):
+                if (k == nb_sim-1):
+                  dur_tmp[k] = mod(dur, 3600*(24/esp.wind_per_day))
+                else:
+                  dur_tmp[k] = 3600*(24/esp.wind_per_day)
+
+          wind_vec = np.arange(date_start, date_start+nb_sim)
 
           if (len(list(filter(lambda x: x in wind_vec_seas, wind_vec))) == len(list(set(wind_vec)))):
             check_seas = 1
           else:
             continue
-        ## long_lasting == 0, ht_sample == 0
-        ht_tmp[:,0] = esp.min_ht+((esp.max_ht)-(esp.min_ht))*np.random.rand(1)
+        ## Plume height sampling
+        if (esp.long_lasting == 0):
+            if (esp.ht_sample == 0):
+                ht_tmp[:,0] = esp.min_ht+((esp.max_ht)-(esp.min_ht))*np.random.rand(1)
+            else:
+                ht_tmp[:,0] = math.exp(math.log(esp.min_ht)+(math.log(esp.max_ht)-math.log(esp.min_ht))*np.random.rand(1))
+        else:
+            if (esp.ht_sample == 0):
+                ht_tmp[:,0] = esp.min_ht+((esp.max_ht)-(esp.min_ht))*np.random.rand(nb_sim,1)
+            else:
+                ht_tmp[:,0] = math.exp(math.log(esp.min_ht)+(math.log(esp.max_ht)-math.log(esp.min_ht))*np.random.rand(nb_sim,1))
+
+        ## remove this line when running
+        wind_vec[0] = int(1267)
 
         for k in range(nb_sim):
-          W = []
-          wind_prof = open(esp.wind_pth+'262000_'+wind_file(wind_vec_all[1267])+'.gen', 'r')
+          W = []                    ## change ID to var
+          wind_prof = open(esp.wind_pth+'262000_'+wind_file(wind_vec_seas[int(wind_vec[k])])+'.gen', 'r')
           for line in wind_prof:
             W.append([f(v) for (f, v) in zip((int, float, float, lambda v: v == 'True'), line.strip().split())])
           W = np.vstack(W)
           print(W[0][0])
 
-          level  = np.absolute(W[:,0]-esp.trop_height).argmin()
+          level1 = np.absolute(W[:,0]-esp.trop_height).argmin()
           level2 = np.absolute(W[:,0]-ht_tmp[k]).argmin()
           level3 = np.absolute(W[:,0]-esp.vent_ht).argmin()
-          print(level, level2, level3, ht_tmp)
+          print(level1, level2, level3, ht_tmp)
 
-          speed_tmp[k] = W[level,1]
+          speed_tmp[k] = W[level1,1]
           mer_tmp[k] = get_mer((ht_tmp[k] - esp.vent_ht), speed_tmp[k])
           with warnings.catch_warnings(): # fix this
             warnings.simplefilter("ignore", category=RuntimeWarning)
@@ -305,13 +382,10 @@ def generate_confs(esp):
 
           ## save intermediate data to structure?
 
-          run_1 = RUN(esp)
-          run_1.set_vals(ht_tmp[k], mass_tmp[k], gs_med, gs_std)
-          p_r = vars(run_1)
-          print(p_r)
+          ## write figs to file?
 
-          #runs[0] = run_1
-          runs[0].set_vals(ht_tmp[k], mass_tmp[k], gs_med, gs_std)
+          runs[j].set_vals(ht_tmp, mass_tmp, gs_med, gs_std)
+          runs[j].write_conf(seas_str[i], j, nb_sim)
           print(vars(runs[0]))
 
           # global storage
