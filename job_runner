@@ -1,0 +1,24 @@
+#!/bin/bash
+
+#SBATCH --job-name t2_runner
+#SBATCH --nodes 2
+#SBATCH --ntasks-per-node 28
+#SBATCH --cpus-per-task 1
+#SBATCH --time 00:01:00
+#SBATCH --partition cpu
+#SBATCH --output t2_runner.out
+
+echo Running on host `hostname`
+echo Time is `date`
+echo Directory is `pwd`
+echo Slurm job ID is $SLURM_JOB_ID
+echo This job runs on the following machines:
+echo `echo $SLURM_JOB_NODELIST | uniq`
+
+module load languages/intel/2020-u4
+export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+###export OMP_NUM_THREADS=56
+
+srun ./t2_runner
+
+echo Time is `date`
