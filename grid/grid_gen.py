@@ -141,8 +141,6 @@ def fill_matrix(utmx, utmy, grid):
   print(utm_g.shape)
   return utm_g
 
-
-
 def set_params(params):
   grid = Grid()
   grid.name = params[0]
