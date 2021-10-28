@@ -7,9 +7,9 @@ import xarray as xr
 
 ## PARAMS
 filename = "wind_ID_YEAR.nc"
-filepath = os.environ['HOME']+"/../zs20225/wind/nc_files/"
+filepath = os.environ['REPO_HOME']+"/../wind/nc_files/"
 #filepath = os.environ['HOME']+"/fellowship/tephra2Wrapper/wind/"
-outpath  = os.environ['HOME']+"/../zs20225/wind/gen_files/"
+outpath  = os.environ['WIND']+'/' #os.environ['HOME']+"/../zs20225/wind/gen_files/"
 #outpath  = os.environ['HOME']+"/fellowship/tephra2Wrapper/wind/gen_files/"
 csvfile  = "volc_holo_mody.csv"
 

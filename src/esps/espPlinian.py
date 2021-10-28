@@ -7,6 +7,7 @@ import warnings
 import pytest
 import os
 
+csv_file = os.environ['INPUTS']+'/VEI2_Tephra_ESP_settings.csv'
 '''
 Generate .confs & select .gens
 Populate T2_stor.txt with:
@@ -88,7 +89,7 @@ class RUN:
                  'PLUME_MODEL '+str(self.plume_model)]
         conf_file = seas+'/'+f"{j:0{self.run_digits}}"+'_'+f"{k:0{sim_digits}}"+'.txt'
         out_file  = seas+'/'+f"{j:0{self.run_digits}}"+'_'+f"{k:0{sim_digits}}"+'.out'
-        with open(os.environ['CONF']+conf_file, 'w+') as f: # change to $CONF
+        with open(os.environ['CONF']+'/'+conf_file, 'w+') as f: # change to $CONF
           f.writelines('\n'.join(lines))
         self.write_t2(conf_file, out_file)
 
@@ -99,7 +100,7 @@ class RUN:
     grid = '$GRID/'+self.volc_id+'.utm'
     out  = '$OUT/'+out_file
     line = binary + ' ' + conf + ' ' + grid + ' ' + wind + ' > ' + out
-    with open('t2.txt', 'w+') as f:
+    with open('t2.txt', 'a+') as f:
       f.write(line + '\n')
 
 class ESP:
@@ -108,9 +109,9 @@ class ESP:
   def __init__(self, esp_row):
     self.run_name = esp_row[0]
     self.out_name = esp_row[1]
-    self.v_id = '262000'
-    self.grid_pth = os.environ['GRID'] #esp_row[2] # path to volc_id.utm # remove these, have globals, set volc_id tho
-    self.wind_pth = os.environ['WIND']+self.v_id+'/'#esp_row[3] # path to volc_id/.gen files
+    self.v_id = '262000' # update
+    self.grid_pth = os.environ['GRID']
+    self.wind_pth = os.environ['WIND']+'/'+self.v_id+'/'
     self.volcano_name = esp_row[4]
     self.vent_easting = float(esp_row[5])
     self.vent_northing = float(esp_row[6])
@@ -118,14 +119,14 @@ class ESP:
     self.vent_ht = int(esp_row[8])
     self.min_ht = int(esp_row[9])
     self.max_ht = int(esp_row[10])
-    self.min_mass = int(esp_row[11])
-    self.max_mass = int(esp_row[12])
-    self.min_dur = int(esp_row[13])
-    self.max_dur = int(esp_row[14])
-    self.constrain = 0 # int(esp_row[15]) -- not running with mass values and constrain == 1
+    self.min_mass = int(float(esp_row[11]))
+    self.max_mass = int(float(esp_row[12]))
+    self.min_dur = (lambda: esp_row[13], lambda: 0)[esp_row[13] == 'NA']()
+    self.max_dur = (lambda: esp_row[14], lambda: 0)[esp_row[14] == 'NA']()
+    self.constrain = 0 #int(esp_row[15]) #-- not running with mass values and constrain == 1
     self.nb_wind = (lambda: esp_row[16], lambda: 14172)[esp_row[16] == 'NA']()
     self.wind_start = '01-Jan-2012 00:00:00'
-    self.wind_per_day = 4
+    self.wind_per_day = int(esp_row[18])
     self.seasonality = int(esp_row[19])
     self.wind_start_rainy = int(esp_row[20])
     self.wind_start_dry = int(esp_row[21])
@@ -135,18 +136,18 @@ class ESP:
     self.min_wind_dir = int(esp_row[25])
     self.max_wind_dir = int(esp_row[26])
     self.trop_height = int(esp_row[27])
-    self.max_phi = int(esp_row[29]) # swap when table correct
-    self.min_phi = int(esp_row[28]) # ..
-    self.min_med_phi = int(esp_row[30])
-    self.max_med_phi = int(esp_row[31])
-    self.min_std_phi = int(esp_row[32])
-    self.max_std_phi = int(esp_row[33])
+    self.max_phi = int(esp_row[28])
+    self.min_phi = int(esp_row[29])
+    self.min_med_phi = float(esp_row[30])
+    self.max_med_phi = float(esp_row[31])
+    self.min_std_phi = float(esp_row[32])
+    self.max_std_phi = float(esp_row[33])
     self.min_agg = int(esp_row[34])
     self.max_agg = int(esp_row[35])
     self.max_diam = int(esp_row[36])
     self.long_lasting = int(esp_row[37])
-    self.ht_sample = int(esp_row[38])
-    self.mass_sample = int(esp_row[39])
+    self.ht_sample = (lambda: esp_row[38], lambda: 0)[esp_row[38] == 'NA']()
+    self.mass_sample = (lambda: esp_row[39], lambda: 0)[esp_row[39] == 'NA']()
     self.nb_runs = int(esp_row[40])
     self.write_conf = 1 #int(esp_row[41])
     self.write_gs = int(esp_row[42])
@@ -171,6 +172,7 @@ class ESP:
   def check_vals(self):
     ## filepaths exist
     ## will this be necessary long term?
+    print(self.wind_pth)
     assert(os.path.exists(self.wind_pth))
     assert(os.path.exists(self.grid_pth))
     assert(self.max_ht >= self.min_ht)
@@ -298,11 +300,13 @@ def generate_confs(esp):
         check_seas = 0
         while (check_seas == 0):
           if (esp.constrain_eruption_date == 0):
-            date_start = np.random.randint(len(wind_vec_seas))
+            date_start = np.random.randint(wind_vec_seas.size)
+            print(date_start)
           else:
+            print("HERE")
             date_start = date.toordinal(datetime.strptime(esp.eruption_date, '%d-%b-%Y %H:%M:%S')) + 366
           date_start = wind_vec_seas[date_start]
-
+          print(date_start)
           if (esp.long_lasting == 0):
             dur_tmp[0] = dur
           else:
@@ -313,6 +317,7 @@ def generate_confs(esp):
                   dur_tmp[k] = 3600*(24/esp.wind_per_day)
 
           wind_vec = np.arange(date_start, date_start+nb_sim)
+          print(wind_vec)
 
           if (len(list(filter(lambda x: x in wind_vec_seas, wind_vec))) == len(list(set(wind_vec)))):
             check_seas = 1
@@ -331,21 +336,21 @@ def generate_confs(esp):
                 ht_tmp[:,0] = math.exp(math.log(esp.min_ht)+(math.log(esp.max_ht)-math.log(esp.min_ht))*np.random.rand(nb_sim,1))
 
         ## remove this line when running
-        wind_vec[0] = int(1267)
+        #wind_vec[0] = int(1267)
 
         for k in range(nb_sim):
           W = []                    ## change ID to var
-          wind_f = esp.v_id + '_' + wind_file(wind_vec_seas[int(wind_vec[k])])+'.gen'
+          wind_f = esp.v_id + '_' + wind_file(int(wind_vec[k]))+'.gen'
           wind_prof = open(esp.wind_pth + wind_f, 'r') # change to $WIND
           for line in wind_prof:
             W.append([f(v) for (f, v) in zip((int, float, float, lambda v: v == 'True'), line.strip().split())])
           W = np.vstack(W)
-          print(W[0][0])
+          #print(W[0][0])
 
           level1 = np.absolute(W[:,0]-esp.trop_height).argmin()
           level2 = np.absolute(W[:,0]-ht_tmp[k]).argmin()
           level3 = np.absolute(W[:,0]-esp.vent_ht).argmin()
-          print(level1, level2, level3, ht_tmp)
+          #print(level1, level2, level3, ht_tmp)
 
           speed_tmp[k] = W[level1,1]
           mer_tmp[k] = get_mer((ht_tmp[k] - esp.vent_ht), speed_tmp[k])
@@ -356,14 +361,14 @@ def generate_confs(esp):
           if (esp.constrain == 0):
             if (esp.mass_sample == 0):
               mass_tmp[k] = (esp.min_mass + (esp.max_mass - esp.min_mass) * np.random.rand(1)) / (nb_sim);
-              print("MASS")
-              print(mass_tmp[k], esp.min_mass, esp.max_mass)
+             # print("MASS")
+             # print(mass_tmp[k], esp.min_mass, esp.max_mass)
             else:
               mass_tmp[k] = 10 ** (math.log10(esp.min_mass) + ((math.log10(esp.max_mass)) - (math.log10(esp.min_mass))) * np.random.rand(1)) / (nb_sim+1)
           else:
             mass_tmp[k] = mer_tmp[k]*dur_tmp[k]
-            print("MASS")
-            print(mer_tmp[k], dur_tmp[k])
+           # print("MASS")
+           # print(mer_tmp[k], dur_tmp[k])
 
         if (esp.constrain_wind_dir == 1):
           if ((esp.min_wind_dir < esp.max_wind_dir) and (np.median(dir_tmp) > esp.min_wind_dir and np.median(dir_tmp) < esp.max_wind_dir)):
@@ -376,7 +381,7 @@ def generate_confs(esp):
           test_wind = 1
 
         if ((np.sum(mass_tmp) > esp.min_mass and np.sum(mass_tmp) < esp.max_mass and test_wind == 1) or esp.constrain == 0):
-          print("Valid run")
+          #print("Valid run")
           test_run = 1
           count_run = count_run + 1
 
@@ -402,7 +407,8 @@ def generate_confs(esp):
 
           runs[j].set_vals(ht_tmp, mass_tmp, gs_med, gs_std, wind_f)
           runs[j].write_conf(seas_str[i], j, nb_sim)
-          print(vars(runs[0]))
+          #print(vars(runs[0]))
+          print("Done: "+str(j))
 
           # global storage
           mass_stor_tot[j] = np.sum(mass_tmp)
@@ -425,7 +431,7 @@ def generate_confs(esp):
           # dump all runs[j] into 000j.conf file
           # move specific wind file copy to 000j.txt file
        # break # while (test_run)
-      break   # for nb_runs
+      #break   # for nb_runs
    # break     # for seas
   print("Finished config_gen")
 
@@ -489,8 +495,8 @@ def get_mer(H, Vmax): # Degruyter & Bonadonna
 ''' --------------------------------------------------------------------------------------------------------------------- '''
 
 def read_csv():
-  csvfile = "tephra_esp.csv"
-  with open(csvfile, 'r', encoding="ISO-8859-1") as csv_grid_f:
+  #csvfile = "tephra_esp.csv"
+  with open(csv_file, 'r', encoding="ISO-8859-1") as csv_grid_f:
     csv_grid_r = csv.reader(csv_grid_f, )
     P = []
     next(csv_grid_r)

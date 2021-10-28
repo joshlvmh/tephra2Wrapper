@@ -10,25 +10,27 @@
 
 #define MASTER 0
 #define LINE_LENGTH 106
-#define NUM_LINES 1 //10000
+#define NUM_LINES 10000
 
 void initialise(int* nprocs, int* rank, int* size, double* tic);
 void finalise(double* tic, int* rank);
 void process(int* rank, int* size);
+void checkError(const int err, const char *op, const int rank, const int line);
 
 int main(int argc, char* argv[])
 {
   int    nprocs, rank;
   char   *buf;
   int    counter = 0;
-  int    size;
   double tic;
+  int    size;
   MPI_Status status;
 
   initialise(&nprocs, &rank, &size, &tic);
 
   process(&rank, &size);
 
+  MPI_Barrier(MPI_COMM_WORLD);
   finalise(&tic, &rank);
 
   return EXIT_SUCCESS;
@@ -39,15 +41,15 @@ void process(int* rank, int* size)
   FILE* fp;
   char str[20];
   char file[] = ".txt";
-  char line[LINE_LENGTH+1];
-  line[LINE_LENGTH] = '\0';
+  char line[LINE_LENGTH];
 
   sprintf(str, "%d", *rank);
   fp = fopen(strcat(str,file),"r");
+ // printf("SIZE: %d RANK: %d\n", *size, *rank);
 
-  # pragma omp parallel for
+ // # pragma omp parallel for
   for (int i = 0; i < *size; i++) {
-    fgets(line, LINE_LENGTH, fp);
+    fgets(line, LINE_LENGTH+10, fp);
     system(line);
     // deal with out file
   }
@@ -59,10 +61,13 @@ void initialise(int* nprocs, int* rank, int *size, double* tic)
   MPI_Init(NULL, NULL);
   MPI_Comm_size(MPI_COMM_WORLD, nprocs);
   MPI_Comm_rank(MPI_COMM_WORLD, rank);
+  MPI_Status status;
+  int err;
 
   struct timeval timstr;
   int final_line_count;
   int line_per_rank;
+  int* bcast_buffer = malloc(sizeof(int));
 
   // add calculate NUM_LINES?
 
@@ -85,14 +90,13 @@ void initialise(int* nprocs, int* rank, int *size, double* tic)
 
     FILE* fid = fopen("../esps/t2.txt", "r");
     int line_counter = 0;
-    char line[LINE_LENGTH+1];
-    line[LINE_LENGTH] = '\n';
+    char line[LINE_LENGTH];
     char str[20];
 
     // array of fps to prevent reopening?
     for (int i = 0; i < NUM_LINES; i++)
     {
-      fgets(line, LINE_LENGTH, fid);
+      fgets(line, LINE_LENGTH+10, fid);
       int r = i / line_per_rank;
       sprintf(str, "%d", r);
       FILE* r_file = fopen(strcat(str,".txt"), "a");
@@ -100,10 +104,18 @@ void initialise(int* nprocs, int* rank, int *size, double* tic)
       fclose(r_file);
     }
     fclose(fid);
+    *bcast_buffer = line_per_rank;
+    err = MPI_Send(&final_line_count, 1, MPI_INT, *nprocs-1, 0, MPI_COMM_WORLD);
+    checkError(err, "sending final line count", *rank, __LINE__);
   }
+  else if (*rank == *nprocs-1) {
+    err = MPI_Recv(size, 1, MPI_INT, MASTER, 0, MPI_COMM_WORLD, &status);
+    checkError(err, "receiving final line count", *rank, __LINE__);
+  }
+  err = MPI_Bcast(bcast_buffer, 1, MPI_INT, MASTER, MPI_COMM_WORLD);
+  checkError(err, "broadcasting amount of lines", *rank, __LINE__);
 
-  *size = line_per_rank;
-  if (rank == nprocs-1) *size = final_line_count;
+  if (*rank != *nprocs-1) *size = *bcast_buffer;
 }
 
 void finalise(double* tic, int* rank)
@@ -132,6 +144,15 @@ void finalise(double* tic, int* rank)
   MPI_Finalize();
 }
 
+void checkError(const int err, const char *op, const int rank, const int line)
+{
+  if (err != MPI_SUCCESS)
+  {
+    fprintf(stderr, "MPI error during '%s' for rank %d on line %d: %d\n", op, rank, line, err);
+    fflush(stderr);
+    exit(EXIT_FAILURE);
+  }
+}
 
 
 

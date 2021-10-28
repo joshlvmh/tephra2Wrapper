@@ -1,54 +1,68 @@
-Running on host compute400.bc4.acrc.priv
-Time is Tue Oct 26 18:18:51 BST 2021
-Directory is /mnt/storage/home/jm17923/fellowship/tephra2Wrapper
-Slurm job ID is 5054909
+Running on host compute080.bc4.acrc.priv
+Time is Thu Oct 28 20:05:02 BST 2021
+Directory is /mnt/storage/scratch/zs20225/tephra2Wrapper/src/mpi_omp_t2_runner
+Slurm job ID is 5063071
 This job runs on the following machines:
-compute400
+compute[080,180]
 Intel(R) Parallel Studio XE 2020 Update 4 for Linux*
 Copyright 2009-2020 Intel Corporation.
-
-j@
-
-
-i@
-c@
-
-sh: line 1: $'\023@': command not found
-sh: line 1: $'\023@': command not found
-sh: line 1: $'\023@': command not found
-sh: line 1: $'\023@': command not found
-
-sh: line 1: $'\023@': command not found
-n@
-
-sh: line 1: $'\023@': command not found
-
-sh: line 1: $'\023@': command not found
-b@
-
-f@
-aš0ü
-m@
-
-e@
-sh: line 1: $'\023@': command not found
-h@
-l@
-
-k@
-sh: line 1: $'\023@': command not found
-g@
-
-
-sh: line 1: $'\023@': command not found
-sh: line 1: $'\023@': command not found
-sh: line 1: $'\023@': command not found
-
-sh: line 1: $'\023@': command not found
-d@
-
-sh: line 1: $'\023@': command not found
-Elapsed time:			0.207302 (s)
-Elapsed user CPU time:		0.185502 (s)
-Elapsed system CPU time:	0.363709 (s)
-Time is Tue Oct 26 18:18:57 BST 2021
+SIZE: 179 RANK: 0
+SIZE: 179 RANK: 28
+SIZE: 179 RANK: 10
+SIZE: 179 RANK: 17
+SIZE: 179 RANK: 6
+SIZE: 179 RANK: 2
+SIZE: 179 RANK: 21
+SIZE: 179 RANK: 19
+SIZE: 179 RANK: 20
+SIZE: 179 RANK: 26
+SIZE: 179 RANK: 7
+SIZE: 179 RANK: 14
+SIZE: 179 RANK: 5
+SIZE: 179 RANK: 15
+SIZE: 179 RANK: 27
+SIZE: 179 RANK: 9
+SIZE: 179 RANK: 24
+SIZE: 179 RANK: 13
+SIZE: 179 RANK: 3
+SIZE: 179 RANK: 12
+SIZE: 179 RANK: 11
+SIZE: 179 RANK: 25
+SIZE: 179 RANK: 16
+SIZE: 179 RANK: 22
+SIZE: 179 RANK: 1
+SIZE: 179 RANK: 8
+SIZE: 179 RANK: 4
+SIZE: 179 RANK: 18
+SIZE: 179 RANK: 23
+SIZE: 179 RANK: 47
+SIZE: 179 RANK: 32
+SIZE: 179 RANK: 33
+SIZE: 179 RANK: 52
+SIZE: 179 RANK: 50
+SIZE: 179 RANK: 30
+SIZE: 179 RANK: 53
+SIZE: 179 RANK: 46
+SIZE: 179 RANK: 40
+SIZE: 155 RANK: 55
+SIZE: 179 RANK: 54
+SIZE: 179 RANK: 35
+SIZE: 179 RANK: 45
+SIZE: 179 RANK: 44
+SIZE: 179 RANK: 51
+SIZE: 179 RANK: 31
+SIZE: 179 RANK: 41
+SIZE: 179 RANK: 48
+SIZE: 179 RANK: 49
+SIZE: 179 RANK: 43
+SIZE: 179 RANK: 37
+SIZE: 179 RANK: 39
+SIZE: 179 RANK: 38
+SIZE: 179 RANK: 42
+SIZE: 179 RANK: 34
+SIZE: 179 RANK: 36
+SIZE: 179 RANK: 29
+Elapsed time:			0.413430 (s)
+Elapsed user CPU time:		0.146951 (s)
+Elapsed system CPU time:	0.462997 (s)
+Time is Thu Oct 28 20:05:07 BST 2021

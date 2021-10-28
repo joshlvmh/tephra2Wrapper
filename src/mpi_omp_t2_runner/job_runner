@@ -4,9 +4,16 @@
 #SBATCH --nodes 2
 #SBATCH --ntasks-per-node 28
 #SBATCH --cpus-per-task 1
-#SBATCH --time 00:01:00
+#SBATCH --time 24:00:00
 #SBATCH --partition cpu
 #SBATCH --output t2_runner.out
+
+module load tools/git/2.18.0
+module load languages/gcc/9.3.0
+module load apps/matlab/2018a
+module load gc/7.4.4-foss-2016a
+
+cd $SLURM_SUBMIT_DIR
 
 echo Running on host `hostname`
 echo Time is `date`
@@ -17,7 +24,6 @@ echo `echo $SLURM_JOB_NODELIST | uniq`
 
 module load languages/intel/2020-u4
 export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
-###export OMP_NUM_THREADS=56
 
 srun ./t2_runner
 
