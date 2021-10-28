@@ -88,19 +88,19 @@ class RUN:
                  'PLUME_MODEL '+str(self.plume_model)]
         conf_file = seas+'/'+f"{j:0{self.run_digits}}"+'_'+f"{k:0{sim_digits}}"+'.txt'
         out_file  = seas+'/'+f"{j:0{self.run_digits}}"+'_'+f"{k:0{sim_digits}}"+'.out'
-        with open('confs/'+conf_file, 'w+') as f: # change to $CONF
+        with open(os.environ['CONF']+conf_file, 'w+') as f: # change to $CONF
           f.writelines('\n'.join(lines))
         self.write_t2(conf_file, out_file)
 
   def write_t2(self, conf_file, out_file):
-    binary = '$TEPHRA/tephra2_2020'
+    binary = '$BINARY'
     conf = '$CONF/'+conf_file # already got confs/
     wind = '$WIND/'+self.volc_id+'/'+self.wind_file
     grid = '$GRID/'+self.volc_id+'.utm'
     out  = '$OUT/'+out_file
     line = binary + ' ' + conf + ' ' + grid + ' ' + wind + ' > ' + out
     with open('t2.txt', 'w+') as f:
-      f.write(line+'\n')
+      f.write(line + '\n')
 
 class ESP:
   run_nb = 0 # init this
@@ -109,8 +109,8 @@ class ESP:
     self.run_name = esp_row[0]
     self.out_name = esp_row[1]
     self.v_id = '262000'
-    self.grid_pth = '../grid/262000.utm' #esp_row[2] # path to volc_id.utm # remove these, have globals, set volc_id tho
-    self.wind_pth = '../wind/gen_files/262000/' #esp_row[3] # path to volc_id/.gen files
+    self.grid_pth = os.environ['GRID'] #esp_row[2] # path to volc_id.utm # remove these, have globals, set volc_id tho
+    self.wind_pth = os.environ['WIND']+self.v_id+'/'#esp_row[3] # path to volc_id/.gen files
     self.volcano_name = esp_row[4]
     self.vent_easting = float(esp_row[5])
     self.vent_northing = float(esp_row[6])
@@ -135,8 +135,8 @@ class ESP:
     self.min_wind_dir = int(esp_row[25])
     self.max_wind_dir = int(esp_row[26])
     self.trop_height = int(esp_row[27])
-    self.max_phi = int(esp_row[28]) # swap when table correct
-    self.min_phi = int(esp_row[29]) # ..
+    self.max_phi = int(esp_row[29]) # swap when table correct
+    self.min_phi = int(esp_row[28]) # ..
     self.min_med_phi = int(esp_row[30])
     self.max_med_phi = int(esp_row[31])
     self.min_std_phi = int(esp_row[32])
@@ -218,6 +218,8 @@ def generate_confs(esp):
     if (esp.long_lasting == 1 and (esp.max_dur/esp.wind_per_day > len(wind_vec_dry) or esp.max_dur/esp.wind_per_day > len(wind_vec_rainy))):
       raise Exception('The eruption lasts longer than the seasons. Seasonality cannot be used in this case.')
 
+ 
+  '''
   # make config and t2 output folders
   parent = '' # update?
   child = 'confs'
@@ -227,7 +229,7 @@ def generate_confs(esp):
   child = 'out'
   path = os.path.join(parent, child)
   if not os.path.exists(path):
-    os.mkdir(path)
+    os.mkdir(path)'''
 
   ### make FIG and KML folders?
 
@@ -250,14 +252,14 @@ def generate_confs(esp):
     runs = [RUN(esp) for j in range(esp.nb_runs)]
 
     # make config output folder
-    parent = 'confs/' # update?
+    parent = os.environ['CONF'] # update?
     child = seas_str[i]
     path = os.path.join(parent, child)
     conf_path = path
     if not os.path.exists(path):
       os.mkdir(path)
     # make t2 output folder
-    parent = 'out/'
+    parent = os.environ['OUT']
     path = os.path.join(parent, child)
     if not os.path.exists(path):
       os.mkdir(path)
@@ -334,7 +336,7 @@ def generate_confs(esp):
         for k in range(nb_sim):
           W = []                    ## change ID to var
           wind_f = esp.v_id + '_' + wind_file(wind_vec_seas[int(wind_vec[k])])+'.gen'
-          wind_prof = open(esp.wind_path + wind_f, 'r') # change to $WIND
+          wind_prof = open(esp.wind_pth + wind_f, 'r') # change to $WIND
           for line in wind_prof:
             W.append([f(v) for (f, v) in zip((int, float, float, lambda v: v == 'True'), line.strip().split())])
           W = np.vstack(W)

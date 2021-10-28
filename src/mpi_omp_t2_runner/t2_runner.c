@@ -9,7 +9,7 @@
 #include <string.h>
 
 #define MASTER 0
-#define LINE_LENGTH 100
+#define LINE_LENGTH 106
 #define NUM_LINES 1 //10000
 
 void initialise(int* nprocs, int* rank, int* size, double* tic);
@@ -83,10 +83,10 @@ void initialise(int* nprocs, int* rank, int *size, double* tic)
       line_per_rank = final_line_count = NUM_LINES / *nprocs;
     }
 
-    FILE* fid = fopen("t2_stor.txt", "r");
+    FILE* fid = fopen("../esps/t2.txt", "r");
     int line_counter = 0;
     char line[LINE_LENGTH+1];
-    line[LINE_LENGTH] = '\0';
+    line[LINE_LENGTH] = '\n';
     char str[20];
 
     // array of fps to prevent reopening?
