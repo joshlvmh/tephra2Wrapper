@@ -1,9 +1,10 @@
 # tephra2Wrapper
-Helper functionality and wrapper for tephra2 simulation
+Helper functionality and wrapper for tephra2 simulation, pre & psot processing, grid generation, wind collection.
 
 ## Usage
 ```
 git submodule update --init --recursive
+source bin/conf.sh
 sbatch job_submit_tephra2
 ```
 
@@ -12,30 +13,49 @@ sbatch job_submit_tephra2
 ```
 .  
 |-- README.md  
-|-- esps  
-|   |-- espPlinian.py: config generation [4]  
-|   `-- tephra_esp.csv: input parameters  
-|-- grid  
-|   |-- grid_gen.py: UTM grid generation for tephra2  
-|   |-- krak.utm: output  
-|   `-- volc_grids.csv: input  
-|-- job_submit_tephra2: runs the model  
-|-- tephra2: submodule  
-|   `-- ..: model [1]  
-|-- tephraProb: submodule  
-|   `-- ..: for reference [2]  
-|-- volc_holo_VEI.csv: input  
-|-- volc_holo_mody.csv: input  
-`-- wind  
-    |-- gen_files  
-    |   `-- 262000  
-    |       `-- ..: outputs  
-    |-- job_wind.sh: array job for CDSAPI  
-    |-- netcdf_conv.py: netCDF4 -> ASCII conversion  
-    |-- volc_holo_mody.csv: input  
-    |-- wind.py: CDSAPI [3] ERA5 script  
-    `-- wind_262000_2021.nc: output  
+|-- bin
+|   `-- conf.sh: setup and environment variables
+|-- docs
+|   |-- tephraProb_structure.md
+|   |-- tephraProb User Manual.pdf
+|   `-- tree.*
+|-- inputs
+|   |-- volc_grids.csv: Grid generation input
+|   |-- tephra_esp.csv: ESP config input
+|   `-- volc_holo_mody.csv: Wind input
+|-- pyenv.cfg: Python virtual environment
+|-- src
+|   |-- conf
+|   |   `-- */*.txt: tephra2 config files  
+|   |-- esps  
+|   |   |-- espPlinian.py: config generation  
+|   |   `-- t2.txt: tephra2 run commands  
+|   |-- grid  
+|   |   |-- grid_gen.py: UTM grid generation for tephra2  
+|   |   `-- 262000.utm: Krakatau output  
+|   |-- mpi_omp_t2_runner
+|   |   |-- Makefile
+|   |   |-- job_runner: SLURM submission script
+|   |   |-- job_submit_tephra2: SLURM submission script
+|   |   |-- t2_runner.c: MPI runner for tephra2
+|   |   `-- t2_runner.out: Output of job submission
+|   |-- tephra2: submodule  
+|   |   `-- ..: model [1]  
+|   `-- wind  
+|       |-- gen_files  
+|       |   `-- 262000  
+|       |       `-- ..: outputs  
+|       |-- job_wind.sh: array job for CDSAPI  
+|       |-- nc_files
+|       |   `-- 262000
+|       |-- netcdf_conv.py: netCDF4 -> ASCII conversion  
+|       |-- wind.py: CDSAPI [3] ERA5 script  
+|       `-- wind_262000_2021.nc: output  
+`-- tephraProb: submodule  
+    `-- ..: pre & post processing source [2]  
 ```
+
+## Implementation details
 
 ## References
 
