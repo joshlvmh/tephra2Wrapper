@@ -1,2 +1,5 @@
 src/wind/compare_netcdf
 src/wind/gen_files/*
+src/wind/nc_files/*
+src/conf/*
+src/out/*
