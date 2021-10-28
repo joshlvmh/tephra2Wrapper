@@ -10,76 +10,141 @@
 
 #define MASTER 0
 #define LINE_LENGTH 100
+#define NUM_LINES 1 //10000
+
+void initialise(int* nprocs, int* rank, int* size, double* tic);
+void finalise(double* tic, int* rank);
+void process(int* rank, int* size);
 
 int main(int argc, char* argv[])
 {
-  struct timeval timstr;
-  struct rusage ru;
-  double tic, toc;
-  double usrtim;
-  double systim;
-  int nprocs, rank;
-  char *buf;
-  int counter = 0;
-  MPI_Init(NULL, NULL);
-  MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
+  int    nprocs, rank;
+  char   *buf;
+  int    counter = 0;
+  int    size;
+  double tic;
   MPI_Status status;
-  int line_per_rank;
-  int final_line_count;
 
-  if (rank == MASTER)
+  initialise(&nprocs, &rank, &size, &tic);
+
+  process(&rank, &size);
+
+  finalise(&tic, &rank);
+
+  return EXIT_SUCCESS;
+}
+
+void process(int* rank, int* size)
+{
+  FILE* fp;
+  char str[20];
+  char file[] = ".txt";
+  char line[LINE_LENGTH+1];
+  line[LINE_LENGTH] = '\0';
+
+  sprintf(str, "%d", *rank);
+  fp = fopen(strcat(str,file),"r");
+
+  # pragma omp parallel for
+  for (int i = 0; i < *size; i++) {
+    fgets(line, LINE_LENGTH, fp);
+    system(line);
+    // deal with out file
+  }
+}
+
+
+void initialise(int* nprocs, int* rank, int *size, double* tic)
+{
+  MPI_Init(NULL, NULL);
+  MPI_Comm_size(MPI_COMM_WORLD, nprocs);
+  MPI_Comm_rank(MPI_COMM_WORLD, rank);
+
+  struct timeval timstr;
+  int final_line_count;
+  int line_per_rank;
+
+  // add calculate NUM_LINES?
+
+  if (*rank == MASTER)
   {
     gettimeofday(&timstr, NULL);
-    tic = timstr.tv_sec + (timstr.tv_usec / 1000000.0);
-   // nprocs = 56;
-    int lines = 1;
-    int rem = lines % nprocs;
+    *tic = timstr.tv_sec + (timstr.tv_usec / 1000000.0);
+
+    int rem = NUM_LINES % *nprocs;
+
     if (rem != 0)
     {
-      line_per_rank = lines / nprocs + 1;
-      final_line_count = lines - line_per_rank*(nprocs-1);
+      line_per_rank = NUM_LINES / *nprocs + 1;
+      final_line_count = NUM_LINES - line_per_rank*(*nprocs-1);
     }
     else
     {
-      line_per_rank = final_line_count = lines / nprocs;
+      line_per_rank = final_line_count = NUM_LINES / *nprocs;
     }
-    //printf("%d %d \n", line_per_rank, final_line_count);
 
     FILE* fid = fopen("t2_stor.txt", "r");
     int line_counter = 0;
     char line[LINE_LENGTH+1];
     line[LINE_LENGTH] = '\0';
     char str[20];
-    while(fgets(line, 500, fid))
+
+    // array of fps to prevent reopening?
+    for (int i = 0; i < NUM_LINES; i++)
     {
-      int r = line_counter / line_per_rank;
+      fgets(line, LINE_LENGTH, fid);
+      int r = i / line_per_rank;
       sprintf(str, "%d", r);
       FILE* r_file = fopen(strcat(str,".txt"), "a");
       fwrite(line, sizeof(line), 1, r_file);
       fclose(r_file);
-      line_counter++;
     }
     fclose(fid);
-    // within each rank use # omp parallel for across line subset
   }
-  int size = line_per_rank;
-  if (rank == nprocs-1) size = final_line_count;
 
-  int err;
-  FILE* fp;
-  char str[20];
-  char file[] = ".txt";
-  sprintf(str, "%d", rank);
-  fp = fopen(strcat(str,file),"r");
-  char line[LINE_LENGTH+1];
-  line[LINE_LENGTH] = '\0';
-  while (fgets(line, 500, fp))
+  *size = line_per_rank;
+  if (rank == nprocs-1) *size = final_line_count;
+}
+
+void finalise(double* tic, int* rank)
+{
+  struct timeval timstr;
+  struct rusage ru;
+  double toc;
+  double usrtim;
+  double systim;
+  if (*rank == MASTER)
   {
-    system(line);
-    //printf("%s\n", line);
+
+  gettimeofday(&timstr, NULL);
+  toc = timstr.tv_sec + (timstr.tv_usec / 1000000.0);
+  getrusage(RUSAGE_SELF, &ru);
+  timstr = ru.ru_utime;
+  usrtim = timstr.tv_sec + (timstr.tv_usec / 1000000.0);
+  timstr = ru.ru_stime;
+  systim = timstr.tv_sec + (timstr.tv_usec / 1000000.0);
+
+
+  printf("Elapsed time:\t\t\t%.6lf (s)\n", toc - *tic);
+  printf("Elapsed user CPU time:\t\t%.6lf (s)\n", usrtim);
+  printf("Elapsed system CPU time:\t%.6lf (s)\n", systim);
   }
+  MPI_Finalize();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /*
   int nx = 28; // rows
   int ny = 1; // cols
@@ -105,11 +170,8 @@ int main(int argc, char* argv[])
   system(command);
 
   MPI_File_close(&file);
-  */
 
-/*
   // code
-  # pragma omp parallel for
   for (int i = 0; i < 20 ; i++)
   {
     int status_sys = system("./hello");
@@ -124,36 +186,4 @@ int main(int argc, char* argv[])
 
   MPI_File_close(&fh);
 
-
-  FILE* fp;
-  char str[20];
-  char file[] = ".txt";
-  sprintf(str, "%d", rank);
-  fp = fopen(strcat(str,file),"rw");
-  char line[100];
-  while(fgets(line, 100, fp))
-  {
-    puts(line);
-  }
   */
-
-  if (rank == MASTER)
-  {
-
-  gettimeofday(&timstr, NULL);
-  toc = timstr.tv_sec + (timstr.tv_usec / 1000000.0);
-  getrusage(RUSAGE_SELF, &ru);
-  timstr = ru.ru_utime;
-  usrtim = timstr.tv_sec + (timstr.tv_usec / 1000000.0);
-  timstr = ru.ru_stime;
-  systim = timstr.tv_sec + (timstr.tv_usec / 1000000.0);
-
-
-  printf("Elapsed time:\t\t\t%.6lf (s)\n", toc - tic);
-  printf("Elapsed user CPU time:\t\t%.6lf (s)\n", usrtim);
-  printf("Elapsed system CPU time:\t%.6lf (s)\n", systim);
-  }
-  MPI_Finalize();
-
-  return EXIT_SUCCESS;
-}

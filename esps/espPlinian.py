@@ -11,6 +11,8 @@ import os
 Generate .confs & select .gens
 Populate T2_stor.txt with:
     ./binary .conf .utm .gen > .out
+October 2021
+Joshua Measure-Hughes
 '''
 
 class RUN:
@@ -51,16 +53,18 @@ class RUN:
     self.col_steps = esp.col_step
     self.part_steps = esp.part_step
     self.plume_model = 2
-    self.run_digits = len(str(abs(esp.nb_runs)))
+    self.run_digits = len(str(abs(esp.nb_runs-1)))
+    self.volc_id = esp.v_id
 
-  def set_vals(self, pl_ht, er_ma, med_g, std_g):
+  def set_vals(self, pl_ht, er_ma, med_g, std_g, wind_f):
     self.plume_height = pl_ht
     self.eruption_mass = er_ma
     self.median_grainsize = med_g[0]
     self.std_grainsize = std_g[0]
+    self.wind_file = wind_f
 
   def write_conf(self, seas, j, nb_sim):
-    sim_digits = len(str(abs(nb_sim)))
+    sim_digits = len(str(abs(nb_sim-1)))
     if (True): #esp.write_conf == 1):
       for k in range(nb_sim): # increase self.... to [nb_sim] - check works
         lines = ['VENT_EASTING '+str(self.vent_easting),
@@ -82,13 +86,21 @@ class RUN:
                  'COL_STEPS '+str(self.col_steps),
                  'PART_STEPS '+str(self.part_steps),
                  'PLUME_MODEL '+str(self.plume_model)]
-        with open('confs/'+seas+'/'+f"{j:0{self.run_digits}}"+'_'+f"{k:0{sim_digits}}"+'.txt', 'w+') as f:
+        conf_file = seas+'/'+f"{j:0{self.run_digits}}"+'_'+f"{k:0{sim_digits}}"+'.txt'
+        out_file  = seas+'/'+f"{j:0{self.run_digits}}"+'_'+f"{k:0{sim_digits}}"+'.out'
+        with open('confs/'+conf_file, 'w+') as f: # change to $CONF
           f.writelines('\n'.join(lines))
+        self.write_t2(conf_file, out_file)
 
-  def write_t2(self, conf, wind, utm):
-    binary = './tephra2_2021'
-    line = binary + ' ' + conf + grid + wind + '> ' + out
-    # add to t2 
+  def write_t2(self, conf_file, out_file):
+    binary = '$TEPHRA/tephra2_2020'
+    conf = '$CONF/'+conf_file # already got confs/
+    wind = '$WIND/'+self.volc_id+'/'+self.wind_file
+    grid = '$GRID/'+self.volc_id+'.utm'
+    out  = '$OUT/'+out_file
+    line = binary + ' ' + conf + ' ' + grid + ' ' + wind + ' > ' + out
+    with open('t2.txt', 'w+') as f:
+      f.write(line+'\n')
 
 class ESP:
   run_nb = 0 # init this
@@ -96,7 +108,8 @@ class ESP:
   def __init__(self, esp_row):
     self.run_name = esp_row[0]
     self.out_name = esp_row[1]
-    self.grid_pth = '../grid/krak.utm' #esp_row[2] # path to volc_id.utm # remove these, have globals, set volc_id tho
+    self.v_id = '262000'
+    self.grid_pth = '../grid/262000.utm' #esp_row[2] # path to volc_id.utm # remove these, have globals, set volc_id tho
     self.wind_pth = '../wind/gen_files/262000/' #esp_row[3] # path to volc_id/.gen files
     self.volcano_name = esp_row[4]
     self.vent_easting = float(esp_row[5])
@@ -114,16 +127,16 @@ class ESP:
     self.wind_start = '01-Jan-2012 00:00:00'
     self.wind_per_day = 4
     self.seasonality = int(esp_row[19])
-    self.wind_start_rainy = 'November' #int(esp_row[20])
-    self.wind_start_dry = 'April' #int(esp_row[21])
+    self.wind_start_rainy = int(esp_row[20])
+    self.wind_start_dry = int(esp_row[21])
     self.constrain_eruption_date = int(esp_row[22])
     self.eruption_date = int(esp_row[23])
     self.constrain_wind_dir = int(esp_row[24])
     self.min_wind_dir = int(esp_row[25])
     self.max_wind_dir = int(esp_row[26])
     self.trop_height = int(esp_row[27])
-    self.max_phi = int(esp_row[29]) # swap when table correct
-    self.min_phi = int(esp_row[28]) # ..
+    self.max_phi = int(esp_row[28]) # swap when table correct
+    self.min_phi = int(esp_row[29]) # ..
     self.min_med_phi = int(esp_row[30])
     self.max_med_phi = int(esp_row[31])
     self.min_std_phi = int(esp_row[32])
@@ -320,7 +333,8 @@ def generate_confs(esp):
 
         for k in range(nb_sim):
           W = []                    ## change ID to var
-          wind_prof = open(esp.wind_pth+'262000_'+wind_file(wind_vec_seas[int(wind_vec[k])])+'.gen', 'r')
+          wind_f = esp.v_id + '_' + wind_file(wind_vec_seas[int(wind_vec[k])])+'.gen'
+          wind_prof = open(esp.wind_path + wind_f, 'r') # change to $WIND
           for line in wind_prof:
             W.append([f(v) for (f, v) in zip((int, float, float, lambda v: v == 'True'), line.strip().split())])
           W = np.vstack(W)
@@ -384,7 +398,7 @@ def generate_confs(esp):
 
           ## write figs to file?
 
-          runs[j].set_vals(ht_tmp, mass_tmp, gs_med, gs_std)
+          runs[j].set_vals(ht_tmp, mass_tmp, gs_med, gs_std, wind_f)
           runs[j].write_conf(seas_str[i], j, nb_sim)
           print(vars(runs[0]))
 
