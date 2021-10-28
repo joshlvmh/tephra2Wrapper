@@ -1,5 +1,5 @@
 # tephra2Wrapper
-Helper functionality and wrapper for tephra2 simulation, pre & psot processing, grid generation, wind collection.
+Helper functionality and wrapper for tephra2 simulation, pre & post processing, grid generation, wind collection.
 
 ## Usage
 ```
