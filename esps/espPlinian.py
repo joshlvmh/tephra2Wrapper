@@ -110,7 +110,7 @@ class ESP:
     self.min_dur = int(esp_row[13])
     self.max_dur = int(esp_row[14])
     self.constrain = 0 # int(esp_row[15]) -- not running with mass values and constrain == 1
-    self.nb_wind = (lambda: esp_row[16], lambda: 14196)[esp_row[16] == 'NA']()
+    self.nb_wind = (lambda: esp_row[16], lambda: 14172)[esp_row[16] == 'NA']()
     self.wind_start = '01-Jan-2012 00:00:00'
     self.wind_per_day = 4
     self.seasonality = int(esp_row[19])

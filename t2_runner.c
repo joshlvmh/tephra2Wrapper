@@ -9,6 +9,7 @@
 #include <string.h>
 
 #define MASTER 0
+#define LINE_LENGTH 100
 
 int main(int argc, char* argv[])
 {
@@ -25,16 +26,16 @@ int main(int argc, char* argv[])
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
   MPI_Status status;
+  int line_per_rank;
+  int final_line_count;
 
   if (rank == MASTER)
   {
-  gettimeofday(&timstr, NULL);
-  tic = timstr.tv_sec + (timstr.tv_usec / 1000000.0);
-  nprocs = 56;
-    int lines = 10000;
+    gettimeofday(&timstr, NULL);
+    tic = timstr.tv_sec + (timstr.tv_usec / 1000000.0);
+   // nprocs = 56;
+    int lines = 1;
     int rem = lines % nprocs;
-    int line_per_rank;
-    int final_line_count;
     if (rem != 0)
     {
       line_per_rank = lines / nprocs + 1;
@@ -44,27 +45,67 @@ int main(int argc, char* argv[])
     {
       line_per_rank = final_line_count = lines / nprocs;
     }
-    printf("%d %d \n", line_per_rank, final_line_count);
+    //printf("%d %d \n", line_per_rank, final_line_count);
 
     FILE* fid = fopen("t2_stor.txt", "r");
     int line_counter = 0;
-    char line[500];
+    char line[LINE_LENGTH+1];
+    line[LINE_LENGTH] = '\0';
+    char str[20];
     while(fgets(line, 500, fid))
     {
       int r = line_counter / line_per_rank;
       sprintf(str, "%d", r);
-      FILE* r_file = (strcat(str,".txt"), "a");
-      fwrite(line, 1, sizeof(line), r_file);
+      FILE* r_file = fopen(strcat(str,".txt"), "a");
+      fwrite(line, sizeof(line), 1, r_file);
       fclose(r_file);
       line_counter++;
     }
     fclose(fid);
     // within each rank use # omp parallel for across line subset
   }
-
+  int size = line_per_rank;
+  if (rank == nprocs-1) size = final_line_count;
 
   int err;
-  printf("Rank %d of %d\n", rank, nprocs);
+  FILE* fp;
+  char str[20];
+  char file[] = ".txt";
+  sprintf(str, "%d", rank);
+  fp = fopen(strcat(str,file),"r");
+  char line[LINE_LENGTH+1];
+  line[LINE_LENGTH] = '\0';
+  while (fgets(line, 500, fp))
+  {
+    system(line);
+    //printf("%s\n", line);
+  }
+  /*
+  int nx = 28; // rows
+  int ny = 1; // cols
+
+  MPI_Datatype filetype;
+  int global_size[2] = {nx, ny};
+  int local_size[2] = {nx/nprocs, ny};
+  int starts[2] = {rank*local_size[0], 0};
+  int size = (nx/nprocs)*ny+1;
+  char line[size];
+  MPI_Type_create_subarray(2, global_size, local_size, starts, MPI_ORDER_C, MPI_CHAR, &filetype);
+  MPI_Type_commit(&filetype);
+
+  MPI_File file;
+  MPI_File_open(MPI_COMM_WORLD, "test1.txt", MPI_MODE_RDONLY, MPI_INFO_NULL, &file);
+  MPI_File_set_view(file, 0, MPI_CHAR, filetype, "native", MPI_INFO_NULL);
+  MPI_File_read_all(file, line, local_size[0]*local_size[1], MPI_CHAR, MPI_STATUS_IGNORE);
+
+  //line[size-1] = '\0';
+  char command[100];
+  strcpy(command, "echo ");
+  strcat(command, line);
+  system(command);
+
+  MPI_File_close(&file);
+  */
 
 /*
   // code
