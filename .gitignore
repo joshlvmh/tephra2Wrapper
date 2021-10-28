@@ -1,2 +1,2 @@
-wind/compare_netcdf
-wind/gen_files/*
+src/wind/compare_netcdf
+src/wind/gen_files/*

@@ -2,7 +2,12 @@
 
 export REPO_HOME="${PWD}"
 
-export WIND="${REPO_HOME}/wind/gen_files"
-export GRID="${REPO_HOME}/grid/"
-export CONF="${REPO_HOME}/conf/"
-export OUT="${REPO_HOME}/out/"
+export WIND="${REPO_HOME}/src/wind/gen_files/"
+export GRID="${REPO_HOME}/src/grid/"
+export CONF="${REPO_HOME}/src/conf/"
+export OUT="${REPO_HOME}/src/out/"
+export INPUTS="${REPO_HOME}/inputs/"
+
+make -C ${REPO_HOME}/src/tephra2/ -B
+
+export BINARY="{REPO_HOME}/srctephra2/tephra2_2020"
