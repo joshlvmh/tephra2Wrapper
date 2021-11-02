@@ -301,12 +301,9 @@ def generate_confs(esp):
         while (check_seas == 0):
           if (esp.constrain_eruption_date == 0):
             date_start = np.random.randint(wind_vec_seas.size)
-            print(date_start)
           else:
-            print("HERE")
             date_start = date.toordinal(datetime.strptime(esp.eruption_date, '%d-%b-%Y %H:%M:%S')) + 366
           date_start = wind_vec_seas[date_start]
-          print(date_start)
           if (esp.long_lasting == 0):
             dur_tmp[0] = dur
           else:
@@ -317,7 +314,6 @@ def generate_confs(esp):
                   dur_tmp[k] = 3600*(24/esp.wind_per_day)
 
           wind_vec = np.arange(date_start, date_start+nb_sim)
-          print(wind_vec)
 
           if (len(list(filter(lambda x: x in wind_vec_seas, wind_vec))) == len(list(set(wind_vec)))):
             check_seas = 1
@@ -380,9 +376,6 @@ def generate_confs(esp):
         else:
           test_wind = 1
 
-        print("MASS:")
-        print(mass_tmp)
-
         if ((np.sum(mass_tmp) > esp.min_mass and np.sum(mass_tmp) < esp.max_mass and test_wind == 1) or esp.constrain == 0):
           #print("Valid run")
           test_run = 1
@@ -410,7 +403,6 @@ def generate_confs(esp):
 
           runs[j].set_vals(ht_tmp, mass_tmp, gs_med, gs_std, wind_f)
           runs[j].write_conf(seas_str[i], j, nb_sim)
-          print(vars(runs[j]))
           print("Done: "+str(j))
 
           # global storage
@@ -434,7 +426,7 @@ def generate_confs(esp):
           # dump all runs[j] into 000j.conf file
           # move specific wind file copy to 000j.txt file
        # break # while (test_run)
-      break   # for nb_runs
+     # break   # for nb_runs
    # break     # for seas
   print("Finished config_gen")
 
