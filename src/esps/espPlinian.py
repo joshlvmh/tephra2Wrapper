@@ -121,8 +121,8 @@ class ESP:
     self.max_ht = int(esp_row[10])
     self.min_mass = int(float(esp_row[11]))
     self.max_mass = int(float(esp_row[12]))
-    self.min_dur = (lambda: esp_row[13], lambda: 0)[esp_row[13] == 'NA']()
-    self.max_dur = (lambda: esp_row[14], lambda: 0)[esp_row[14] == 'NA']()
+    self.min_dur = (lambda: esp_row[13], lambda: 1)[esp_row[13] == 'NA']()
+    self.max_dur = (lambda: esp_row[14], lambda: 6)[esp_row[14] == 'NA']()
     self.constrain = 0 #int(esp_row[15]) #-- not running with mass values and constrain == 1
     self.nb_wind = (lambda: esp_row[16], lambda: 14172)[esp_row[16] == 'NA']()
     self.wind_start = '01-Jan-2012 00:00:00'
@@ -431,7 +431,7 @@ def generate_confs(esp):
           # dump all runs[j] into 000j.conf file
           # move specific wind file copy to 000j.txt file
        # break # while (test_run)
-      #break   # for nb_runs
+      break   # for nb_runs
    # break     # for seas
   print("Finished config_gen")
 

@@ -2,5 +2,5 @@
 	path = src/tephra2
 	url = git@github.com:joshlvmh/tephra2.git
 [submodule "tephraProb"]
-	path = src/tephraProb
+	path = tephraProb
 	url = git@github.com:joshlvmh/tephraProb.git
