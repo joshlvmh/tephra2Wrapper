@@ -7,7 +7,7 @@ import warnings
 import pytest
 import os
 
-csv_file = os.environ['INPUTS']+'/VEI2_Tephra_ESP_settings.csv'
+csv_file = os.environ['INPUTS']+'/VEI2_ESP.csv'
 '''
 Generate .confs & select .gens
 Populate T2_stor.txt with:
@@ -121,10 +121,10 @@ class ESP:
     self.max_ht = int(esp_row[10])
     self.min_mass = int(float(esp_row[11]))
     self.max_mass = int(float(esp_row[12]))
-    self.min_dur = (lambda: esp_row[13], lambda: 0)[esp_row[13] == 'NA']()
-    self.max_dur = (lambda: esp_row[14], lambda: 0)[esp_row[14] == 'NA']()
-    self.constrain = 0 #int(esp_row[15]) #-- not running with mass values and constrain == 1
-    self.nb_wind = (lambda: esp_row[16], lambda: 14172)[esp_row[16] == 'NA']()
+    self.min_dur = (lambda: int(esp_row[13]), lambda: 1)[esp_row[13] == 'NA']()
+    self.max_dur = (lambda: int(esp_row[14]), lambda: 6)[esp_row[14] == 'NA']()
+    self.constrain = int(esp_row[15])
+    self.nb_wind = (lambda: int(esp_row[16]), lambda: 14172)[esp_row[16] == 'NA']()
     self.wind_start = '01-Jan-2012 00:00:00'
     self.wind_per_day = int(esp_row[18])
     self.seasonality = int(esp_row[19])
@@ -146,8 +146,8 @@ class ESP:
     self.max_agg = int(esp_row[35])
     self.max_diam = int(esp_row[36])
     self.long_lasting = int(esp_row[37])
-    self.ht_sample = (lambda: esp_row[38], lambda: 0)[esp_row[38] == 'NA']()
-    self.mass_sample = (lambda: esp_row[39], lambda: 0)[esp_row[39] == 'NA']()
+    self.ht_sample = (lambda: int(esp_row[38]), lambda: 0)[esp_row[38] == 'NA']()
+    self.mass_sample = (lambda: int(esp_row[39]), lambda: 0)[esp_row[39] == 'NA']()
     self.nb_runs = int(esp_row[40])
     self.write_conf = 1 #int(esp_row[41])
     self.write_gs = int(esp_row[42])
@@ -155,8 +155,8 @@ class ESP:
     self.write_fig_all = int(esp_row[44])
     self.write_log_sep = int(esp_row[45])
     self.write_log_all = int(esp_row[46])
-    self.par = (lambda: esp_row[47], lambda: 0)[esp_row[47] == 'NA']()
-    self.par_cpu = (lambda: esp_row[48], lambda: 0)[esp_row[48] == 'NA']()
+    self.par = (lambda: int(esp_row[47]), lambda: 0)[esp_row[47] == 'NA']()
+    self.par_cpu = (lambda: int(esp_row[48]), lambda: 0)[esp_row[48] == 'NA']()
     self.eddy_const = float(esp_row[49])
     self.diff_coeff = int(esp_row[50])
     self.ft_thresh = int(esp_row[51])
@@ -352,11 +352,11 @@ def generate_confs(esp):
           level3 = np.absolute(W[:,0]-esp.vent_ht).argmin()
           #print(level1, level2, level3, ht_tmp)
 
-          speed_tmp[k] = W[level1,1]
+          speed_tmp[k] = W[level1-1,1]
           mer_tmp[k] = get_mer((ht_tmp[k] - esp.vent_ht), speed_tmp[k])
           with warnings.catch_warnings(): # fix this
             warnings.simplefilter("ignore", category=RuntimeWarning)
-            dir_tmp[k] = np.median(W[level3:level2,2])
+            dir_tmp[k] = np.median(W[level3-1:level2,2])
 
           if (esp.constrain == 0):
             if (esp.mass_sample == 0):
@@ -379,6 +379,9 @@ def generate_confs(esp):
             test_wind = 0
         else:
           test_wind = 1
+
+        print("MASS:")
+        print(mass_tmp)
 
         if ((np.sum(mass_tmp) > esp.min_mass and np.sum(mass_tmp) < esp.max_mass and test_wind == 1) or esp.constrain == 0):
           #print("Valid run")
@@ -407,7 +410,7 @@ def generate_confs(esp):
 
           runs[j].set_vals(ht_tmp, mass_tmp, gs_med, gs_std, wind_f)
           runs[j].write_conf(seas_str[i], j, nb_sim)
-          #print(vars(runs[0]))
+          print(vars(runs[j]))
           print("Done: "+str(j))
 
           # global storage
@@ -431,7 +434,7 @@ def generate_confs(esp):
           # dump all runs[j] into 000j.conf file
           # move specific wind file copy to 000j.txt file
        # break # while (test_run)
-      #break   # for nb_runs
+      break   # for nb_runs
    # break     # for seas
   print("Finished config_gen")
 
