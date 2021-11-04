@@ -3,3 +3,4 @@ src/wind/gen_files/*
 src/wind/nc_files/*
 src/conf/*
 src/out/*
+.DS_Store

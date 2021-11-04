@@ -2,6 +2,10 @@
 
 export REPO_HOME="${PWD}"
 
+mkdir -p ${REPO_HOME}/src/conf
+mkdir -p ${REPO_HOME}/src/out
+
+
 export WIND="${REPO_HOME}/src/wind/gen_files"
 export GRID="${REPO_HOME}/src/grid"
 export CONF="${REPO_HOME}/src/conf"
