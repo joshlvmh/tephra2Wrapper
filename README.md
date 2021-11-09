@@ -3,38 +3,38 @@ Helper functionality and wrapper for tephra2 simulation, pre & post processing, 
 
 ## Usage
 - Preparation
-```
-git clone https://github.com/joshlvmh/tephra2Wrapper.git ./tephra2Wrapper
-cd ./tephra2Wrapper
-git submodule update --init --recursive
-source ./bin/conf.sh
-```
+  ```
+  git clone https://github.com/joshlvmh/tephra2Wrapper.git ./tephra2Wrapper
+  cd ./tephra2Wrapper
+  git submodule update --init --recursive
+  source ./bin/conf.sh
+  ```
 - Grid generation
-```
-cd ./src/grid
-python grid_gen.py --grid-csv="grid.csv"
-```
+  ```
+  cd ./src/grid
+  python grid_gen.py --grid-csv="grid.csv"
+  ```
 - Wind collection [ERA5 NetCDF & Conversion]
-```
-cd ./src/wind
-sbatch job_wind.sh --wind-csv="wind.csv" --years=12-21
-python netcdf_conv.py
-```
+  ```
+  cd ./src/wind
+  sbatch job_wind.sh --wind-csv="wind.csv" --years=12-21
+  python netcdf_conv.py
+  ```
 - Tephra2 Input genertation
-```
-cd ./src/esps
-python espPlinian.sh --esp-csv="esp.csv"
-```
+  ```
+  cd ./src/esps
+  python espPlinian.sh --esp-csv="esp.csv"
+  ```
 - Tephra2 modelling
-```
-cd ./src/mpi_t2_runner
-source clear.sh
-sbatch job_runner.sh
-```
+  ```
+  cd ./src/mpi_t2_runner
+  source clear.sh
+  sbatch job_runner.sh
+  ```
 - Post-processing
-```
-cd ./src/post-processing
-```
+  ```
+  cd ./src/post-processing
+  ```
 ## Content
 
 ```
