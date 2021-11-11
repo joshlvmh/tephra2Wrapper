@@ -4,3 +4,5 @@ src/wind/nc_files/*
 src/conf/*
 src/out/*
 .DS_Store
+inputs/t2_inputs/*
+outputs/*

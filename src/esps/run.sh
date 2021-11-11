@@ -1,0 +1,7 @@
+python espPlinian.py --esp-csv='VEI2_ESP.csv'
+python espPlinian.py --esp-csv='VEI3_ESP.csv'
+python espPlinian.py --esp-csv='VEI4_ESP.csv'
+python espPlinian.py --esp-csv='VEI5_ESP.csv'
+python espPlinian.py --esp-csv='VEI6_ESP.csv'
+python espPlinian.py --esp-csv='VEI7_ESP.csv'
+python espPlinian.py --esp-csv='VEI8_ESP.csv'
