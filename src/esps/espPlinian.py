@@ -6,11 +6,18 @@ from scipy.stats import norm
 import warnings
 import pytest
 import os
+import argparse
 
-csv_file = os.environ['INPUTS']+'/VEI2_ESP.csv'
+parser = argparse.ArgumentParser(
+    description="Generate ESPs for Tephra2",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+default_csv_file = 'esps.csv'
+parser.add_argument("--esp-csv", default=default_csv_file)
+
 '''
 Generate .confs & select .gens
-Populate T2_stor.txt with:
+Populate t2_runs.txt with:
     ./binary .conf .utm .gen > .out
 October 2021
 Joshua Measure-Hughes
@@ -64,7 +71,7 @@ class RUN:
     self.std_grainsize = std_g[0]
     self.wind_file = wind_f
 
-  def write_conf(self, seas, j, nb_sim):
+  def write_conf(self, seas, j, nb_sim, child_path):
     sim_digits = len(str(abs(nb_sim-1)))
     if (True): #esp.write_conf == 1):
       for k in range(nb_sim): # increase self.... to [nb_sim] - check works
@@ -87,20 +94,20 @@ class RUN:
                  'COL_STEPS '+str(self.col_steps),
                  'PART_STEPS '+str(self.part_steps),
                  'PLUME_MODEL '+str(self.plume_model)]
-        conf_file = seas+'/'+f"{j:0{self.run_digits}}"+'_'+f"{k:0{sim_digits}}"+'.txt'
-        out_file  = seas+'/'+f"{j:0{self.run_digits}}"+'_'+f"{k:0{sim_digits}}"+'.out'
-        with open(os.environ['CONF']+'/'+conf_file, 'w+') as f: # change to $CONF
+        conf_file = seas+'/'+self.volc_id+'_'+f"{j:0{self.run_digits}}"+'_'+f"{k:0{sim_digits}}"+'.txt'
+        out_file  = seas+'/'+self.volc_id+'_'+f"{j:0{self.run_digits}}"+'_'+f"{k:0{sim_digits}}"+'.out'
+        with open(os.environ['CONF']+'/'+child_path+'/'+conf_file, 'w+', 0o777) as f: # change to $CONF
           f.writelines('\n'.join(lines))
-        self.write_t2(conf_file, out_file)
+        self.write_t2(conf_file, out_file, child_path)
 
-  def write_t2(self, conf_file, out_file):
+  def write_t2(self, conf_file, out_file, child_path):
     binary = '$BINARY'
-    conf = '$CONF/'+conf_file # already got confs/
+    conf = '$CONF/'+child_path+'/'+conf_file # already got confs/
     wind = '$WIND/'+self.volc_id+'/'+self.wind_file
     grid = '$GRID/'+self.volc_id+'.utm'
-    out  = '$OUT/'+out_file
+    out  = '$OUT/'+child_path+'/'+out_file
     line = binary + ' ' + conf + ' ' + grid + ' ' + wind + ' > ' + out
-    with open('t2.txt', 'a+') as f:
+    with open(os.environ['CONF']+'/'+child_path+'/t2.txt', 'a+', 0o777) as f:
       f.write(line + '\n')
 
 class ESP:
@@ -109,7 +116,7 @@ class ESP:
   def __init__(self, esp_row):
     self.run_name = esp_row[0]
     self.out_name = esp_row[1]
-    self.v_id = '262000' # update
+    self.v_id = esp_row[0][0:6]
     self.grid_pth = os.environ['GRID']
     self.wind_pth = os.environ['WIND']+'/'+self.v_id+'/'
     self.volcano_name = esp_row[4]
@@ -124,7 +131,8 @@ class ESP:
     self.min_dur = (lambda: int(esp_row[13]), lambda: 1)[esp_row[13] == 'NA']()
     self.max_dur = (lambda: int(esp_row[14]), lambda: 6)[esp_row[14] == 'NA']()
     self.constrain = int(esp_row[15])
-    self.nb_wind = (lambda: int(esp_row[16]), lambda: 14172)[esp_row[16] == 'NA']()
+    self.nb_wind = len([name for name in os.listdir(self.wind_pth) if os.path.isfile(os.path.join(self.wind_pth, name))]) # count files in wind_pth
+#      (lambda: int(esp_row[16]), lambda: 14148)[esp_row[16] == 'NA']() ## change this to count
     self.wind_start = '01-Jan-2012 00:00:00'
     self.wind_per_day = int(esp_row[18])
     self.seasonality = int(esp_row[19])
@@ -171,8 +179,7 @@ class ESP:
 
   def check_vals(self):
     ## filepaths exist
-    ## will this be necessary long term?
-    print(self.wind_pth)
+    ## expand to check all os.environ in use, if not print "source bin/conf.sh from tephra2Wrapper home"
     assert(os.path.exists(self.wind_pth))
     assert(os.path.exists(self.grid_pth))
     assert(self.max_ht >= self.min_ht)
@@ -194,7 +201,7 @@ def wind_file(ordinal):
   file_string = str(dt.year)+'_'+f"{dt.month:02}"+'_'+f"{dt.day:02}"+'_'+f"{int(hr*24.0):02}"
   return file_string
 
-def generate_confs(esp):
+def generate_confs(esp, child_path):
   d = datetime.strptime(esp.wind_start, '%d-%b-%Y %H:%M:%S')
   wind_vec_all = np.arange(date.toordinal(d)+366, (date.toordinal(d)+366+esp.nb_wind/esp.wind_per_day), 1/esp.wind_per_day)
 
@@ -254,17 +261,18 @@ def generate_confs(esp):
     runs = [RUN(esp) for j in range(esp.nb_runs)]
 
     # make config output folder
-    parent = os.environ['CONF'] # update?
+    parent = os.environ['CONF']
+    parent = os.path.join(parent, child_path)
     child = seas_str[i]
     path = os.path.join(parent, child)
-    conf_path = path
     if not os.path.exists(path):
-      os.mkdir(path)
+      os.mkdir(path, 0o777)
     # make t2 output folder
     parent = os.environ['OUT']
+    parent = os.path.join(parent, child_path)
     path = os.path.join(parent, child)
     if not os.path.exists(path):
-      os.mkdir(path)
+      os.mkdir(path, 0o777)
 
     if (seas_str[i] == 'all'):
       wind_vec_seas = wind_vec_all
@@ -402,8 +410,7 @@ def generate_confs(esp):
           ## write figs to file?
 
           runs[j].set_vals(ht_tmp, mass_tmp, gs_med, gs_std, wind_f)
-          runs[j].write_conf(seas_str[i], j, nb_sim)
-          print("Done: "+str(j))
+          runs[j].write_conf(seas_str[i], j, nb_sim, child_path)
 
           # global storage
           mass_stor_tot[j] = np.sum(mass_tmp)
@@ -478,7 +485,13 @@ def get_mer(H, Vmax): # Degruyter & Bonadonna
 
   Gbar = G1 * np.ones(np.shape(dummyH))
   Gbar[dummyH>H1] = (G1 * H1 + G2 * (dummyH[dummyH>H1] - H1)) / dummyH[dummyH>H1]
-  Gbar[dummyH>H1] = (G1 * H1 + G2 * (H2 - H1) + G3 * (dummyH[dummyH>H2] - H2)) / dummyH[dummyH>H2]
+#  print("Gbar, dummyH, H1, G1, G2:")
+#  print(Gbar)
+#  print(dummyH)
+#  print(H1)
+#  print(G1)
+#  print(G2)
+  Gbar[dummyH>H2] = (G1 * H1 + G2 * (H2 - H1) + G3 * (dummyH[dummyH>H2] - H2)) / dummyH[dummyH>H2]
   Nbar = Gbar ** (1/2)
 
   Vbar = Vmax * dummyH / H1 / 2
@@ -489,7 +502,7 @@ def get_mer(H, Vmax): # Degruyter & Bonadonna
   return Mdot
 ''' --------------------------------------------------------------------------------------------------------------------- '''
 
-def read_csv():
+def read_csv(csv_file):
   #csvfile = "tephra_esp.csv"
   with open(csv_file, 'r', encoding="ISO-8859-1") as csv_grid_f:
     csv_grid_r = csv.reader(csv_grid_f, )
@@ -501,19 +514,28 @@ def read_csv():
   P = np.vstack(P)
   return P
 
-def main():
+def main(args):
   '''
   esps[_] = [run_name, out_name, grid_pth, wind_pth, volcano_name, vent_easting, vent_northing, vent_zone, vent_ht, min_ht, max_ht, min_mass, max_mass, min_dur, max_dur, constrain, nb_wind, wind_start, wind_per_day, seasonality, wind_start_rainy, wind_start_dry, constrain_eruption_date, eruption_date, constrain_wind_dir, min_wind_dir, max_wind_dir, trop_height, max_phi, min_phi, min_med_phi, max_med_phi, min_std_phi, max_std_phi, min_agg, max_agg, max_diam, long_lasting, ht_sample, mass_sample, nb_runs, write_conf, write_gs, write_fig_sep, write_fig_all, write_log_sep, write_log_all, par, par_cpu, eddy_const, diff_coeff, ft_thresh, lithic_dens, pumice_dens, col_step, part_step, alpha, beta]
   '''
-  esps = read_csv()
+  csv_file = os.environ['INPUTS']+'/'+args.esp_csv
+  esps = read_csv(csv_file)
+  parent = os.environ['CONF']
+  child = args.esp_csv.split('.')[0]
+  path_conf = os.path.join(parent, child)
+  if not os.path.exists(path_conf):
+    os.mkdir(path_conf, 0o777)
+  parent = os.environ['OUT']
+  path_out = os.path.join(parent, child)
+  if not os.path.exists(path_out):
+    os.mkdir(path_out, 0o777)
+
   for i in range(np.shape(esps)[0]):
-    if (i == 64):
-      esp_i = ESP(esps[i])
-     # esp_row = convert_esp(esps[i])
-      print(esps[i], esps[i].shape)
-      print(esp_i, esp_i.nb_wind)
-      generate_confs(esp_i)
+    #if (i == 64):
+    esp_i = ESP(esps[i])
+    generate_confs(esp_i, child)
+    print("Done: "+str(i+1)+"/"+str(np.shape(esps)[0]))
     #generate_confs(esps[i])
 
 if __name__ == '__main__':
-  main()
+  main(parser.parse_args())

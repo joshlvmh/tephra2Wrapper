@@ -9,8 +9,10 @@
 #include <string.h>
 
 #define MASTER 0
-#define LINE_LENGTH 106
-#define NUM_LINES 10000
+#define LINE_LENGTH 130
+#define NUM_LINES 1450000
+#define VEI_START 2
+#define VEI_END 7
 
 void initialise(int* nprocs, int* rank, int* size, double* tic);
 void finalise(double* tic, int* rank);
@@ -45,13 +47,11 @@ void process(int* rank, int* size)
 
   sprintf(str, "%d", *rank);
   fp = fopen(strcat(str,file),"r");
- // printf("SIZE: %d RANK: %d\n", *size, *rank);
 
- // # pragma omp parallel for
   for (int i = 0; i < *size; i++) {
     fgets(line, LINE_LENGTH+10, fp);
     system(line);
-    // deal with out file
+    // deal with out file -> netCDF? pickle?
   }
 }
 
@@ -88,25 +88,46 @@ void initialise(int* nprocs, int* rank, int *size, double* tic)
       line_per_rank = final_line_count = NUM_LINES / *nprocs;
     }
 
-    FILE* fid = fopen("../esps/t2.txt", "r");
-    int line_counter = 0;
     char line[LINE_LENGTH];
     char str[20];
 
-    // array of fps to prevent reopening?
-    for (int i = 0; i < NUM_LINES; i++)
+    char *conf = getenv("CONF");
+    if (conf == NULL)
     {
-      fgets(line, LINE_LENGTH+10, fid);
-      int r = i / line_per_rank;
-      sprintf(str, "%d", r);
-      FILE* r_file = fopen(strcat(str,".txt"), "a");
-      fwrite(line, sizeof(line), 1, r_file);
-      fclose(r_file);
+      printf("source ./bin/conf.sh to configure environment.\n");
+      return;
     }
-    fclose(fid);
-    *bcast_buffer = line_per_rank;
+    char t2_file[] = "t2.txt";
+
+    // array of fps to prevent reopening?
+    for (int j = VEI_START; j < VEI_END+1; j++)
+    {
+      char vei[6];
+      snprintf(vei, 7, "/VEI%d/", j);
+      char *fullfile = malloc(strlen(conf) + strlen(vei) + strlen(t2_file) + 1);
+      strcpy(fullfile, conf);
+      strcat(fullfile, vei);
+      strcat(fullfile, t2_file);
+      FILE* fid = fopen(fullfile, "r");
+      for (int i = 0; i < NUM_LINES; i++)
+      {
+        fgets(line, LINE_LENGTH+10, fid);
+        int r = i / line_per_rank;
+        sprintf(str, "%d", r);
+        FILE* r_file = fopen(strcat(str,".txt"), "a");
+        fwrite(line, sizeof(line), 1, r_file);
+        fclose(r_file);
+      }
+      fclose(fid);
+      free(fullfile);
+    }
+
+    final_line_count *= (VEI_END-VEI_START+1);
+    *bcast_buffer = line_per_rank * (VEI_END-VEI_START+1);
+    printf("final_line_count: %d bcast_buffer: %d\n", final_line_count, *bcast_buffer);
     err = MPI_Send(&final_line_count, 1, MPI_INT, *nprocs-1, 0, MPI_COMM_WORLD);
     checkError(err, "sending final line count", *rank, __LINE__);
+    *size = final_line_count; // in case only 1 rank final if condition not met
   }
   else if (*rank == *nprocs-1) {
     err = MPI_Recv(size, 1, MPI_INT, MASTER, 0, MPI_COMM_WORLD, &status);
@@ -153,15 +174,6 @@ void checkError(const int err, const char *op, const int rank, const int line)
     exit(EXIT_FAILURE);
   }
 }
-
-
-
-
-
-
-
-
-
 
 
 

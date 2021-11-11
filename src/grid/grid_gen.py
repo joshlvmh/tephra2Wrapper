@@ -1,6 +1,7 @@
 import csv
 import utm
 import numpy as np
+import os
 # PARAMS
 '''
 name = name
@@ -23,7 +24,9 @@ zone_NE
 zone_SW
 zone_SE
 '''
-csvfile = 'volc_grids.csv'
+csvfile = os.environ['INPUTS']+'/grid.csv'
+output_loc = os.environ['INPUTS']+'/t2_inputs/grids'
+### make folders if necessary
 
 class Grid:
   name = ''
@@ -103,25 +106,14 @@ def create_grid(grid):
 
   x_vec = np.arange(min_e, max_e, grid.res)
   y_vec = np.arange(min_n, max_n, grid.res)
-  print("x,y: ")
-  #print(x_vec)
-  #print(y_vec)
 
   [utmx, utmy] = np.meshgrid(x_vec, y_vec, indexing='xy')
   utmy = np.flipud(utmy)
 
-  print(utmx.size)
-  print(utmy.size)
-
   utm_g = fill_matrix(utmx, utmy, grid)
-  print("------------UTM--------------")
-  print(utm_g)
-  file_utm = open('krak.utm', 'w')
+  file_utm = open(output_loc+'/'+str(grid.id_num)+'.utm', 'w')
   np.savetxt(file_utm, utm_g, fmt='%d')
-  #for i in range(utm_g.shape[0]):
-  #  np.savetxt(file_utm, utm_g[i,:])
   file_utm.close()
-  #write_matrix(grid, lat, lon, utm, utmx, utmy, dat)
 
 def fill_matrix(utmx, utmy, grid):
   col = utmx.shape[1] #np.shape(utmx, 1)
@@ -185,13 +177,10 @@ def main():
   params[_] = [name_no_spaces, id_number, min_easting, max_easting, min_northing, max_northing, NW_zone, NE_zone, SW_zone, SE_zone, vent_zone, resolution, mean_elevation, zone_crossing, equator_crossing]
   '''
   params = read_csv()
-  grid = set_params(params[64])
-  attrs = vars(grid)
-  print(', '.join("%s: %s" % item for item in attrs.items()))
-  #print(grid)
-  print(params[64])
-  create_grid(grid)
-
+  for i in range(len(params)):
+    grid = set_params(params[i]) # add loop for all volcs
+    create_grid(grid)
+    print(i)
 
 if __name__ == '__main__':
   main()

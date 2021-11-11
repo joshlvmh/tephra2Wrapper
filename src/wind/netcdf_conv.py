@@ -9,16 +9,20 @@ import xarray as xr
 filename = "wind_ID_YEAR.nc"
 filepath = os.environ['REPO_HOME']+"/../wind/nc_files/"
 #filepath = os.environ['HOME']+"/fellowship/tephra2Wrapper/wind/"
-outpath  = os.environ['WIND']+'/' #os.environ['HOME']+"/../zs20225/wind/gen_files/"
+outpath  = os.environ['WIND']+'/'#os.environ['HOME']+"/../zs20225/wind/gen_files/"
 #outpath  = os.environ['HOME']+"/fellowship/tephra2Wrapper/wind/gen_files/"
 csvfile  = "volc_holo_mody.csv"
 
 def wind_convert(ncfp, y_index, v_index, volc):
-  print(filepath)
   Levels = len(ncfp.variables['level'])
   date = ncfp.variables['time'][:]
-  Lat = ncfp.variables['latitude'][1]
-  Long = ncfp.variables['longitude'][1]
+  if (ncfp.variables['latitude'].shape[0] == 1 and ncfp.variables['longitude'].shape[0] == 1):
+    Lat = ncfp.variables['latitude'][0]
+    Long = ncfp.variables['longitude'][0]
+  else:
+    Lat = ncfp.variables['latitude'][1]
+    Long = ncfp.variables['longitude'][1]
+
   Time = len(ncfp.variables['time'])
 
   uMatrix = np.zeros((Time, Levels))
@@ -26,8 +30,13 @@ def wind_convert(ncfp, y_index, v_index, volc):
   DMatrix = np.zeros((Time,Levels))
   IMatrix = np.zeros((Time,Levels))
 
-  vMatrix[:,:] = ncfp.variables['v'][:,:,1,1]
-  uMatrix[:,:] = ncfp.variables['u'][:,:,1,1]
+  if (ncfp.variables['latitude'].shape[0] == 1 and ncfp.variables['longitude'].shape[0] == 1):
+    vMatrix[:,:] = ncfp.variables['v'][:,:,0,0]
+    uMatrix[:,:] = ncfp.variables['u'][:,:,0,0]
+  else:
+    vMatrix[:,:] = ncfp.variables['v'][:,:,1,1]
+    uMatrix[:,:] = ncfp.variables['u'][:,:,1,1]
+
   DMatrix[:,:] = np.mod(90-np.rad2deg(np.arctan2(vMatrix[:,:],uMatrix[:,:])), 360)
   IMatrix[:,:] = np.sqrt(np.square(uMatrix[:,:])+np.square(vMatrix[:,:]))
 
@@ -72,19 +81,20 @@ def main():
   for i in range(len(volc)):
     if float(volc[i][2]) < 0:
       volc[i][2] += 360
-    if (volc[i][1] == '262000'):
-      for j in range(2012,2022):
-        nc_file = filename.replace("YEAR", str(j))
-        nc_file = nc_file.replace("ID", volc[i][1])
-        if (j == 2021): # remove expver dimension
-          ERA5 = xr.open_mfdataset(filepath+nc_file,combine='by_coords')
-          ERA5_combine =ERA5.sel(expver=1).combine_first(ERA5.sel(expver=5))
-          ERA5_combine.load()
-          ERA5_combine.to_netcdf(filepath+"copy"+nc_file)
-          ncfp = netCDF4.Dataset(filepath+"copy"+nc_file)
-        else:
-          ncfp = netCDF4.Dataset(filepath+nc_file)
-        wind_convert(ncfp, j, i, volc[i])
+    #if (volc[i][1] == '262000'):
+    for j in range(2012,2022):
+      nc_file = filename.replace("YEAR", str(j))
+      nc_file = nc_file.replace("ID", volc[i][1])
+      if (j == 2021): # remove expver dimension
+        ERA5 = xr.open_mfdataset(filepath+nc_file,combine='by_coords')
+        ERA5_combine =ERA5.sel(expver=1).combine_first(ERA5.sel(expver=5))
+        ERA5_combine.load()
+        ERA5_combine.to_netcdf(filepath+"copy"+nc_file)
+        ncfp = netCDF4.Dataset(filepath+"copy"+nc_file)
+      else:
+        ncfp = netCDF4.Dataset(filepath+nc_file)
+      wind_convert(ncfp, j, i, volc[i])
+    print('Done: '+str(i+1)+'/'+str(len(volc)))
 
 if __name__ == '__main__':
   main()
