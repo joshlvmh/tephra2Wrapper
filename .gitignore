@@ -4,10 +4,5 @@ src/wind/nc_files/*
 src/conf/*
 src/out/*
 .DS_Store
-<<<<<<< HEAD
 outputs/*
 inputs/t2_inputs/*
-=======
-inputs/t2_inputs/*
-outputs/*
->>>>>>> post-processing
