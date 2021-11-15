@@ -6,3 +6,4 @@ src/out/*
 .DS_Store
 outputs/*
 inputs/t2_inputs/*
+src/t2_runner/*.txt
