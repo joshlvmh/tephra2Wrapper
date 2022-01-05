@@ -3,6 +3,7 @@ src/wind/gen_files/*
 src/wind/nc_files/*
 src/conf/*
 src/out/*
+src/t2-convert/*.nc
 .DS_Store
 outputs/*
 inputs/t2_inputs/*

@@ -1,0 +1,11 @@
+Running on host compute221.bc4.acrc.priv
+Time is Tue Nov 16 14:04:47 GMT 2021
+Directory is /mnt/storage/scratch/zs20225/tephra2Wrapper/inputs
+Slurm job ID is 5123830
+This job runs on the following machines:
+compute221
+64M	./t2_inputs/conf/VEI4/all
+244M	./t2_inputs/conf/VEI4
+64M	./t2_inputs/conf/VEI5/all
+244M	./t2_inputs/conf/VEI5
+slurmstepd: error: *** JOB 5123830 ON compute221 CANCELLED AT 2021-11-16T15:05:06 DUE TO TIME LIMIT ***
