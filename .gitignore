@@ -8,3 +8,4 @@ src/t2-convert/*.nc
 outputs/*
 inputs/t2_inputs/*
 src/t2_runner/*.txt
+src/t2-convert/netcdf-c
