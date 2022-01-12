@@ -39,6 +39,34 @@ int main(int argc, char* argv[])
   return EXIT_SUCCESS;
 }
 
+void get_indices(char * line)
+{
+  // NetCDF dimensions:
+  // volcano, run, easting, northing, vei, wind string
+  // 145	  10000  111     111       6      1
+  // 
+  char * pch;
+  pch = strtok (line, " /");
+  char * conf;
+  char * wind;
+  for (int k = 0; k < 15; k++)
+  {
+    if (k == 4) conf = pch;
+    if (k == 9) wind = pch;
+    pch = strtok( NULL, " /");
+  }
+  char * volc;
+  volc = strtok( conf, "_");
+  printf("conf: %s  volc: %s  wind: %s \n", conf, volc, wind);
+    
+  // while (pch != NULL)
+  // {
+  //   printf("%s \n", pch);
+  //   pch = strtok( NULL, " /");
+  // }
+}
+
+
 void process(int* rank, int* size)
 {
   FILE* fp;
@@ -58,7 +86,11 @@ void process(int* rank, int* size)
   {
     for (int i = 0; i < *size; i++) {
       fgets(line, LINE_LENGTH+10, fp);
-      system(line);
+      get_indices(line);
+      //printf("%c", line[4]);
+
+      
+      //system(line);
       // deal with out file -> netCDF? pickle?
     }
     printf("rank %d: VEI%d complete\n", *rank, j);
@@ -94,7 +126,7 @@ void initialise(int* nprocs, int* rank, int *size, double* tic)
     }
     else
     {
-      line_per_rank = final_line_count = NUM_LINES / *nprocs;
+      line_per_rank = final_line_count = NUM_LINES / *nprocs; // change to be multiple of 10000? Race condition on output file
     }
 
     char line[LINE_LENGTH];
@@ -109,6 +141,7 @@ void initialise(int* nprocs, int* rank, int *size, double* tic)
     char t2_file[] = "t2.txt";
 
     // array of fps to prevent reopening?
+    /*
     for (int j = VEI_START; j < VEI_END+1; j++)
     {
       char vei[6];
@@ -141,6 +174,7 @@ void initialise(int* nprocs, int* rank, int *size, double* tic)
       fclose(fid);
       free(fullfile);
     }
+	*/
 
     *bcast_buffer = line_per_rank;
     printf("bcast_buffer per VEI per rank: %d\n", *bcast_buffer);
