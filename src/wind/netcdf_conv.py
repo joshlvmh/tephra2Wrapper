@@ -81,7 +81,7 @@ def main():
   for i in range(len(volc)):
     if float(volc[i][2]) < 0:
       volc[i][2] += 360
-    #if (volc[i][1] == '262000'):
+    #if (volc[i][1] == '262000'): #comment out
     for j in range(2012,2022):
       nc_file = filename.replace("YEAR", str(j))
       nc_file = nc_file.replace("ID", volc[i][1])

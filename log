@@ -1,0 +1,262 @@
+make: Entering directory `/user/home/jm17923/tephra2Wrapper/src/tephra2'
+cd inversion_src; make -f makefile.linux; cd ..
+make[1]: Entering directory `/user/home/jm17923/tephra2Wrapper/src/tephra2/inversion_src'
+mpicc -Wall -O3  -c ameoba.c
+mpicc -Wall -O3  -c fit_tests.c
+mpicc -Wall -O3  -c master.c
+mpicc -Wall -O3  -c minimizing_func.c
+mpicc -Wall -O3  -c slave.c
+mpicc -Wall -O3  -c tephra_inversion.c
+mpicc -Wall -O3  -c ../common_src/tephra2_calc.c
+mpicc  -Wall -O3  -o tephra2-inversion_2020 ameoba.o fit_tests.o master.o minimizing_func.o slave.o tephra_inversion.o tephra2_calc.o -lm -L../include -lgc -ldl ../include/libgc.a
+mv tephra2-inversion_2020 ..
+make[1]: Leaving directory `/user/home/jm17923/tephra2Wrapper/src/tephra2/inversion_src'
+cd forward_src; make -f makefile.linux; cd ..
+make[1]: Entering directory `/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src'
+gcc -Wall -O3 -g -I../include -I /sw/lib/netcdf-c-4.7.3-gcc/include -c new_tephra.c -lm -ldl -L../include -lgc 
+new_tephra.c: In function ‘main’:
+new_tephra.c:211:9: warning: implicit declaration of function ‘print_to_netcdf’ [-Wimplicit-function-declaration]
+  211 |         print_to_netcdf((pt+i)->easting, (pt+i)->northing, (pt+i)->calculated_mass, i);
+      |         ^~~~~~~~~~~~~~~
+new_tephra.c: In function ‘netCDF4_output’:
+new_tephra.c:234:39: warning: implicit declaration of function ‘nc_stderror’; did you mean ‘nc_strerror’? [-Wimplicit-function-declaration]
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                                       ^~~~~~~~~~~
+new_tephra.c:258:7: note: in expansion of macro ‘ERR’
+  258 |       ERR(retval);
+      |       ^~~
+new_tephra.c:234:24: warning: format ‘%s’ expects argument of type ‘char *’, but argument 2 has type ‘int’ [-Wformat=]
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                        ^~~~~~~~~~~~~  ~~~~~~~~~~~~~~
+      |                                       |
+      |                                       int
+new_tephra.c:258:7: note: in expansion of macro ‘ERR’
+  258 |       ERR(retval);
+      |       ^~~
+new_tephra.c:234:33: note: format string is defined here
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                                ~^
+      |                                 |
+      |                                 char *
+      |                                %d
+new_tephra.c:234:24: warning: format ‘%s’ expects argument of type ‘char *’, but argument 2 has type ‘int’ [-Wformat=]
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                        ^~~~~~~~~~~~~  ~~~~~~~~~~~~~~
+      |                                       |
+      |                                       int
+new_tephra.c:263:7: note: in expansion of macro ‘ERR’
+  263 |       ERR(retval);
+      |       ^~~
+new_tephra.c:234:33: note: format string is defined here
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                                ~^
+      |                                 |
+      |                                 char *
+      |                                %d
+new_tephra.c:234:24: warning: format ‘%s’ expects argument of type ‘char *’, but argument 2 has type ‘int’ [-Wformat=]
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                        ^~~~~~~~~~~~~  ~~~~~~~~~~~~~~
+      |                                       |
+      |                                       int
+new_tephra.c:265:7: note: in expansion of macro ‘ERR’
+  265 |       ERR(retval);
+      |       ^~~
+new_tephra.c:234:33: note: format string is defined here
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                                ~^
+      |                                 |
+      |                                 char *
+      |                                %d
+new_tephra.c:234:24: warning: format ‘%s’ expects argument of type ‘char *’, but argument 2 has type ‘int’ [-Wformat=]
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                        ^~~~~~~~~~~~~  ~~~~~~~~~~~~~~
+      |                                       |
+      |                                       int
+new_tephra.c:267:7: note: in expansion of macro ‘ERR’
+  267 |       ERR(retval);
+      |       ^~~
+new_tephra.c:234:33: note: format string is defined here
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                                ~^
+      |                                 |
+      |                                 char *
+      |                                %d
+new_tephra.c:234:24: warning: format ‘%s’ expects argument of type ‘char *’, but argument 2 has type ‘int’ [-Wformat=]
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                        ^~~~~~~~~~~~~  ~~~~~~~~~~~~~~
+      |                                       |
+      |                                       int
+new_tephra.c:269:7: note: in expansion of macro ‘ERR’
+  269 |       ERR(retval);
+      |       ^~~
+new_tephra.c:234:33: note: format string is defined here
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                                ~^
+      |                                 |
+      |                                 char *
+      |                                %d
+new_tephra.c:234:24: warning: format ‘%s’ expects argument of type ‘char *’, but argument 2 has type ‘int’ [-Wformat=]
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                        ^~~~~~~~~~~~~  ~~~~~~~~~~~~~~
+      |                                       |
+      |                                       int
+new_tephra.c:274:7: note: in expansion of macro ‘ERR’
+  274 |       ERR(retval);
+      |       ^~~
+new_tephra.c:234:33: note: format string is defined here
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                                ~^
+      |                                 |
+      |                                 char *
+      |                                %d
+new_tephra.c:234:24: warning: format ‘%s’ expects argument of type ‘char *’, but argument 2 has type ‘int’ [-Wformat=]
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                        ^~~~~~~~~~~~~  ~~~~~~~~~~~~~~
+      |                                       |
+      |                                       int
+new_tephra.c:276:7: note: in expansion of macro ‘ERR’
+  276 |       ERR(retval);
+      |       ^~~
+new_tephra.c:234:33: note: format string is defined here
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                                ~^
+      |                                 |
+      |                                 char *
+      |                                %d
+new_tephra.c:234:24: warning: format ‘%s’ expects argument of type ‘char *’, but argument 2 has type ‘int’ [-Wformat=]
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                        ^~~~~~~~~~~~~  ~~~~~~~~~~~~~~
+      |                                       |
+      |                                       int
+new_tephra.c:281:7: note: in expansion of macro ‘ERR’
+  281 |       ERR(retval);
+      |       ^~~
+new_tephra.c:234:33: note: format string is defined here
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                                ~^
+      |                                 |
+      |                                 char *
+      |                                %d
+new_tephra.c:234:24: warning: format ‘%s’ expects argument of type ‘char *’, but argument 2 has type ‘int’ [-Wformat=]
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                        ^~~~~~~~~~~~~  ~~~~~~~~~~~~~~
+      |                                       |
+      |                                       int
+new_tephra.c:283:7: note: in expansion of macro ‘ERR’
+  283 |       ERR(retval);
+      |       ^~~
+new_tephra.c:234:33: note: format string is defined here
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                                ~^
+      |                                 |
+      |                                 char *
+      |                                %d
+new_tephra.c:234:24: warning: format ‘%s’ expects argument of type ‘char *’, but argument 2 has type ‘int’ [-Wformat=]
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                        ^~~~~~~~~~~~~  ~~~~~~~~~~~~~~
+      |                                       |
+      |                                       int
+new_tephra.c:290:7: note: in expansion of macro ‘ERR’
+  290 |       ERR(retval);
+      |       ^~~
+new_tephra.c:234:33: note: format string is defined here
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                                ~^
+      |                                 |
+      |                                 char *
+      |                                %d
+new_tephra.c:234:24: warning: format ‘%s’ expects argument of type ‘char *’, but argument 2 has type ‘int’ [-Wformat=]
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                        ^~~~~~~~~~~~~  ~~~~~~~~~~~~~~
+      |                                       |
+      |                                       int
+new_tephra.c:292:7: note: in expansion of macro ‘ERR’
+  292 |       ERR(retval);
+      |       ^~~
+new_tephra.c:234:33: note: format string is defined here
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                                ~^
+      |                                 |
+      |                                 char *
+      |                                %d
+new_tephra.c:234:24: warning: format ‘%s’ expects argument of type ‘char *’, but argument 2 has type ‘int’ [-Wformat=]
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                        ^~~~~~~~~~~~~  ~~~~~~~~~~~~~~
+      |                                       |
+      |                                       int
+new_tephra.c:295:7: note: in expansion of macro ‘ERR’
+  295 |       ERR(retval);
+      |       ^~~
+new_tephra.c:234:33: note: format string is defined here
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                                ~^
+      |                                 |
+      |                                 char *
+      |                                %d
+new_tephra.c:234:24: warning: format ‘%s’ expects argument of type ‘char *’, but argument 2 has type ‘int’ [-Wformat=]
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                        ^~~~~~~~~~~~~  ~~~~~~~~~~~~~~
+      |                                       |
+      |                                       int
+new_tephra.c:303:5: note: in expansion of macro ‘ERR’
+  303 |     ERR(retval);
+      |     ^~~
+new_tephra.c:234:33: note: format string is defined here
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                                ~^
+      |                                 |
+      |                                 char *
+      |                                %d
+new_tephra.c:234:24: warning: format ‘%s’ expects argument of type ‘char *’, but argument 2 has type ‘int’ [-Wformat=]
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                        ^~~~~~~~~~~~~  ~~~~~~~~~~~~~~
+      |                                       |
+      |                                       int
+new_tephra.c:305:5: note: in expansion of macro ‘ERR’
+  305 |     ERR(retval);
+      |     ^~~
+new_tephra.c:234:33: note: format string is defined here
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                                ~^
+      |                                 |
+      |                                 char *
+      |                                %d
+new_tephra.c:234:24: warning: format ‘%s’ expects argument of type ‘char *’, but argument 2 has type ‘int’ [-Wformat=]
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                        ^~~~~~~~~~~~~  ~~~~~~~~~~~~~~
+      |                                       |
+      |                                       int
+new_tephra.c:308:5: note: in expansion of macro ‘ERR’
+  308 |     ERR(retval);
+      |     ^~~
+new_tephra.c:234:33: note: format string is defined here
+  234 | #define ERR(e) {printf("Error: %s\n", nc_stderror(e)); exit(ERRCODE);}
+      |                                ~^
+      |                                 |
+      |                                 char *
+      |                                %d
+gcc -Wall -O3 -g -I../include -I /sw/lib/netcdf-c-4.7.3-gcc/include -c ../common_src/tephra2_calc.c -lm -ldl -L../include -lgc 
+gcc -Wall -O3 -g -I../include -I /sw/lib/netcdf-c-4.7.3-gcc/include -o tephra2_2020 new_tephra.o tephra2_calc.o -lm -ldl -L../include -lgc  ../include/libgc.a
+new_tephra.o: In function `netCDF4_output':
+/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src/new_tephra.c:257: undefined reference to `nc_open'
+/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src/new_tephra.c:302: undefined reference to `nc_put_var1'
+/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src/new_tephra.c:304: undefined reference to `nc_put_var1'
+/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src/new_tephra.c:307: undefined reference to `nc_close'
+/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src/new_tephra.c:262: undefined reference to `nc_create'
+/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src/new_tephra.c:264: undefined reference to `nc_def_dim'
+/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src/new_tephra.c:266: undefined reference to `nc_def_dim'
+/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src/new_tephra.c:268: undefined reference to `nc_def_dim'
+/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src/new_tephra.c:273: undefined reference to `nc_def_var'
+/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src/new_tephra.c:275: undefined reference to `nc_def_var'
+/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src/new_tephra.c:280: undefined reference to `nc_put_att_text'
+/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src/new_tephra.c:282: undefined reference to `nc_put_att_text'
+/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src/new_tephra.c:289: undefined reference to `nc_def_var'
+/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src/new_tephra.c:291: undefined reference to `nc_def_var'
+/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src/new_tephra.c:294: undefined reference to `nc_enddef'
+/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src/new_tephra.c:308: undefined reference to `nc_stderror'
+new_tephra.o: In function `main':
+/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src/new_tephra.c:211: undefined reference to `print_to_netcdf'
+collect2: error: ld returned 1 exit status
+make[1]: *** [tephra2_2020] Error 1
+make[1]: Leaving directory `/user/home/jm17923/tephra2Wrapper/src/tephra2/forward_src'
+make: Leaving directory `/user/home/jm17923/tephra2Wrapper/src/tephra2'

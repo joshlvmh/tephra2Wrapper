@@ -98,7 +98,7 @@ class RUN:
         out_file  = seas+'/'+self.volc_id+'_'+f"{j:0{self.run_digits}}"+'_'+f"{k:0{sim_digits}}"+'.out'
         with open(os.environ['CONF']+'/'+child_path+'/'+conf_file, 'w+', 0o777) as f: # change to $CONF
           f.writelines('\n'.join(lines))
-        self.write_t2(conf_file, out_file, child_path)
+          self.write_t2(conf_file, out_file, child_path)
 
   def write_t2(self, conf_file, out_file, child_path):
     binary = '$BINARY'
@@ -133,7 +133,7 @@ class ESP:
     self.constrain = int(esp_row[15])
     self.nb_wind = len([name for name in os.listdir(self.wind_pth) if os.path.isfile(os.path.join(self.wind_pth, name))]) # count files in wind_pth
 #      (lambda: int(esp_row[16]), lambda: 14148)[esp_row[16] == 'NA']() ## change this to count
-    self.wind_start = '01-Jan-2012 00:00:00'
+    self.wind_start = '01-Jan-2021 00:00:00' # change to 2012
     self.wind_per_day = int(esp_row[18])
     self.seasonality = int(esp_row[19])
     self.wind_start_rainy = int(esp_row[20])
@@ -156,7 +156,7 @@ class ESP:
     self.long_lasting = int(esp_row[37])
     self.ht_sample = (lambda: int(esp_row[38]), lambda: 0)[esp_row[38] == 'NA']()
     self.mass_sample = (lambda: int(esp_row[39]), lambda: 0)[esp_row[39] == 'NA']()
-    self.nb_runs = int(esp_row[40])
+    self.nb_runs = 10 # int(esp_row[40]) # uncomment
     self.write_conf = 1 #int(esp_row[41])
     self.write_gs = int(esp_row[42])
     self.write_fig_sep = int(esp_row[43])
@@ -417,7 +417,7 @@ def generate_confs(esp, child_path):
           mass_stor_tot_all.append(mass_tmp)
           dur_stor_tot[j] = dur/3600
           mer_stor_tot.append(mer_tmp)
-          date_stor_tot[j,:] = wind_file(wind_vec_all[1267])
+          #date_stor_tot[j,:] = wind_file(wind_vec_all[1267])
           med_stor_tot[j] = gs_med
           std_stor_tot[j] = gs_std
           agg_stor_tot[j] = gs_coef
@@ -532,10 +532,11 @@ def main(args):
 
   for i in range(np.shape(esps)[0]):
     #if (i == 64):
-    esp_i = ESP(esps[i])
-    generate_confs(esp_i, child)
-    print("Done: "+str(i+1)+"/"+str(np.shape(esps)[0]))
-    #generate_confs(esps[i])
+    if esps[i][0][0:6] == '262000': #delete
+      esp_i = ESP(esps[i])
+      generate_confs(esp_i, child)
+      print("Done: "+str(i+1)+"/"+str(np.shape(esps)[0]))
+      #generate_confs(esps[i])
 
 if __name__ == '__main__':
   main(parser.parse_args())
