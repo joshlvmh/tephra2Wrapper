@@ -9,9 +9,6 @@ void netCDF4_output(float easting, float northing, float mass, int index);
 
 int main(int argc, char *argv[]) {
 
-  printf("argv: %s\n", argv[1]);
-
-
   int i;
 
   for (i = 0; i < 9; i++ )
@@ -21,7 +18,7 @@ int main(int argc, char *argv[]) {
   }
   return 0;
 }
-#define NDIMS 2
+#define NDIMS 3
 #define UNITS "units"
 #define EASTING "UTM easting"
 #define NORTHING "UTM northing"
@@ -42,6 +39,7 @@ void netCDF4_output(float easting, float northing, float mass, int index)
   int northing_indx = index / dim_xy; // could be the other way around
 
   int ncid, easting_dimid, northing_dimid, easting_varid, northing_varid, mass_varid, wind_varid;
+  int run_dimid;
   int dimids[NDIMS];
 
   int retval;
@@ -59,8 +57,9 @@ void netCDF4_output(float easting, float northing, float mass, int index)
       ERR(retval);
     if ((retval = nc_def_dim(ncid, "northing", dim_xy, &northing_dimid)))
       ERR(retval);
+    if ((retval = nc_def_dim(ncid, "run", 10, &run_dimid)))
+      ERR(retval);
 
-    printf("here");
     // coord vars
     if ((retval = nc_def_var(ncid, "easting", NC_FLOAT, 1, &easting_dimid, &easting_varid)))
       ERR(retval);
@@ -68,29 +67,25 @@ void netCDF4_output(float easting, float northing, float mass, int index)
       ERR(retval);
 
     // unit attributes to coord vars
-    printf("here");
-
     if ((retval = nc_put_att_text(ncid, easting_varid, UNITS, strlen(EASTING), EASTING)))
       ERR(retval);
     if ((retval = nc_put_att_text(ncid, northing_varid, UNITS, strlen(NORTHING), NORTHING)))
       ERR(retval);
 
-    dimids[0] = easting_dimid;
-    dimids[1] = northing_dimid;
-    printf("here");
+    dimids[0] = run_dimid;
+    dimids[1] = easting_dimid;
+    dimids[2] = northing_dimid;
 
     if ((retval = nc_def_var(ncid, "mass", NC_FLOAT, NDIMS, dimids, &mass_varid)))
       ERR(retval);
     if ((retval = nc_def_var(ncid, "wind", NC_STRING, NDIMS, dimids, &wind_varid))) // change to timeval?
       ERR(retval);
-    printf("here");
 
     if ((retval = nc_enddef(ncid)))
       ERR(retval);
-    printf("here");
   }
 
-  const size_t index_vec[NDIMS] = {easting_indx, northing_indx};
+  const size_t index_vec[NDIMS] = {easting_indx, northing_indx, 0};
 
   // set easting and northing values
   if ((retval = nc_put_var1_float(ncid, easting_varid, index_vec, &easting)))
