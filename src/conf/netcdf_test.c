@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
   for (i = 0; i < 9; i++ )
   {
     float mass = (float)i / 10;
-    netCDF4_output(i%3, (i%3) * 2, mass, i);
+    netCDF4_output(i%3*2, (i%3) * 2*2, mass*2, i);
   }
   return 0;
 }
@@ -37,6 +37,7 @@ void netCDF4_output(float easting, float northing, float mass, int index)
   int dim_xy = sqrt(9); // assumes square grid
   int easting_indx = index % dim_xy;
   int northing_indx = index / dim_xy; // could be the other way around
+  int run_index = 1;
 
   int ncid, easting_dimid, northing_dimid, easting_varid, northing_varid, mass_varid, wind_varid;
   int run_dimid;
@@ -72,9 +73,9 @@ void netCDF4_output(float easting, float northing, float mass, int index)
     if ((retval = nc_put_att_text(ncid, northing_varid, UNITS, strlen(NORTHING), NORTHING)))
       ERR(retval);
 
-    dimids[0] = run_dimid;
-    dimids[1] = easting_dimid;
-    dimids[2] = northing_dimid;
+    dimids[0] = easting_dimid;
+    dimids[1] = northing_dimid;
+    dimids[2] = run_dimid;
 
     if ((retval = nc_def_var(ncid, "mass", NC_FLOAT, NDIMS, dimids, &mass_varid)))
       ERR(retval);
@@ -85,7 +86,7 @@ void netCDF4_output(float easting, float northing, float mass, int index)
       ERR(retval);
   }
 
-  const size_t index_vec[NDIMS] = {easting_indx, northing_indx, 0};
+  const size_t index_vec[NDIMS] = {easting_indx, northing_indx, run_index};
 
   // set easting and northing values
   if ((retval = nc_put_var1_float(ncid, easting_varid, index_vec, &easting)))
