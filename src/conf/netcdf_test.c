@@ -37,7 +37,7 @@ void netCDF4_output(float easting, float northing, float mass, int index)
   int dim_xy = sqrt(9); // assumes square grid
   int easting_indx = index % dim_xy;
   int northing_indx = index / dim_xy; // could be the other way around
-  int run_index = 1;
+  int run_index = 9;
 
   int ncid, easting_dimid, northing_dimid, easting_varid, northing_varid, mass_varid, wind_varid;
   int run_dimid;
@@ -54,11 +54,11 @@ void netCDF4_output(float easting, float northing, float mass, int index)
   {
     if ((retval = nc_create(net_file, NC_NETCDF4|NC_NOCLOBBER, &ncid)))
       ERR(retval);
+    if ((retval = nc_def_dim(ncid, "run", 10, &run_dimid)))
+      ERR(retval);
     if ((retval = nc_def_dim(ncid, "easting", dim_xy, &easting_dimid)))
       ERR(retval);
     if ((retval = nc_def_dim(ncid, "northing", dim_xy, &northing_dimid)))
-      ERR(retval);
-    if ((retval = nc_def_dim(ncid, "run", 10, &run_dimid)))
       ERR(retval);
 
     // coord vars
@@ -73,9 +73,9 @@ void netCDF4_output(float easting, float northing, float mass, int index)
     if ((retval = nc_put_att_text(ncid, northing_varid, UNITS, strlen(NORTHING), NORTHING)))
       ERR(retval);
 
-    dimids[0] = easting_dimid;
-    dimids[1] = northing_dimid;
-    dimids[2] = run_dimid;
+    dimids[0] = run_dimid;
+    dimids[1] = easting_dimid;
+    dimids[2] = northing_dimid;
 
     if ((retval = nc_def_var(ncid, "mass", NC_FLOAT, NDIMS, dimids, &mass_varid)))
       ERR(retval);
@@ -86,7 +86,7 @@ void netCDF4_output(float easting, float northing, float mass, int index)
       ERR(retval);
   }
 
-  const size_t index_vec[NDIMS] = {easting_indx, northing_indx, run_index};
+  const size_t index_vec[NDIMS] = {run_index, easting_indx, northing_indx};
 
   // set easting and northing values
   if ((retval = nc_put_var1_float(ncid, easting_varid, index_vec, &easting)))
