@@ -1,0 +1,21 @@
+Running on host compute085.bc4.acrc.priv
+Time is Thu Mar 3 13:44:23 GMT 2022
+Directory is /mnt/storage/scratch/zs20225/tephra2Wrapper/src/grid
+Slurm job ID is 10097151
+This job runs on the following machines:
+compute085
+Traceback (most recent call last):
+  File "grid_gen.py", line 261, in <module>
+    main()
+  File "grid_gen.py", line 256, in main
+    northing, easting = create_grid(grid)
+  File "grid_gen.py", line 121, in create_grid
+    utm_g, lin, col = fill_matrix(utmx, utmy, grid)
+  File "grid_gen.py", line 163, in fill_matrix
+    updateNCsLatLon(grid.id_num, lat, lon)
+  File "grid_gen.py", line 179, in updateNCsLatLon
+    nc.renameDimension(u'longitude', u'latitude')
+  File "src/netCDF4/_netCDF4.pyx", line 2561, in netCDF4._netCDF4.Dataset.renameDimension
+  File "src/netCDF4/_netCDF4.pyx", line 1927, in netCDF4._netCDF4._ensure_nc_success
+RuntimeError: NetCDF: String match to name in use
+Finish time is Thu Mar 3 13:44:24 GMT 2022

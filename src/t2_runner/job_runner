@@ -23,10 +23,10 @@ echo This job runs on the following machines:
 echo `echo $SLURM_JOB_NODELIST | uniq`
 
 module load languages/intel/2020-u4
-export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+##export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
 start=`date +%s`
 
-srun ./t2_runner
+mpirun -np 56 ./t2_runner
 
 echo Time is `date`
 

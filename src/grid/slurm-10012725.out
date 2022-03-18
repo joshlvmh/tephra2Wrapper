@@ -1,0 +1,7 @@
+Running on host highmem12.bc4.acrc.priv
+Time is Fri Jan 28 17:22:22 GMT 2022
+Directory is /mnt/storage/scratch/zs20225/tephra2Wrapper/src/grid
+Slurm job ID is 10012725
+This job runs on the following machines:
+highmem12
+slurmstepd: error: *** JOB 10012725 ON highmem12 CANCELLED AT 2022-01-28T17:22:29 ***

@@ -10,7 +10,7 @@ endif
 export EXE     = t2_runner
 export CC      = mpiicc
 export CFLAGS  = -qopenmp #-std=c11 -Wall
-export CFLAGS += -restrict -Ofast -xbroadwell
+export CFLAGS += -restrict -Ofast -xbroadwell -Wall
 
 all: $(EXE)
 

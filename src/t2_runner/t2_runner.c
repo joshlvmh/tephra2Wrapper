@@ -10,7 +10,7 @@
 #include <unistd.h>
 
 #define MASTER 0
-#define LINE_LENGTH 124 //130 // keep this, make automatic pref
+#define LINE_LENGTH 130 //130 // keep this, make automatic pref
 #define NUM_LINES 1450000
 #define VEI_START 2 // make these automatic
 #define VEI_END 7
@@ -31,13 +31,12 @@ int main(int argc, char* argv[])
   int    size;
   MPI_Status status;
 
-  char * file = "0.txt";
-  printf("lines %d\n", lineCounter(file));
   initialise(&nprocs, &rank, &size, &tic);
+  MPI_Barrier(MPI_COMM_WORLD);
 
-  //process(&rank, &size);
+  process(&rank, &size);
 
-  //MPI_Barrier(MPI_COMM_WORLD);
+  MPI_Barrier(MPI_COMM_WORLD);
   finalise(&tic, &rank);
 
   return EXIT_SUCCESS;
@@ -47,7 +46,7 @@ void process(int* rank, int* size)
 {
   FILE* fp;
   char str[20];
-  char file[] = ".txt";
+  char file[] = "_3.txt";
   char line[LINE_LENGTH];
   char message[1024];
 
@@ -58,6 +57,21 @@ void process(int* rank, int* size)
     sprintf(message, "Could not open %s: %s\n", str, strerror(errno));
     die(message, __LINE__, __FILE__);
   }
+  int num_lines = lineCounter(str);
+  printf("rank lines: %d\n", num_lines);
+  int j;
+  for (j = 0; j < num_lines; j++)
+  {
+    fgets(line, LINE_LENGTH+10, fp);
+    system(line);
+    char * stdout_file = strrchr(line, ' ');
+    char rem[] = "rm ";
+    strcat(rem, stdout_file);
+    system(rem);
+    printf("Rank %d at line %d / %d\n", *rank, j, num_lines);
+    printf("recompilation check");
+  }
+
 /*
   for (int j = VEI_START; j < VEI_END+1; j++)
   {
@@ -124,7 +138,7 @@ void assignLines(int* nprocs, int* rank, int* size, double* tic)
   int total_lines = 0;
   int j;
   // array of fps to prevent reopening?
-  for (j = VEI_START; j < 3; j++)//VEI_END+1; j++)
+  for (j = VEI_START; j < VEI_END+1; j++)//VEI_END+1; j++)
   {
     char vei[6];
     snprintf(vei, 7, "/VEI%d/", j);
@@ -152,7 +166,7 @@ void assignLines(int* nprocs, int* rank, int* size, double* tic)
   printf("total lines: %d\n", total_lines);
 
 
-
+/*
   total_lines=0;
   int num_ps = 56;
   int lines_p_proc[num_ps];
@@ -165,6 +179,10 @@ void assignLines(int* nprocs, int* rank, int* size, double* tic)
     total_lines += lines_vei[i];
   }
   printf("total lines: %d\n", total_lines);
+  */
+  int num_ps = *nprocs;
+  int lines_p_proc[num_ps];
+  int i;
 
   int lower_bound = (total_lines / 10000) / num_ps;
   int upper_bound = lower_bound + 1;
@@ -178,14 +196,15 @@ void assignLines(int* nprocs, int* rank, int* size, double* tic)
   {
     lines_p_proc[i] = (i < lower_count) ? lower_bound : upper_bound;
     lines_p_proc[i] *= 10000;
- //   printf("%d: %d\n", i, lines_p_proc[i]);
+    printf("%d: %d\n", i, lines_p_proc[i]);
   }
 
   // for vei file
   // i = 0 
   // lnies_p_proc[i] check against, once complete 10000* value, increment i, open 0.txt file based on i
   //
-
+  //
+  printf("start line copy\n");
   int k;
   int current_rank = 0;
   int lines_done = 0;
@@ -196,9 +215,11 @@ void assignLines(int* nprocs, int* rank, int* size, double* tic)
     for (k = 0; k < veis[j-VEI_START].lines; k++)
     {
       fgets(line, LINE_LENGTH+10, veis[j-VEI_START].fid);
-      char * cur_str;
+      char cur_str[20];
       sprintf(cur_str, "%d", current_rank);
-      FILE* r_file = fopen(strcat(cur_str, ".txt"), "a");
+      char ext[] = ".txt";
+      FILE* r_file;
+      r_file = fopen(strcat(cur_str, ext), "a");
       if( r_file == NULL ) {
         sprintf(message, "Could not open %s: %s\n", cur_str, strerror(errno));
         die(message, __LINE__, __FILE__);
@@ -206,18 +227,16 @@ void assignLines(int* nprocs, int* rank, int* size, double* tic)
       fwrite(line, sizeof(line), 1, r_file);
       fclose(r_file);
       lines_done++;
-      if (lines_done == lines_p_proc[current_rank]) current_rank++;
-      printf("line");
+      if (lines_done == lines_p_proc[current_rank]) {current_rank++; lines_done=0;}
     }
   }
-
-
-
+  printf("finish line copy\n");
 
   for (j = VEI_START; j < 3; j++)// VEI_END+1; j++)
   {
     free(veis[j-VEI_START].filename);
   }
+
 
 
 }
@@ -232,7 +251,8 @@ void initialise(int* nprocs, int* rank, int *size, double* tic)
   printf("Number of processes: %d, rank: %d\n", *nprocs, *rank);
   MPI_Status status;
 
-  assignLines(nprocs, rank, size, tic);
+  //if (*rank == MASTER) assignLines(nprocs, rank, size, tic);
+  printf("lines assigned\n");
 /*
   int err;
 

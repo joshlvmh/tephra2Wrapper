@@ -19,3 +19,4 @@ export OUT="${REPO_HOME}/outputs/t2_out"
 make -C ${REPO_HOME}/src/tephra2/ -B
 
 export BINARY="${REPO_HOME}/src/tephra2/tephra2_2020"
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/mnt/storage/software/libraries/gnu/netcdf-4.7.3/lib/

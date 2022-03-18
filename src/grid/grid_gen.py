@@ -2,6 +2,7 @@ import csv
 import utm
 import numpy as np
 import os
+import netCDF4
 # PARAMS
 '''
 name = name
@@ -25,7 +26,9 @@ zone_SW
 zone_SE
 '''
 csvfile = os.environ['INPUTS']+'/grid.csv'
-output_loc = os.environ['INPUTS']+'/t2_inputs/grids'
+#output_loc = os.environ['INPUTS']+'/t2_inputs/grids'
+conf_loc = os.environ['CONF']
+output_loc = '.'
 ### make folders if necessary
 
 class Grid:
@@ -98,6 +101,11 @@ def create_grid(grid):
   [min_e, min_n, n, l] = utm.from_latlon(min_lat, min_lon, force_zone_number=abs(grid.vent_zone)) #, northern=False)
   [max_e, max_n, n, l] = utm.from_latlon(max_lat, max_lon, force_zone_number=abs(grid.vent_zone)) #, northern=False)
 
+  #print("LL:")
+  #print(min_lat, max_lat, min_lon, max_lon)
+  #print("EN:")
+  #print(min_e, max_e, min_n, max_n)
+
   if grid.cross_eq == 1:
       if grid.vent_zone < 0:
           max_n = max_n + 1e7
@@ -110,28 +118,95 @@ def create_grid(grid):
   [utmx, utmy] = np.meshgrid(x_vec, y_vec, indexing='xy')
   utmy = np.flipud(utmy)
 
-  utm_g = fill_matrix(utmx, utmy, grid)
-  file_utm = open(output_loc+'/'+str(grid.id_num)+'.utm', 'w')
-  np.savetxt(file_utm, utm_g, fmt='%d')
-  file_utm.close()
+  utm_g, lin, col = fill_matrix(utmx, utmy, grid)
+  #file_utm = open(output_loc+'/'+str(grid.id_num)+'.utm', 'w')
+  #np.savetxt(file_utm, utm_g, fmt='%d %d %d %f %f')
+  #file_utm.close()
+  return lin, col
 
 def fill_matrix(utmx, utmy, grid):
   col = utmx.shape[1] #np.shape(utmx, 1)
   lin = utmx.shape[0] #np.shape(utmx, 0)
-  print(lin, col)
+  #print(lin, col) # northing, easting dims
 
-  utm_g = np.zeros((np.size(utmy),3))
+  lat = np.zeros((lin, col))
+  lon = np.zeros((lin, col))
+  zone_mat = np.ones((utmx.shape))*grid.vent_zone
+  #print(zone_mat)
+
+  for i in range(lin):
+    #print(utmx[i,0], utmy[i,0])
+    [LT, LN] = utm.to_latlon(utmx[i,:], utmy[i,:], abs(zone_mat[i,0]), northern=True if zone_mat[i,0] > 0 else False, strict=False)
+    lat[i,:] = LT
+    lon[i,:] = LN
+
+  #print("lat:")
+  #print(lat[:,0])
+  #print("lon:")
+  #print(lon[0,:])
+
+  utm_g = np.zeros((np.size(utmy),5))
   utm_g[:,2] = np.ones((np.size(utmy)))*grid.elevation
 
   j = 0
   for i in range(1,lin+1):
     utm_g[j:i*col,0] = np.ndarray.round(np.squeeze(utmx[i-1,:]))
     utm_g[j:i*col,1] = np.ndarray.round(np.squeeze(utmy[i-1,:]))
+    utm_g[j:i*col,3] = np.squeeze(lat[i-1,:])
+    utm_g[j:i*col,4] = np.squeeze(lon[i-1,:])
     j = i*col
 
-  print(111*111)
-  print(utm_g.shape)
-  return utm_g
+  #print(111*111)
+  #print(utm_g.shape)
+  #print(utm_g)
+
+  updateNCsLatLon(grid.id_num, lat, lon)
+
+  return utm_g, lin, col
+
+def updateNCsLatLon(volc_id, lat, lon):
+  for i in range(2,8):
+    nc_file = '../t2_runner/'+str(volc_id)+'_VEI'+str(i)+'.nc'
+    nc = netCDF4.Dataset(nc_file, 'r+')
+    if (nc_file != '../t2_runner/284160_VEI2.nc'):
+      nc.renameDimension(u'easting', u'longitude')
+      nc.renameVariable(u'easting', u'longitude')
+      nc.renameDimension(u'northing', u'latitude')
+      nc.renameVariable(u'northing', u'latitude')
+      nc.variables['latitude'].setncatts({'units': u'Decimal degrees'})
+      nc.variables['longitude'].setncatts({'units': u'Decimal degrees'})
+    else:
+      nc.renameDimension(u'longitude', u'latitude2')
+      nc.renameVariable(u'longitude', u'latitude2')
+      nc.renameDimension(u'latitude', u'longitude')
+      nc.renameVariable(u'latitude', u'longitude')
+      nc.renameDimension(u'latitude2', u'latitude')
+      nc.renameVariable(u'latitude2', u'latitude')
+
+    print(lat, lon)
+    print(lat[:,0].shape, lon[0,:].shape)
+    print(nc.variables['latitude'], nc.variables['longitude'])
+    nc.variables['latitude'][:] = lat[:,0]
+    nc.variables['longitude'][:] = lon[0,:]
+    print(nc)
+    nc.close()
+    print('Done: '+nc_file)
+  return
+
+
+
+
+def appendDims(northing, easting, volc_id):
+  # VEI2
+  for i in range(2,8):
+    for j in range(10000):
+      filename = conf_loc+'/VEI'+str(i)+'/all/'+str(volc_id)+'_'+f"{j:04}"+'_0.txt'
+      conf_file = open(filename, 'a')
+      conf_file.write("\nDIM_EAST "+str(easting)+"\n")
+      conf_file.write("DIM_NORTH "+str(northing)+"\n")
+      conf_file.close()
+  
+
 
 def set_params(params):
   grid = Grid()
@@ -179,8 +254,10 @@ def main():
   params = read_csv()
   for i in range(len(params)):
     grid = set_params(params[i]) # add loop for all volcs
-    create_grid(grid)
-    print(i)
+    #if (grid.id_num == '262000'):
+    northing, easting = create_grid(grid)
+      #appendDims(northing, easting, grid.id_num)
+    #print(i)
 
 if __name__ == '__main__':
   main()

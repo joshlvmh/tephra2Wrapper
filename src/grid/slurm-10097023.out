@@ -1,0 +1,24 @@
+Running on host compute085.bc4.acrc.priv
+Time is Thu Mar 3 12:48:50 GMT 2022
+Directory is /mnt/storage/scratch/zs20225/tephra2Wrapper/src/grid
+Slurm job ID is 10097023
+This job runs on the following machines:
+compute085
+Traceback (most recent call last):
+  File "grid_gen.py", line 251, in <module>
+    main()
+  File "grid_gen.py", line 246, in main
+    northing, easting = create_grid(grid)
+  File "grid_gen.py", line 121, in create_grid
+    utm_g, lin, col = fill_matrix(utmx, utmy, grid)
+  File "grid_gen.py", line 163, in fill_matrix
+    updateNCsLatLon(grid.id_num, lat[:,0], lon[0,:])
+  File "grid_gen.py", line 177, in updateNCsLatLon
+    nc.variables['latitude'][:] = lat
+  File "src/netCDF4/_netCDF4.pyx", line 4903, in netCDF4._netCDF4.Variable.__setitem__
+  File "/user/home/jm17923/.local/lib/python3.8/site-packages/netCDF4/utils.py", line 356, in _StartCountStride
+    datashape = broadcasted_shape(shape, datashape)
+  File "/user/home/jm17923/.local/lib/python3.8/site-packages/netCDF4/utils.py", line 964, in broadcasted_shape
+    return np.broadcast(a, b).shape
+ValueError: shape mismatch: objects cannot be broadcast to a single shape
+Finish time is Thu Mar 3 12:48:55 GMT 2022

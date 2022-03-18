@@ -1,0 +1,26 @@
+Running on host compute085.bc4.acrc.priv
+Time is Thu Mar 3 13:09:01 GMT 2022
+Directory is /mnt/storage/scratch/zs20225/tephra2Wrapper/src/grid
+Slurm job ID is 10097074
+This job runs on the following machines:
+compute085
+Traceback (most recent call last):
+  File "src/netCDF4/_netCDF4.pyx", line 2555, in netCDF4._netCDF4.Dataset.renameDimension
+KeyError: 'easting'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "grid_gen.py", line 251, in <module>
+    main()
+  File "grid_gen.py", line 246, in main
+    northing, easting = create_grid(grid)
+  File "grid_gen.py", line 121, in create_grid
+    utm_g, lin, col = fill_matrix(utmx, utmy, grid)
+  File "grid_gen.py", line 163, in fill_matrix
+    updateNCsLatLon(grid.id_num, lat[:,0], lon[0,:])
+  File "grid_gen.py", line 171, in updateNCsLatLon
+    nc.renameDimension(u'easting', u'latitude')
+  File "src/netCDF4/_netCDF4.pyx", line 2557, in netCDF4._netCDF4.Dataset.renameDimension
+KeyError: 'easting not a valid dimension name'
+Finish time is Thu Mar 3 13:09:02 GMT 2022

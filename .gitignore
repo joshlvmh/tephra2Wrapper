@@ -8,5 +8,9 @@ src/t2-convert/*.nc
 outputs/*
 inputs/t2_inputs/*
 src/t2_runner/*.txt
+src/t2_runner/*.nc
+src/grid/*.nc
+src/t2_runner/*.out
+src/post-processing/*.nc
 src/t2-convert/netcdf-c
 src/t2-convert/netcdf-c/*

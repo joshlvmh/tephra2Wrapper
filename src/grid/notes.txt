@@ -1,0 +1,15 @@
+1: e1 n1
+e2 n1
+e3 n1
+...
+e106 n1
+e1 n2
+e2 n2
+...
+11776: e106 n111
+
+
+
+northing: 11756 % 111
+easting: 11776 - (northing*106)
+
