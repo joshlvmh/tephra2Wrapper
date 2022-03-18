@@ -1,0 +1,313 @@
+grep -r --exlcude=*.{out,o} 'CURVES\|CODE\|GRID\|WIND\|RUNS\|MODEL' ./ &>grep.out
+sed -i '/^.\/roof_results/d' grep.out
+
+./CODE/process_T2_JC.m:project.run_pth= '/mnt/storage/home/zs20225/TephraProb/RUNS/krak_cord/9/';
+./CODE/process_T2_JC.m:load(fullfile('CODE', 'VAR', 'prefs'), 'prefs'); % Load prefs
+./CODE/probability_maker_JC.m:project.run_pth= '/mnt/storage/home/zs20225/TephraProb/RUNS/krak_cord/9/';
+./CODE/probability_maker_JC.m:load(fullfile('CODE', 'VAR', 'prefs'), 'prefs'); % Load prefs
+./CODE/probability_maker_JC.m:grd_tmp     = load(fullfile('GRID', project.grd_pth, [project.grd_pth, '.utm']));    
+./CODE/probability_maker_JC.m:        pth = fullfile('GRID', project.grd_pth, [project.grd_pth, '.points']);
+./CODE/probability_maker_JC.m:        [fl,pth] = uigetfile('GRID/*.points','Select the .points file with the coordinates');
+./CODE/probability_maker_JC.m:        XX = load(fullfile('GRID', project.grd_pth, [project.grd_pth, '_utmx.dat']));
+./CODE/probability_maker_JC.m:        YY = load(fullfile('GRID', project.grd_pth, [project.grd_pth, '_utmy.dat']));
+./CODE/probability_maker_JC.m:            dlmwrite(fullfile('CURVES', [dataProb.points.name{iP}, '_',  project.run_name, '_', runs{iR}, '.out']), [dataProb.massTc', dataProb.curve.(runs{iR})(iP,:)'.*100], 'delimiter', '\t');
+./CODE/process_T2.m:load(fullfile('CODE', 'VAR', 'prefs'), 'prefs'); % Load prefs
+./CODE/runT2.m:mod_pth = [pwd, filesep, 'MODEL', filesep, 'forward_src', filesep];
+./CODE/runT2.m:        if exist('CODE/VAR/cygwin.mat', file)
+./CODE/runT2.m:            load('CODE/VAR/cygwin.mat', 'pathC');
+./CODE/runT2.m:                    save('CODE/VAR/cygwin.mat', 'pathC');
+./CODE/runT2.m:    if ~exist([pwd, filesep, 'MODEL', filesep, 'tephra2-2012.exe'], 'file')
+./CODE/runT2.m:        fprintf('\t2. Navigate to TephraProb\\MODEL\\ and type: \n')
+./CODE/runT2.m:    [s,e] = regexp(tline, './MODEL/tephra2-2012');
+./CODE/runT2.m:    line_out = [pathC, ' --login -c "/cygdrive/', pth_tmp, '/MODEL/./tephra2-2012.exe ', tline, '"'];
+./CODE/load_grid.m:grd_dir = dir('GRID/');
+./CODE/load_grid.m:if v == 1 && exist(grd_str{s}, 'dir') && length(dir(['GRID/',grd_str{s}, '*.dat'])) == 5 && length(dir(['GRID/',grd_str{s}, '*.utm'])) == 1
+./CODE/probability_maker.m:load(fullfile('CODE', 'VAR', 'prefs'), 'prefs'); % Load prefs
+./CODE/probability_maker.m:grd_tmp     = load(fullfile('GRID', project.grd_pth, [project.grd_pth, '.utm']));    
+./CODE/probability_maker.m:        pth = fullfile('GRID', project.grd_pth, [project.grd_pth, '.points']);
+./CODE/probability_maker.m:        [fl,pth] = uigetfile('GRID/*.points','Select the .points file with the coordinates');
+./CODE/probability_maker.m:        XX = load(fullfile('GRID', project.grd_pth, [project.grd_pth, '_utmx.dat']));
+./CODE/probability_maker.m:        YY = load(fullfile('GRID', project.grd_pth, [project.grd_pth, '_utmy.dat']));
+./CODE/probability_maker.m:            dlmwrite(fullfile('CURVES', [dataProb.points.name{iP}, '_',  project.run_name, '_', runs{iR}, '.out']), [dataProb.massTc', dataProb.curve.(runs{iR})(iP,:)'.*100], 'delimiter', '\t');
+Binary file ./CODE/ecmwf-api-client-python/ecmwfapi/__init__.pyc matches
+Binary file ./CODE/ecmwf-api-client-python/ecmwfapi/__pycache__/api.cpython-37.pyc matches
+Binary file ./CODE/ecmwf-api-client-python/ecmwfapi/__pycache__/__init__.cpython-37.pyc matches
+Binary file ./CODE/ecmwf-api-client-python/ecmwfapi/api.pyc matches
+./CODE/plot_hazCurves.m:    load(['CODE', filesep, 'VAR', filesep, 'prefs'], 'prefs');
+./CODE/plot_hazCurves.m:    d       = dir(['CURVES', filesep, '*.out']);
+./CODE/plot_hazCurves.m:    d       = dir(['CURVES', filesep, varargin{1}, '*']);
+./CODE/plot_hazCurves.m:        file    = load(['CURVES', filesep, str{s(i)}]);
+./CODE/get_prefs.m:if exist(['CODE', filesep, 'VAR', filesep, 'prefs.mat'], 'file')
+./CODE/get_prefs.m:save(fullfile('CODE', 'VAR', 'prefs.mat'), 'prefs');
+./CODE/get_prefs.m:save(fullfile('CODE', 'dependencies', 'api_key.mat'), 'apiKey');
+./CODE/get_prefs.m:load(fullfile('CODE', 'VAR', file));
+./CODE/runT2_JC.m:%project.run_pth= 'G:\TephraProb\RUNS\krak_cord\9\';
+./CODE/runT2_JC.m:%project.run_pth= '\TephraProb\RUNS\krak_cord\9\';
+./CODE/runT2_JC.m:project.run_pth= '/mnt/storage/home/zs20225/TephraProb/RUNS/krak_cord/9/';
+./CODE/runT2_JC.m:mod_pth = [pwd, filesep, 'MODEL', filesep, 'forward_src', filesep];
+./CODE/runT2_JC.m:        if exist('CODE/VAR/cygwin.mat', file)
+./CODE/runT2_JC.m:            load('CODE/VAR/cygwin.mat', 'pathC');
+./CODE/runT2_JC.m:                    save('CODE/VAR/cygwin.mat', 'pathC');
+./CODE/runT2_JC.m:    if ~exist([pwd, filesep, 'MODEL', filesep, 'tephra2-2012.exe'], 'file')
+./CODE/runT2_JC.m:        fprintf('\t2. Navigate to TephraProb\\MODEL\\ and type: \n')
+./CODE/runT2_JC.m:    [s,e] = regexp(tline, './MODEL/tephra2-2012');
+./CODE/runT2_JC.m:    line_out = [pathC, ' --login -c "/cygdrive/', pth_tmp, '/MODEL/./tephra2-2012.exe ', tline, '"'];
+./CODE/conf_points.m:[flname, dirname] = uigetfile(fullfile('GRID','*.points'), 'Select a .points file to load');
+./CODE/conf_points.m:if exist(['GRID/', grd_name], 'dir') == 7
+./CODE/conf_points.m:            rmdir(fullfile('GRID', grd_name), 's');
+./CODE/conf_points.m:    mkdir(fullfile('GRID', grd_name));
+./CODE/conf_points.m:    fid = fopen(fullfile('GRID', grd_name, [grd_name, '.utm']), 'wt');
+./CODE/conf_points.m:    save(fullfile('GRID', grd_name, [grd_name, '.points']), 'grid');
+./CODE/runProb.m:    run_path        = fullfile('RUNS', data.run_name);
+./CODE/runProb.m:        %mkdir(fullfile(out_pth, 'CURVES', seas_str{seas}));
+./CODE/runProb.m:                                    'PLUME_HEIGHT\t%d\nERUPTION_MASS\t%d\nVENT_EASTING\t%d\nVENT_NORTHING\t%d\nVENT_ELEVATION\t%d\nEDDY_CONST\t%d\nDIFFUSION_COEFFICIENT\t%d\nFALL_TIME_THRESHOLD\t%d\nLITHIC_DENSITY\t%d\nPUMICE_DENSITY\t%d\nCOL_STEPS\t%d\nPART_STEPS\t%d\nPLUME_MODEL\t%d\nALPHA\t%d\nBETA\t%d\n',...
+./CODE/runProb.m:                            tmp_model= ['./', 'MODEL/tephra2-2012']; 
+./CODE/runProb_vulc.m:    run_path        = fullfile('RUNS', data.run_name);
+./CODE/runProb_vulc.m:        mkdir(fullfile(out_pth, 'CURVES', seas_str{seas}));
+./CODE/runProb_vulc.m:                            'PLUME_HEIGHT\t%d\nERUPTION_MASS\t%d\nVENT_EASTING\t%d\nVENT_NORTHING\t%d\nVENT_ELEVATION\t%d\nEDDY_CONST\t%d\nDIFFUSION_COEFFICIENT\t%d\nFALL_TIME_THRESHOLD\t%d\nLITHIC_DENSITY\t%d\nPUMICE_DENSITY\t%d\nCOL_STEPS\t%d\nPART_STEPS\t%d\nPLUME_MODEL\t%d\nALPHA\t%d\nBETA\t%d\n',...
+./CODE/runProb_vulc.m:                     tmp_model= ['./', 'MODEL/tephra2-2012']; 
+./CODE/plotMap.m:load(['CODE', filesep, 'VAR', filesep, 'prefs'], 'prefs');
+./CODE/plotMap.m:XX      = load(['GRID', filesep, project.grd_pth, filesep, project.grd_pth, '_lon.dat']);
+./CODE/plotMap.m:YY      = load(['GRID', filesep, project.grd_pth, filesep, project.grd_pth, '_lat.dat']);
+./CODE/exportASCII_JC.m:load(['CODE', filesep, 'VAR', filesep, 'prefs'], 'prefs');
+./CODE/exportASCII_JC.m:project.run_pth= '/mnt/storage/home/zs20225/TephraProb/RUNS/krak_cord/9/';
+./CODE/exportASCII_JC.m:f2 = {'COL', 'GRID', 'RASTER'};
+./CODE/exportASCII_JC.m:XX      = load(['GRID', filesep, project.grd_pth, filesep, project.grd_pth, '_utmx.dat']);
+./CODE/exportASCII_JC.m:YY      = load(['GRID', filesep, project.grd_pth, filesep, project.grd_pth, '_utmy.dat']);
+./CODE/exportASCII_JC.m:UTM     = load(['GRID', filesep, project.grd_pth, filesep, project.grd_pth, '.utm']);
+./CODE/conf_grid.m:    if exist(fullfile('GRID', get(h.grd_grid_name, 'String')), 'dir')
+./CODE/conf_grid.m:                rmdir(fullfile('GRID', get(h.grd_grid_name, 'String')), 's');
+./CODE/conf_grid.m:mkdir(fullfile('GRID', tmp.name));
+./CODE/conf_grid.m:out_name = fullfile('GRID',tmp.name,tmp.name);
+./CODE/exportASCII.m:load(['CODE', filesep, 'VAR', filesep, 'prefs'], 'prefs');
+./CODE/exportASCII.m:f2 = {'COL', 'GRID', 'RASTER'};
+./CODE/exportASCII.m:XX      = load(['GRID', filesep, project.grd_pth, filesep, project.grd_pth, '_utmx.dat']);
+./CODE/exportASCII.m:YY      = load(['GRID', filesep, project.grd_pth, filesep, project.grd_pth, '_utmy.dat']);
+./CODE/exportASCII.m:UTM     = load(['GRID', filesep, project.grd_pth, filesep, project.grd_pth, '.utm']);
+./CODE/dwind/process_wind.m:        in_path = 'WIND/_Reanalysis1_Rawdata/';
+./CODE/dwind/process_wind.m:        in_path = 'WIND/_Reanalysis2_Rawdata/';
+./CODE/dwind/dwind.m:% function DWIND(varargin)
+./CODE/dwind/dwind.m:% DWIND(lat, lon, startMonth, endMonth, startYear, endYear, name, dataset)
+./CODE/dwind/dwind.m:[flname, flpath] = uigetfile('WIND/*.mat', 'Select a WIND file to open');
+./CODE/dwind/dwind.m:wind.folder  = fullfile('WIND', wind.name);
+./CODE/dwind/dwind.m:        target_dir = 'WIND/_Reanalysis1_Rawdata/';
+./CODE/dwind/dwind.m:        if ~exist('WIND/_Reanalysis1_Rawdata/', 'dir'); mkdir('WIND/_Reanalysis1_Rawdata/'); end
+./CODE/dwind/dwind.m:        target_dir = 'WIND/_Reanalysis2_Rawdata/';
+./CODE/dwind/dwind.m:        if ~exist('WIND/_Reanalysis2_Rawdata/', 'dir'); mkdir('WIND/_Reanalysis2_Rawdata/'); end
+./CODE/dwind/analyze_wind.m:[FileName, FilePath] = uigetfile('WIND/*.mat', 'Load a wind project', 'wind.mat');
+./CODE/dwind/installAPI.m:        cd('CODE/ecmwf-api-client-python/');
+./CODE/dwind/installAPI.m:        cd('CODE/cdsapi-0.2.5/');
+./CODE/load_run.m:% if isempty(dir(fullfile('GRID/', project.grd_pth, '*.dat')))
+./CODE/load_run.m:    [flname, flpath] = uigetfile('RUNS/*.mat', 'Select a RUN file to open');
+./CODE/load_run.m:        if isempty(dir(fullfile('GRID/', project.grd_pth, '*.dat')))
+Binary file ./resVec/sqlite-db/dicer.db matches
+Binary file ./roof_results_pure/e000/trc000/data.0/tripcounts_6585_0.tcs matches
+Binary file ./roof_results_pure/e000/trc000/data.0/tripcounts_6701_0.tcs matches
+Binary file ./roof_results_pure/e000/hs000/sqlite-db/dicer.db matches
+./tephraProb.m:addpath(genpath('CODE/'));
+./tephraProb.m:dirname = {'CURVES/', 'GRID/','WIND/', 'RUNS/'};
+./TephraProb_wrapper_JC.m:%project.run_pth= 'G:TephraProb\RUNS\krak_cord\9\';
+Binary file ./roof_results/e000/hs000/data.0/32581-32616.1.trace matches
+Binary file ./roof_results/e000/hs000/sqlite-db/dicer.db matches
+./job_file_tephra2:##rm -r RUNS/krak_cord/9/PROB/
+./job_file_tephra2:##rm -r RUNS/krak_cord/9/IM/
+./job_file_tephra2:##rm -r RUNS/krak_cord/9/DATA/
+./tephraProb_JC.m:addpath(genpath('CODE/'));
+./tephraProb_JC.m:dirname = {'CURVES/', 'GRID/','WIND/', 'RUNS/'};
+./MODEL/inversion_src/ameoba.c:/* static double **MODEL_GRID; */
+./MODEL/inversion_src/ameoba.c:    MODEL_GRID = (double **)malloc(ROWS * sizeof(double));
+./MODEL/inversion_src/ameoba.c:    if (MODEL_GRID == NULL) {
+./MODEL/inversion_src/ameoba.c:    fprintf(stderr, "Cannot malloc memory for MODEL_GRID rows:[%s]\n",
+./MODEL/inversion_src/ameoba.c:    MODEL_GRID[i] = (double *)malloc(COLS * sizeof(double));
+./MODEL/inversion_src/ameoba.c:    if (MODEL_GRID[i] == NULL) {
+./MODEL/inversion_src/tephra_inversion.c:int FIXED_WIND;
+./MODEL/inversion_src/tephra_inversion.c:      (FIXED_WIND) ? "TRUE" : "FALSE",
+./MODEL/inversion_src/tephra_inversion.c:	    LO_PARAM(WIND_SPEED), HI_PARAM(WIND_SPEED),
+./MODEL/inversion_src/tephra_inversion.c:	    LO_PARAM(WIND_DIRECTION)/DEG2RAD, HI_PARAM(WIND_DIRECTION)/DEG2RAD,
+./MODEL/inversion_src/tephra_inversion.c:  if (FIXED_WIND) {
+./MODEL/inversion_src/minimizing_func.c:int WIND_LEVELS;
+./MODEL/inversion_src/minimizing_func.c:int INV_WIND_LEVELS;
+./MODEL/inversion_src/minimizing_func.c:static WIND *W;
+./MODEL/inversion_src/minimizing_func.c:static WIND *FW;
+./MODEL/inversion_src/minimizing_func.c:  if (!FIXED_WIND) { 
+./MODEL/inversion_src/minimizing_func.c:    if (param < WIND_SPEED) {
+./MODEL/inversion_src/minimizing_func.c:and sets some global variables based on the MODEL global parameter.
+./MODEL/inversion_src/minimizing_func.c:  int WIND_LEVELS;
+./MODEL/inversion_src/minimizing_func.c:    else if (!strncmp(token, "PLUME_MODEL", strlen("PLUME_MODEL"))) {
+./MODEL/inversion_src/minimizing_func.c:        fprintf(log_file, "PLUME_MODEL=[%d]%s\n", e.plume_model, "Uniform Distribution with threshold");
+./MODEL/inversion_src/minimizing_func.c:        fprintf(log_file, "PLUME_MODEL=[%d]%s\n",e.plume_model, "log-normal Distribution using beta");
+./MODEL/inversion_src/minimizing_func.c:        fprintf(log_file, "PLUME_MODEL=[%d]%s\n", e.plume_model, "Beta distribution with alpha and beta parameters");
+./MODEL/inversion_src/minimizing_func.c:    else if (!strncmp(token, "WIND_SPEED", strlen("WIND_SPEED"))) {
+./MODEL/inversion_src/minimizing_func.c:      _LO[WIND_SPEED] = strtod(token, NULL);
+./MODEL/inversion_src/minimizing_func.c:      _HI[WIND_SPEED] = strtod(token, NULL);
+./MODEL/inversion_src/minimizing_func.c:      fprintf(log_file, "WIND_SPEED=%.0f to %.0f\n", _LO[WIND_SPEED], _HI[WIND_SPEED]);
+./MODEL/inversion_src/minimizing_func.c:    else if (!strncmp(token, "WIND_DIRECTION", strlen("WIND_DIRECTION"))) {
+./MODEL/inversion_src/minimizing_func.c:      _LO[WIND_DIRECTION] = strtod(token, NULL);  
+./MODEL/inversion_src/minimizing_func.c:      _HI[WIND_DIRECTION] = strtod(token, NULL);
+./MODEL/inversion_src/minimizing_func.c:      _HI[WIND_DIRECTION] *= DEG2RAD;
+./MODEL/inversion_src/minimizing_func.c:      _LO[WIND_DIRECTION] *= DEG2RAD;
+./MODEL/inversion_src/minimizing_func.c:      fprintf(log_file, "WIND_DIRECTION=%.0f to %.0f\n", _LO[WIND_DIRECTION], _HI[WIND_DIRECTION]);
+./MODEL/inversion_src/minimizing_func.c:    else if (!strncmp(token, "WIND_LEVELS", strlen("WIND_LEVELS"))) {
+./MODEL/inversion_src/minimizing_func.c:      INV_WIND_LEVELS = (int)atoi(token);
+./MODEL/inversion_src/minimizing_func.c:      fprintf(log_file, "INV_WIND_LEVELS = %d\n", INV_WIND_LEVELS);
+./MODEL/inversion_src/minimizing_func.c:      NUM_OF_PARAMS = (int) (2 * INV_WIND_LEVELS); 
+./MODEL/inversion_src/minimizing_func.c:    else if (!strncmp(token, "FIXED_WIND", strlen("FIXED_WIND"))) {
+./MODEL/inversion_src/minimizing_func.c:      FIXED_WIND = (int)atoi(token);
+./MODEL/inversion_src/minimizing_func.c:	WIND_LEVELS = COL_STEPS + 1; 
+./MODEL/inversion_src/minimizing_func.c:	fprintf(log_file, "FIXED_WIND = %s\n", (FIXED_WIND) ? "TRUE" : "FALSE");
+./MODEL/inversion_src/minimizing_func.c:  	if (!my_rank) fprintf(stderr, "WIND_LEVELS=%d\n", WIND_LEVELS);
+./MODEL/inversion_src/minimizing_func.c:  W = (WIND*)GC_MALLOC((size_t)WIND_LEVELS*sizeof(WIND));
+./MODEL/inversion_src/minimizing_func.c:FW WIND array. Each node stores all of the wind data. It is only called
+./MODEL/inversion_src/minimizing_func.c:if FIXED_WIND = 1 (TRUE)
+./MODEL/inversion_src/minimizing_func.c:  FW = (WIND*)GC_MALLOC((size_t) levels*sizeof(WIND));
+./MODEL/inversion_src/minimizing_func.c:	     of wind levels is determined. When FIXED_WIND is
+./MODEL/inversion_src/minimizing_func.c:	INV_WIND_LEVELS = levels; 
+./MODEL/inversion_src/minimizing_func.c:	 fprintf(log_file, "INV_WIND_LEVELS=%d\n", INV_WIND_LEVELS);   
+./MODEL/inversion_src/minimizing_func.c:	wind_inversion_interval = (e.max_plume_elevation - e.vent_elevation)/(double)INV_WIND_LEVELS;
+./MODEL/inversion_src/minimizing_func.c:		if (FIXED_WIND) {
+./MODEL/inversion_src/minimizing_func.c:			for (wind_level=0; wind_level < INV_WIND_LEVELS; wind_level++) {
+./MODEL/inversion_src/minimizing_func.c:	  } /* END if FIXED_WIND */
+./MODEL/inversion_src/minimizing_func.c:   		for (wind_level=0, parm=WIND_SPEED;  parm < NUM_OF_PARAMS; parm +=2, wind_level++) { 
+./MODEL/inversion_src/minimizing_func.c:	 I  FIXED_WIND = 0, then initally these values get a random value within the LO_PARAM - HI_PARAM
+./MODEL/inversion_src/minimizing_func.c:	 range.  If FIXED_WIND = 1 then these values are set from the FW array (fixed wind array);
+./MODEL/inversion_src/minimizing_func.c:      if (!FIXED_WIND) {
+./MODEL/inversion_src/minimizing_func.c:      	for (parm = WIND_SPEED; parm < NUM_OF_PARAMS; parm += 2) { /* for loop */
+./MODEL/inversion_src/minimizing_func.c:        	LO_PARAM(WIND_SPEED) + ((HI_PARAM(WIND_SPEED) - LO_PARAM(WIND_SPEED)) * rand()/(RAND_MAX+1.0));
+./MODEL/inversion_src/minimizing_func.c:  			LO_PARAM(WIND_DIRECTION) + ((HI_PARAM(WIND_DIRECTION) - LO_PARAM(WIND_DIRECTION)) * rand()/(RAND_MAX+1.0));
+./MODEL/inversion_src/minimizing_func.c:      } /* END if !FIXED_WIND */
+./MODEL/inversion_src/minimizing_func.c:  out1 = fopen(GRAIN_SZ_MODEL, "w");
+./MODEL/inversion_src/minimizing_func.c:  out2 = fopen(WIND_MODEL, "w");
+./MODEL/inversion_src/minimizing_func.c:  if (FIXED_WIND)  {
+./MODEL/inversion_src/minimizing_func.c:	for (j=0; j < INV_WIND_LEVELS; j++) { 
+./MODEL/inversion_src/minimizing_func.c: 	wind_inversion_interval = (e.max_plume_elevation - e.vent_elevation)/(double)INV_WIND_LEVELS;
+./MODEL/inversion_src/minimizing_func.c: 	for (parm = WIND_SPEED; parm < NUM_OF_PARAMS; parm += 2) { /* for loop */
+./MODEL/inversion_src/minimizing_func.c:	  LO_PARAM(WIND_SPEED), HI_PARAM(WIND_SPEED),
+./MODEL/inversion_src/minimizing_func.c:	  LO_PARAM(WIND_DIRECTION)/DEG2RAD, HI_PARAM(WIND_DIRECTION)/DEG2RAD);
+./MODEL/common_src/tephra_calc_new.c: * WIND *day: pointer to a day of wind data :
+./MODEL/common_src/tephra_calc_new.c:void tephra_calc(ERUPTION *erupt, POINT *pt, WIND *day, STATS *stats, GRAIN *gr) { /* tephra_calc starts ... */
+./MODEL/common_src/tephra_calc_new.c:   * WIND structure:
+./MODEL/common_src/tephra_calc_new.c:void set_eruption_values(ERUPTION *erupt, WIND *wind, GRAIN *gr) { /* set_eruption_values */
+./MODEL/common_src/common_structures.h~:} WIND;
+./MODEL/common_src/tephra2_calc.c: * WIND *day: pointer to a day of wind data :
+./MODEL/common_src/tephra2_calc.c:void tephra_calc(ERUPTION *restrict erupt, POINT *restrict pt, WIND *restrict day, STATS *restrict stats, GRAIN *restrict gr) { /* tephra_calc starts ... */
+./MODEL/common_src/tephra2_calc.c:   * WIND structure:
+./MODEL/common_src/tephra2_calc.c:void set_eruption_values(ERUPTION *erupt, WIND *wind, GRAIN *gr) { /* set_eruption_values */
+./MODEL/common_src/prototypes.h:void set_eruption_values(ERUPTION *, WIND *, GRAIN *);
+./MODEL/common_src/prototypes.h:double ash_accum(ERUPTION *, WIND *, double, double, double, double, double, double, double);
+./MODEL/common_src/prototypes.h:/*double strat_average(WIND *meteor, double col_ht, double xspace, double yspace, double t1, double t2, double sigma);
+./MODEL/common_src/prototypes.h:void  tephra_calc(ERUPTION *erupt, POINT *pt, WIND *level);*/
+./MODEL/common_src/prototypes.h:void tephra_calc(ERUPTION *, POINT *, WIND *, STATS *, GRAIN *);
+./MODEL/common_src/common_structures.h:} WIND;
+./MODEL/common_src/tephra2_notes.c:void tephra_calc(ERUPTION *erupt, POINT *pt, WIND *day, STATS *stats, GRAIN *gr) { /* tephra_calc starts ... */
+./MODEL/common_src/tephra2_notes.c:   * WIND structure:
+./MODEL/common_src/tephra2_calc.c~: * WIND *day: pointer to a day of wind data :
+./MODEL/common_src/tephra2_calc.c~:void tephra_calc(ERUPTION *erupt, POINT *pt, WIND *day, STATS *stats, GRAIN *gr) { /* tephra_calc starts ... */
+./MODEL/common_src/tephra2_calc.c~:   * WIND structure:
+./MODEL/common_src/tephra2_calc.c~:void set_eruption_values(ERUPTION *erupt, WIND *wind, GRAIN *gr) { /* set_eruption_values */
+./MODEL/common_src/parameters.h:#define GRAIN_SZ_MODEL "model.out"
+./MODEL/common_src/parameters.h:#define WIND_MODEL "wind_levels.out"
+./MODEL/common_src/parameters.h:extern int FIXED_WIND;
+./MODEL/common_src/parameters.h:extern int PLUME_MODEL; */
+./MODEL/common_src/parameters.h:extern double WIND_INTERVAL;
+./MODEL/common_src/parameters.h:extern int WIND_LEVELS;
+./MODEL/common_src/parameters.h:extern int WIND_DAYS;
+./MODEL/common_src/parameters.h:enum {MAX_COL_HT, ALPHAP, BETAP, DIFF_COEF, TOTAL_MASS, MED_PHI, STD_DEV_PHI, FALLTIME_THRESH, EDDY_COEF, WIND_SPEED, WIND_DIRECTION, LAST_PARAM}; 
+./MODEL/common_src/tephra2_calc.optrpt:Begin optimization report for: tephra_calc(ERUPTION *, POINT *, WIND *, STATS *, GRAIN *)
+./MODEL/common_src/tephra2_calc.optrpt:Begin optimization report for: set_eruption_values(ERUPTION *, WIND *, GRAIN *)
+./MODEL/common_src/tephra_calc_new.optrpt:Begin optimization report for: tephra_calc(ERUPTION *, POINT *, WIND *, STATS *, GRAIN *)
+./MODEL/common_src/tephra_calc_new.optrpt:Begin optimization report for: set_eruption_values(ERUPTION *, WIND *, GRAIN *)
+./MODEL/forward_src/new_tephra.c:int PLUME_MODEL = 2;
+./MODEL/forward_src/new_tephra.c:double WIND_INTERVAL;
+./MODEL/forward_src/new_tephra.c:int WIND_DAYS = 1;
+./MODEL/forward_src/new_tephra.c:int WIND_COLUMNS = 3;
+./MODEL/forward_src/new_tephra.c:static WIND **W;
+./MODEL/forward_src/new_tephra.c:int main(int argc, char *argv[]) { /* MAIN CODE STARTS HERE */
+./MODEL/forward_src/new_tephra.c:WIND array. Each node stores all of the wind data. 
+./MODEL/forward_src/new_tephra.c:  int i=0, j=0, ret, WIND_DAYS = 1;
+./MODEL/forward_src/new_tephra.c:  double level, WIND_INTERVAL;
+./MODEL/forward_src/new_tephra.c:  WIND_INTERVAL = (e.max_plume_elevation - e.vent_elevation)/(double)COL_STEPS;
+./MODEL/forward_src/new_tephra.c:  W = (WIND**)GC_MALLOC((size_t)WIND_DAYS * sizeof(WIND *));
+./MODEL/forward_src/new_tephra.c:    for (i=0; i < WIND_DAYS; i++) {
+./MODEL/forward_src/new_tephra.c:      W[i] = (WIND *)GC_MALLOC((size_t)(COL_STEPS+1) * sizeof(WIND));
+./MODEL/forward_src/new_tephra.c:	  level += WIND_INTERVAL; 
+./MODEL/forward_src/new_tephra.c:    else if (!strncmp(token, "PLUME_MODEL", strlen("PLUME_MODEL"))) {
+./MODEL/forward_src/new_tephra.c:	      fprintf(stderr, "PLUME_MODEL=[%d]%s\n", e.plume_model, "Uniform Distribution with threshold");
+./MODEL/forward_src/new_tephra.c:	      fprintf(stderr, "PLUME_MODEL=[%d]%s\n", e.plume_model, "log-normal Distribution using beta");
+./MODEL/forward_src/new_tephra.c:	      fprintf(log_file, "PLUME_MODEL=[%d]%s\n", e.plume_model, "Beta Distribution with ALPHA and BETA parameteres");
+Binary file ./MODEL/tephra2-2012.exe matches
+Binary file ./MODEL/tephra2012_inversion matches
+./MODEL/conf_files/tephra2.conf~:PLUME_MODEL 2
+./MODEL/conf_files/tephra2.conf~:WIND_FILE 00001.gen
+./MODEL/conf_files/tephra2-inversion.conf:PLUME_MODEL 2
+./MODEL/conf_files/tephra2-inversion.conf:FIXED_WIND 0
+./MODEL/conf_files/tephra2-inversion.conf:WIND_LEVELS 12
+./MODEL/conf_files/tephra2-inversion.conf:WIND_SPEED 0 26
+./MODEL/conf_files/tephra2-inversion.conf:WIND_DIRECTION 15 35
+./MODEL/conf_files/tephra2.conf:PLUME_MODEL 2
+Binary file ./MODEL/tephra2-2012 matches
+./.gitignore:CURVES/*
+./.gitignore:WIND/*
+./.gitignore:RUNS/*
+./.gitignore:GRID/*
+./.gitignore:CODE/dependencies/api_key.mat
+./RUNS/krak_cord/9/CONF/dry/2/0003.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/dry/2/0005.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/dry/2/0004.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/dry/2/0001.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/dry/2/0002.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/dry/1/0003.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/dry/1/0005.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/dry/1/0004.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/dry/1/0001.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/dry/1/0002.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/all/2/0003.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/all/2/0005.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/all/2/0004.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/all/2/0001.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/all/2/0002.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/all/1/0003.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/all/1/0005.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/all/1/0004.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/all/1/0001.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/all/1/0002.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/rainy/2/0003.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/rainy/2/0005.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/rainy/2/0004.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/rainy/2/0001.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/rainy/2/0002.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/rainy/1/0003.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/rainy/1/0005.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/rainy/1/0004.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/rainy/1/0001.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/CONF/rainy/1/0002.conf:PLUME_MODEL	2
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/1/0001.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/14183.gen RUNS/krak_cord/9/GS/all/0001.gsd > RUNS/krak_cord/9/OUT/all/1/krak_cord_0001.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/1/0002.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/14184.gen RUNS/krak_cord/9/GS/all/0001.gsd > RUNS/krak_cord/9/OUT/all/1/krak_cord_0002.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/1/0003.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/14185.gen RUNS/krak_cord/9/GS/all/0001.gsd > RUNS/krak_cord/9/OUT/all/1/krak_cord_0003.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/1/0004.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/14186.gen RUNS/krak_cord/9/GS/all/0001.gsd > RUNS/krak_cord/9/OUT/all/1/krak_cord_0004.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/1/0005.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/14187.gen RUNS/krak_cord/9/GS/all/0001.gsd > RUNS/krak_cord/9/OUT/all/1/krak_cord_0005.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/2/0001.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/27292.gen RUNS/krak_cord/9/GS/all/0002.gsd > RUNS/krak_cord/9/OUT/all/2/krak_cord_0001.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/2/0002.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/27293.gen RUNS/krak_cord/9/GS/all/0002.gsd > RUNS/krak_cord/9/OUT/all/2/krak_cord_0002.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/2/0003.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/27294.gen RUNS/krak_cord/9/GS/all/0002.gsd > RUNS/krak_cord/9/OUT/all/2/krak_cord_0003.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/2/0004.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/27295.gen RUNS/krak_cord/9/GS/all/0002.gsd > RUNS/krak_cord/9/OUT/all/2/krak_cord_0004.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/2/0005.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/27296.gen RUNS/krak_cord/9/GS/all/0002.gsd > RUNS/krak_cord/9/OUT/all/2/krak_cord_0005.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/1/0001.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/12716.gen RUNS/krak_cord/9/GS/rainy/0001.gsd > RUNS/krak_cord/9/OUT/rainy/1/krak_cord_0001.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/1/0002.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/12717.gen RUNS/krak_cord/9/GS/rainy/0001.gsd > RUNS/krak_cord/9/OUT/rainy/1/krak_cord_0002.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/1/0003.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/12718.gen RUNS/krak_cord/9/GS/rainy/0001.gsd > RUNS/krak_cord/9/OUT/rainy/1/krak_cord_0003.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/1/0004.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/12719.gen RUNS/krak_cord/9/GS/rainy/0001.gsd > RUNS/krak_cord/9/OUT/rainy/1/krak_cord_0004.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/1/0005.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/12720.gen RUNS/krak_cord/9/GS/rainy/0001.gsd > RUNS/krak_cord/9/OUT/rainy/1/krak_cord_0005.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/2/0001.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/08114.gen RUNS/krak_cord/9/GS/rainy/0002.gsd > RUNS/krak_cord/9/OUT/rainy/2/krak_cord_0001.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/2/0002.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/08115.gen RUNS/krak_cord/9/GS/rainy/0002.gsd > RUNS/krak_cord/9/OUT/rainy/2/krak_cord_0002.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/2/0003.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/08116.gen RUNS/krak_cord/9/GS/rainy/0002.gsd > RUNS/krak_cord/9/OUT/rainy/2/krak_cord_0003.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/2/0004.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/08117.gen RUNS/krak_cord/9/GS/rainy/0002.gsd > RUNS/krak_cord/9/OUT/rainy/2/krak_cord_0004.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/2/0005.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/08118.gen RUNS/krak_cord/9/GS/rainy/0002.gsd > RUNS/krak_cord/9/OUT/rainy/2/krak_cord_0005.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/1/0001.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/04246.gen RUNS/krak_cord/9/GS/dry/0001.gsd > RUNS/krak_cord/9/OUT/dry/1/krak_cord_0001.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/1/0002.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/04247.gen RUNS/krak_cord/9/GS/dry/0001.gsd > RUNS/krak_cord/9/OUT/dry/1/krak_cord_0002.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/1/0003.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/04248.gen RUNS/krak_cord/9/GS/dry/0001.gsd > RUNS/krak_cord/9/OUT/dry/1/krak_cord_0003.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/1/0004.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/04249.gen RUNS/krak_cord/9/GS/dry/0001.gsd > RUNS/krak_cord/9/OUT/dry/1/krak_cord_0004.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/1/0005.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/04250.gen RUNS/krak_cord/9/GS/dry/0001.gsd > RUNS/krak_cord/9/OUT/dry/1/krak_cord_0005.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/2/0001.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/17556.gen RUNS/krak_cord/9/GS/dry/0002.gsd > RUNS/krak_cord/9/OUT/dry/2/krak_cord_0001.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/2/0002.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/17557.gen RUNS/krak_cord/9/GS/dry/0002.gsd > RUNS/krak_cord/9/OUT/dry/2/krak_cord_0002.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/2/0003.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/17558.gen RUNS/krak_cord/9/GS/dry/0002.gsd > RUNS/krak_cord/9/OUT/dry/2/krak_cord_0003.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/2/0004.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/17559.gen RUNS/krak_cord/9/GS/dry/0002.gsd > RUNS/krak_cord/9/OUT/dry/2/krak_cord_0004.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/2/0005.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/17560.gen RUNS/krak_cord/9/GS/dry/0002.gsd > RUNS/krak_cord/9/OUT/dry/2/krak_cord_0005.out
+Binary file ./res/sqlite-db/dicer.db matches

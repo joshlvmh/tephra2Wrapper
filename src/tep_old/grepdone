@@ -1,0 +1,49 @@
+grep -r --exlcude=*.{out,o} 'CURVES\|CODE\|GRID\|WIND\|RUNS\|MODEL' ./ &>grep.out
+sed -i '/^.\/roof_results/d' grep.out
+
+./CODE/exportASCII_JC.m:f2 = {'COL', 'GRID', 'RASTER'};
+./tephraProb.m:addpath(genpath('CODE/'));
+./tephraProb.m:dirname = {'CURVES/', 'GRID/','WIND/', 'RUNS/'};
+./TephraProb_wrapper_JC.m:%project.run_pth= 'G:TephraProb\RUNS\krak_cord\9\';
+Binary file ./roof_results/e000/hs000/data.0/32581-32616.1.trace matches
+Binary file ./roof_results/e000/hs000/sqlite-db/dicer.db matches
+./job_file_tephra2:##rm -r RUNS/krak_cord/9/PROB/
+./job_file_tephra2:##rm -r RUNS/krak_cord/9/IM/
+./job_file_tephra2:##rm -r RUNS/krak_cord/9/DATA/
+./tephraProb_JC.m:addpath(genpath('CODE/'));
+./tephraProb_JC.m:dirname = {'CURVES/', 'GRID/','WIND/', 'RUNS/'};
+./.gitignore:CURVES/*
+./.gitignore:WIND/*
+./.gitignore:RUNS/*
+./.gitignore:GRID/*
+./.gitignore:CODE/dependencies/api_key.mat
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/1/0001.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/14183.gen RUNS/krak_cord/9/GS/all/0001.gsd > RUNS/krak_cord/9/OUT/all/1/krak_cord_0001.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/1/0002.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/14184.gen RUNS/krak_cord/9/GS/all/0001.gsd > RUNS/krak_cord/9/OUT/all/1/krak_cord_0002.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/1/0003.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/14185.gen RUNS/krak_cord/9/GS/all/0001.gsd > RUNS/krak_cord/9/OUT/all/1/krak_cord_0003.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/1/0004.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/14186.gen RUNS/krak_cord/9/GS/all/0001.gsd > RUNS/krak_cord/9/OUT/all/1/krak_cord_0004.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/1/0005.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/14187.gen RUNS/krak_cord/9/GS/all/0001.gsd > RUNS/krak_cord/9/OUT/all/1/krak_cord_0005.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/2/0001.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/27292.gen RUNS/krak_cord/9/GS/all/0002.gsd > RUNS/krak_cord/9/OUT/all/2/krak_cord_0001.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/2/0002.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/27293.gen RUNS/krak_cord/9/GS/all/0002.gsd > RUNS/krak_cord/9/OUT/all/2/krak_cord_0002.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/2/0003.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/27294.gen RUNS/krak_cord/9/GS/all/0002.gsd > RUNS/krak_cord/9/OUT/all/2/krak_cord_0003.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/2/0004.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/27295.gen RUNS/krak_cord/9/GS/all/0002.gsd > RUNS/krak_cord/9/OUT/all/2/krak_cord_0004.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/all/2/0005.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/27296.gen RUNS/krak_cord/9/GS/all/0002.gsd > RUNS/krak_cord/9/OUT/all/2/krak_cord_0005.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/1/0001.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/12716.gen RUNS/krak_cord/9/GS/rainy/0001.gsd > RUNS/krak_cord/9/OUT/rainy/1/krak_cord_0001.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/1/0002.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/12717.gen RUNS/krak_cord/9/GS/rainy/0001.gsd > RUNS/krak_cord/9/OUT/rainy/1/krak_cord_0002.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/1/0003.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/12718.gen RUNS/krak_cord/9/GS/rainy/0001.gsd > RUNS/krak_cord/9/OUT/rainy/1/krak_cord_0003.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/1/0004.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/12719.gen RUNS/krak_cord/9/GS/rainy/0001.gsd > RUNS/krak_cord/9/OUT/rainy/1/krak_cord_0004.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/1/0005.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/12720.gen RUNS/krak_cord/9/GS/rainy/0001.gsd > RUNS/krak_cord/9/OUT/rainy/1/krak_cord_0005.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/2/0001.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/08114.gen RUNS/krak_cord/9/GS/rainy/0002.gsd > RUNS/krak_cord/9/OUT/rainy/2/krak_cord_0001.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/2/0002.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/08115.gen RUNS/krak_cord/9/GS/rainy/0002.gsd > RUNS/krak_cord/9/OUT/rainy/2/krak_cord_0002.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/2/0003.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/08116.gen RUNS/krak_cord/9/GS/rainy/0002.gsd > RUNS/krak_cord/9/OUT/rainy/2/krak_cord_0003.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/2/0004.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/08117.gen RUNS/krak_cord/9/GS/rainy/0002.gsd > RUNS/krak_cord/9/OUT/rainy/2/krak_cord_0004.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/rainy/2/0005.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/08118.gen RUNS/krak_cord/9/GS/rainy/0002.gsd > RUNS/krak_cord/9/OUT/rainy/2/krak_cord_0005.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/1/0001.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/04246.gen RUNS/krak_cord/9/GS/dry/0001.gsd > RUNS/krak_cord/9/OUT/dry/1/krak_cord_0001.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/1/0002.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/04247.gen RUNS/krak_cord/9/GS/dry/0001.gsd > RUNS/krak_cord/9/OUT/dry/1/krak_cord_0002.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/1/0003.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/04248.gen RUNS/krak_cord/9/GS/dry/0001.gsd > RUNS/krak_cord/9/OUT/dry/1/krak_cord_0003.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/1/0004.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/04249.gen RUNS/krak_cord/9/GS/dry/0001.gsd > RUNS/krak_cord/9/OUT/dry/1/krak_cord_0004.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/1/0005.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/04250.gen RUNS/krak_cord/9/GS/dry/0001.gsd > RUNS/krak_cord/9/OUT/dry/1/krak_cord_0005.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/2/0001.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/17556.gen RUNS/krak_cord/9/GS/dry/0002.gsd > RUNS/krak_cord/9/OUT/dry/2/krak_cord_0001.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/2/0002.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/17557.gen RUNS/krak_cord/9/GS/dry/0002.gsd > RUNS/krak_cord/9/OUT/dry/2/krak_cord_0002.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/2/0003.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/17558.gen RUNS/krak_cord/9/GS/dry/0002.gsd > RUNS/krak_cord/9/OUT/dry/2/krak_cord_0003.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/2/0004.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/17559.gen RUNS/krak_cord/9/GS/dry/0002.gsd > RUNS/krak_cord/9/OUT/dry/2/krak_cord_0004.out
+./RUNS/krak_cord/9/T2_stor.txt:./MODEL/tephra2-2012 RUNS/krak_cord/9/CONF/dry/2/0005.conf GRID/Krak_local_2500/Krak_local_2500.utm WIND/wind_data/ascii/17560.gen RUNS/krak_cord/9/GS/dry/0002.gsd > RUNS/krak_cord/9/OUT/dry/2/krak_cord_0005.out

@@ -1,0 +1,105 @@
+cd inversion_src; make -f makefile.linux; cd ..
+make[1]: Entering directory `/mnt/storage/home/jm17923/fellowship/tephra2/inversion_src'
+mpicc  -Wall -O3 -I/mnt/storage/easybuild/software/gc/7.4.4-foss-2016a/include/gc -I/mnt/storage/easybuild/software/gc/7.4.4-foss-2016a/lib -o tephra2-inversion_2020 ameoba.o fit_tests.o master.o minimizing_func.o slave.o tephra_inversion.o tephra2_calc.o -lm libgc.a -ldl
+mv tephra2-inversion_2020 ..
+make[1]: Leaving directory `/mnt/storage/home/jm17923/fellowship/tephra2/inversion_src'
+cd forward_src; make -f makefile.linux; cd ..
+make[1]: Entering directory `/mnt/storage/home/jm17923/fellowship/tephra2/forward_src'
+gcc -Wall -O3 -g -I/mnt/storage/easybuild/software/gc/7.4.4-foss-2016a/include/gc -I/mnt/storage/easybuild/software/gc/7.4.4-foss-2016a/lib -o tephra2_2020 new_tephra.o tephra2_calc.o -lm libgc.a -ldl
+libgc.a(mallocx.o): In function `GC_generic_malloc_ignore_off_page':
+mallocx.c:(.text+0x146): undefined reference to `pthread_mutex_trylock'
+libgc.a(mallocx.o): In function `GC_generic_malloc_many':
+mallocx.c:(.text+0x4fa): undefined reference to `pthread_mutex_trylock'
+mallocx.c:(.text+0x516): undefined reference to `pthread_mutex_trylock'
+libgc.a(mallocx.o): In function `GC_malloc_atomic_uncollectable':
+mallocx.c:(.text+0x8d0): undefined reference to `pthread_mutex_trylock'
+mallocx.c:(.text+0x916): undefined reference to `pthread_mutex_trylock'
+libgc.a(mark_rts.o):mark_rts.c:(.text+0x2eb): more undefined references to `pthread_mutex_trylock' follow
+libgc.a(os_dep.o): In function `GC_get_main_stack_base':
+os_dep.c:(.text+0x7f2): undefined reference to `pthread_getattr_np'
+os_dep.c:(.text+0x808): undefined reference to `pthread_attr_getstack'
+libgc.a(os_dep.o): In function `GC_get_stack_base':
+os_dep.c:(.text+0x897): undefined reference to `pthread_getattr_np'
+os_dep.c:(.text+0x8ce): undefined reference to `pthread_attr_getstack'
+libgc.a(reclaim.o): In function `GC_print_all_errors':
+reclaim.c:(.text+0x116): undefined reference to `pthread_mutex_trylock'
+reclaim.c:(.text+0x2c8): undefined reference to `pthread_mutex_trylock'
+libgc.a(pthread_support.o): In function `GC_start_mark_threads':
+pthread_support.c:(.text+0xe4): undefined reference to `pthread_create'
+libgc.a(pthread_support.o): In function `GC_thr_init':
+pthread_support.c:(.text+0x690): undefined reference to `pthread_atfork'
+pthread_support.c:(.text+0x6df): undefined reference to `pthread_mutexattr_init'
+pthread_support.c:(.text+0x6f1): undefined reference to `pthread_mutexattr_settype'
+pthread_support.c:(.text+0x716): undefined reference to `pthread_mutexattr_destroy'
+libgc.a(pthread_support.o): In function `GC_pthread_sigmask':
+pthread_support.c:(.text+0x89a): undefined reference to `pthread_sigmask'
+pthread_support.c:(.text+0x96c): undefined reference to `pthread_sigmask'
+libgc.a(pthread_support.o): In function `GC_generic_lock':
+pthread_support.c:(.text+0xa48): undefined reference to `pthread_mutex_trylock'
+pthread_support.c:(.text+0xa78): undefined reference to `pthread_mutex_trylock'
+libgc.a(pthread_support.o): In function `GC_thread_is_registered':
+pthread_support.c:(.text+0xb36): undefined reference to `pthread_mutex_trylock'
+libgc.a(pthread_support.o): In function `GC_wait_for_gc_completion':
+pthread_support.c:(.text+0xc46): undefined reference to `pthread_mutex_trylock'
+libgc.a(pthread_support.o): In function `GC_init_parallel.part.8':
+pthread_support.c:(.text+0xce6): undefined reference to `pthread_mutex_trylock'
+libgc.a(pthread_support.o):pthread_support.c:(.text+0xdc6): more undefined references to `pthread_mutex_trylock' follow
+libgc.a(pthread_support.o): In function `GC_pthread_join':
+pthread_support.c:(.text+0x1166): undefined reference to `pthread_join'
+pthread_support.c:(.text+0x11db): undefined reference to `pthread_mutex_trylock'
+pthread_support.c:(.text+0x1216): undefined reference to `pthread_mutex_trylock'
+libgc.a(pthread_support.o): In function `GC_pthread_detach':
+pthread_support.c:(.text+0x1286): undefined reference to `pthread_detach'
+pthread_support.c:(.text+0x12f6): undefined reference to `pthread_mutex_trylock'
+pthread_support.c:(.text+0x133e): undefined reference to `pthread_mutex_trylock'
+libgc.a(pthread_support.o): In function `GC_pthread_cancel':
+pthread_support.c:(.text+0x13de): undefined reference to `pthread_mutex_trylock'
+libgc.a(pthread_support.o): In function `GC_pthread_exit':
+pthread_support.c:(.text+0x1477): undefined reference to `pthread_mutex_trylock'
+libgc.a(pthread_support.o): In function `GC_register_my_thread':
+pthread_support.c:(.text+0x14c5): undefined reference to `pthread_mutex_trylock'
+libgc.a(pthread_support.o): In function `GC_start_rtn_prepare_thread':
+pthread_support.c:(.text+0x163b): undefined reference to `sem_post'
+pthread_support.c:(.text+0x165b): undefined reference to `pthread_mutex_trylock'
+libgc.a(pthread_support.o): In function `GC_pthread_create':
+pthread_support.c:(.text+0x16ef): undefined reference to `sem_init'
+pthread_support.c:(.text+0x176f): undefined reference to `pthread_create'
+pthread_support.c:(.text+0x17a2): undefined reference to `sem_wait'
+pthread_support.c:(.text+0x17b9): undefined reference to `sem_destroy'
+pthread_support.c:(.text+0x1856): undefined reference to `pthread_mutex_trylock'
+pthread_support.c:(.text+0x1876): undefined reference to `pthread_mutex_trylock'
+pthread_support.c:(.text+0x18a6): undefined reference to `pthread_mutex_trylock'
+libgc.a(pthread_support.o): In function `fork_prepare_proc':
+pthread_support.c:(.text+0x1b16): undefined reference to `pthread_mutex_trylock'
+libgc.a(pthread_support.o): In function `GC_pthread_cancel':
+pthread_support.c:(.text+0x13bb): undefined reference to `pthread_cancel'
+pthread_support.c:(.text+0x13cf): undefined reference to `pthread_cancel'
+libgc.a(pthread_stop_world.o): In function `GC_suspend_handler_inner':
+pthread_stop_world.c:(.text+0x179): undefined reference to `sem_post'
+libgc.a(pthread_stop_world.o): In function `GC_suspend_all':
+pthread_stop_world.c:(.text+0x3f9): undefined reference to `pthread_kill'
+libgc.a(pthread_stop_world.o): In function `GC_stop_world':
+pthread_stop_world.c:(.text+0x4c4): undefined reference to `sem_getvalue'
+pthread_stop_world.c:(.text+0x4fd): undefined reference to `sem_getvalue'
+pthread_stop_world.c:(.text+0x540): undefined reference to `sem_wait'
+libgc.a(pthread_stop_world.o): In function `GC_start_world':
+pthread_stop_world.c:(.text+0x5fc): undefined reference to `pthread_kill'
+libgc.a(pthread_stop_world.o): In function `GC_stop_init':
+pthread_stop_world.c:(.text+0x688): undefined reference to `sem_init'
+libgc.a(alloc.o): In function `GC_set_stop_func':
+alloc.c:(.text+0x142): undefined reference to `pthread_mutex_trylock'
+libgc.a(alloc.o): In function `GC_get_stop_func':
+alloc.c:(.text+0x1a6): undefined reference to `pthread_mutex_trylock'
+libgc.a(alloc.o): In function `GC_set_start_callback':
+alloc.c:(.text+0x2c2): undefined reference to `pthread_mutex_trylock'
+libgc.a(alloc.o): In function `GC_get_start_callback':
+alloc.c:(.text+0x326): undefined reference to `pthread_mutex_trylock'
+libgc.a(alloc.o): In function `GC_collect_a_little':
+alloc.c:(.text+0xf06): undefined reference to `pthread_mutex_trylock'
+libgc.a(alloc.o):alloc.c:(.text+0xfee): more undefined references to `pthread_mutex_trylock' follow
+libgc.a(pthread_start.o): In function `GC_inner_start_routine':
+pthread_start.c:(.text+0x42): undefined reference to `__pthread_register_cancel'
+pthread_start.c:(.text+0x61): undefined reference to `__pthread_unregister_cancel'
+collect2: error: ld returned 1 exit status
+make[1]: *** [tephra2_2020] Error 1
+make[1]: Leaving directory `/mnt/storage/home/jm17923/fellowship/tephra2/forward_src'

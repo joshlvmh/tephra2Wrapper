@@ -1,0 +1,690 @@
+Intel(R) Advisor can now assist with vectorization and show optimization
+  report messages with your source code.
+See "https://software.intel.com/en-us/intel-advisor-xe" for details.
+
+Intel(R) C Intel(R) 64 Compiler for applications running on Intel(R) 64, Version 18.0.3.222 Build 20180410
+
+Compiler options: -Wall -Ofast -ffast-math -qopt-report=5 -c -lm -lgc -ldl
+
+    Report from: Interprocedural optimizations [ipo]
+
+  WHOLE PROGRAM (SAFE) [EITHER METHOD]: false
+  WHOLE PROGRAM (SEEN) [TABLE METHOD]: false
+  WHOLE PROGRAM (READ) [OBJECT READER METHOD]: false
+
+INLINING OPTION VALUES:
+  -inline-factor: 100
+  -inline-min-size: 30
+  -inline-max-size: 230
+  -inline-max-total-size: 2000
+  -inline-max-per-routine: 10000
+  -inline-max-per-compile: 500000
+
+In the inlining report below:
+   "sz" refers to the "size" of the routine. The smaller a routine's size,
+      the more likely it is to be inlined.
+   "isz" refers to the "inlined size" of the routine. This is the amount
+      the calling routine will grow if the called routine is inlined into it.
+      The compiler generally limits the amount a routine can grow by having
+      routines inlined into it.
+
+Begin optimization report for: tephra_calc(ERUPTION *, POINT *, WIND *, STATS *)
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINE REPORT: (tephra_calc(ERUPTION *, POINT *, WIND *, STATS *)) [1/11=9.1%] tephra2_calc.c(80,71)
+  -> EXTERN: (120,14) cos(double)
+  -> EXTERN: (121,13) sin(double)
+  -> INLINE: (140,8) part_fall_time(double, double, double, double) (isz = 53) (sz = 66)
+    -> EXTERN: (315,24) exp(double)
+    -> EXTERN: (349,23) pow(double, double)
+  -> EXTERN: (177,8) atan(double)
+  -> EXTERN: (180,33) atan(double)
+  -> EXTERN: (198,33) pow(double, double)
+  -> INLINE: (210,16) strat_average(double, double, double, double, double, double) (isz = 23) (sz = 40)
+    -> EXTERN: (426,13) cos(double)
+    -> EXTERN: (427,13) sin(double)
+    -> EXTERN: (434,14) exp(double)
+
+
+    Report from: Loop nest, Vector & Auto-parallelization optimizations [loop, vec, par]
+
+
+LOOP BEGIN at tephra2_calc.c(123,3)
+<Distributed chunk1>
+   remark #25426: Loop Distributed (2 way) 
+   remark #25408: memset generated
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+   remark #25015: Estimate of max trip count of loop=100
+
+   LOOP BEGIN at tephra2_calc.c(123,3)
+   <Distributed chunk1>
+      remark #15389: vectorization support: reference pt->calculated_phi[i] has unaligned access   [ tephra2_calc.c(129,2) ]
+      remark #15381: vectorization support: unaligned access used inside loop body
+      remark #15305: vectorization support: vector length 2
+      remark #15399: vectorization support: unroll factor set to 2
+      remark #15309: vectorization support: normalized vectorization overhead 0.300
+      remark #15301: PARTIAL LOOP WAS VECTORIZED
+      remark #15451: unmasked unaligned unit stride stores: 1 
+      remark #15475: --- begin vector cost summary ---
+      remark #15476: scalar cost: 4 
+      remark #15477: vector cost: 2.500 
+      remark #15478: estimated potential speedup: 1.450 
+      remark #15488: --- end vector cost summary ---
+      remark #25015: Estimate of max trip count of loop=3
+   LOOP END
+
+   LOOP BEGIN at tephra2_calc.c(123,3)
+   <Remainder loop for vectorization, Distributed chunk1>
+      remark #25015: Estimate of max trip count of loop=12
+   LOOP END
+LOOP END
+
+LOOP BEGIN at tephra2_calc.c(123,3)
+<Distributed chunk2>
+   remark #25096: Loop Interchange not done due to: Imperfect Loop Nest (Either at Source or due to other Compiler Transformations)
+   remark #25451: Advice: Loop Interchange, if possible, might help loopnest. Suggested Permutation : ( 1 2 ) --> ( 2 1 ) 
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+   remark #25015: Estimate of max trip count of loop=100
+
+   LOOP BEGIN at tephra2_calc.c(144,6)
+   <Peeled>
+      remark #25084: Preprocess Loopnests: Moving Out Store    [ tephra2_calc.c(187,6) ]
+      remark #25084: Preprocess Loopnests: Moving Out Store    [ tephra2_calc.c(188,6) ]
+      remark #25084: Preprocess Loopnests: Moving Out Store    [ tephra2_calc.c(217,5) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->total_fall_time)[j]>, stride is 10   [ tephra2_calc.c(146,24) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->wind_sum_x)[j]>, stride is 10   [ tephra2_calc.c(165,5) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->wind_sum_y)[j]>, stride is 10   [ tephra2_calc.c(168,5) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->plume_diffusion_fine_particle)[j]>, stride is 10   [ tephra2_calc.c(198,56) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->plume_diffusion_fine_particle)[j]>, stride is 10   [ tephra2_calc.c(198,56) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->plume_diffusion_fine_particle)[j]>, stride is 10   [ tephra2_calc.c(198,56) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->plume_diffusion_coarse_particle)[j]>, stride is 10   [ tephra2_calc.c(204,66) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->demon1)[j]>, stride is 10   [ tephra2_calc.c(216,17) ]
+      remark #15305: vectorization support: vector length 2
+      remark #15309: vectorization support: normalized vectorization overhead 0.175
+      remark #15300: LOOP WAS VECTORIZED
+      remark #15452: unmasked strided loads: 8 
+      remark #15475: --- begin vector cost summary ---
+      remark #15476: scalar cost: 868 
+      remark #15477: vector cost: 406.500 
+      remark #15478: estimated potential speedup: 2.130 
+      remark #15482: vectorized math library calls: 4 
+      remark #15486: divides: 6 
+      remark #15488: --- end vector cost summary ---
+   LOOP END
+
+   LOOP BEGIN at tephra2_calc.c(144,6)
+   <Peeled, Remainder loop for vectorization>
+   LOOP END
+LOOP END
+
+    Report from: Code generation optimizations [cg]
+
+tephra2_calc.c(146,24):remark #34069: adjacent sparse (strided) loads seem unprofitable to optimize. Details: stride { 80 }, types { F64-V128, F64-V128, F64-V128 }, number of elements { 2 }, select mask { 0x000000007 }.
+tephra2_calc.c(204,66):remark #34069: adjacent sparse (strided) loads seem unprofitable to optimize. Details: stride { 80 }, types { F64-V128, F64-V128, F64-V128, F64-V128, F64-V128 }, number of elements { 2 }, select mask { 0x000000011 }.
+tephra2_calc.c(123,3):remark #34014: optimization advice for memset: increase the destination's alignment to 16 (and use __assume_aligned) to speed up library implementation
+tephra2_calc.c(123,3):remark #34026: call to memset implemented as a call to optimized library version
+tephra2_calc.c(80,71):remark #34051: REGISTER ALLOCATION : [tephra_calc] tephra2_calc.c:80
+
+    Hardware registers
+        Reserved     :    2[ rsp rip]
+        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
+        Callee-save  :    6[ rbx rbp r12-r15]
+        Assigned     :   27[ rax rdx rcx rbx rbp rsi rdi r12-r15 zmm0-zmm15]
+        
+    Routine temporaries
+        Total         :     315
+            Global    :     104
+            Local     :     211
+        Regenerable   :      20
+        Spilled       :      47
+        
+    Routine stack
+        Variables     :       0 bytes*
+            Reads     :       0 [0.00e+00 ~ 0.0%]
+            Writes    :       0 [0.00e+00 ~ 0.0%]
+        Spills        :     416 bytes*
+            Reads     :      62 [4.88e+02 ~ 8.4%]
+            Writes    :      54 [1.71e+02 ~ 2.9%]
+    
+    Notes
+    
+        *Non-overlapping variables and spills may share stack space,
+         so the total stack size might be less than this.
+    
+
+===========================================================================
+
+Begin optimization report for: phi2m(double)
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINE REPORT: (phi2m(double)) [2/11=18.2%] tephra2_calc.c(243,26)
+  -> EXTERN: (245,18) exp2
+
+
+    Report from: Code generation optimizations [cg]
+
+tephra2_calc.c(243,26):remark #34051: REGISTER ALLOCATION : [phi2m] tephra2_calc.c:243
+
+    Hardware registers
+        Reserved     :    2[ rsp rip]
+        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
+        Callee-save  :    6[ rbx rbp r12-r15]
+        Assigned     :    1[ zmm0]
+        
+    Routine temporaries
+        Total         :      14
+            Global    :       7
+            Local     :       7
+        Regenerable   :       0
+        Spilled       :       0
+        
+    Routine stack
+        Variables     :       0 bytes*
+            Reads     :       0 [0.00e+00 ~ 0.0%]
+            Writes    :       0 [0.00e+00 ~ 0.0%]
+        Spills        :       0 bytes*
+            Reads     :       0 [0.00e+00 ~ 0.0%]
+            Writes    :       0 [0.00e+00 ~ 0.0%]
+    
+    Notes
+    
+        *Non-overlapping variables and spills may share stack space,
+         so the total stack size might be less than this.
+    
+
+===========================================================================
+
+Begin optimization report for: particle_density(double, double, double)
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINE REPORT: (particle_density(double, double, double)) [3/11=27.3%] tephra2_calc.c(254,91)
+
+
+    Report from: Code generation optimizations [cg]
+
+tephra2_calc.c(254,91):remark #34051: REGISTER ALLOCATION : [particle_density] tephra2_calc.c:254
+
+    Hardware registers
+        Reserved     :    2[ rsp rip]
+        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
+        Callee-save  :    6[ rbx rbp r12-r15]
+        Assigned     :    5[ zmm0-zmm4]
+        
+    Routine temporaries
+        Total         :      18
+            Global    :      11
+            Local     :       7
+        Regenerable   :       2
+        Spilled       :       0
+        
+    Routine stack
+        Variables     :       0 bytes*
+            Reads     :       0 [0.00e+00 ~ 0.0%]
+            Writes    :       0 [0.00e+00 ~ 0.0%]
+        Spills        :       0 bytes*
+            Reads     :       0 [0.00e+00 ~ 0.0%]
+            Writes    :       0 [0.00e+00 ~ 0.0%]
+    
+    Notes
+    
+        *Non-overlapping variables and spills may share stack space,
+         so the total stack size might be less than this.
+    
+
+===========================================================================
+
+Begin optimization report for: part_fall_time(double, double, double, double)
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINE REPORT: (part_fall_time(double, double, double, double)) [4/11=36.4%] tephra2_calc.c(302,94)
+  -> EXTERN: (315,24) exp(double)
+  -> EXTERN: (349,23) pow(double, double)
+
+
+    Report from: Code generation optimizations [cg]
+
+tephra2_calc.c(302,94):remark #34051: REGISTER ALLOCATION : [part_fall_time] tephra2_calc.c:302
+
+    Hardware registers
+        Reserved     :    2[ rsp rip]
+        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
+        Callee-save  :    6[ rbx rbp r12-r15]
+        Assigned     :    6[ zmm0-zmm5]
+        
+    Routine temporaries
+        Total         :      49
+            Global    :      16
+            Local     :      33
+        Regenerable   :       3
+        Spilled       :       5
+        
+    Routine stack
+        Variables     :       0 bytes*
+            Reads     :       0 [0.00e+00 ~ 0.0%]
+            Writes    :       0 [0.00e+00 ~ 0.0%]
+        Spills        :      40 bytes*
+            Reads     :       9 [6.25e+00 ~ 12.1%]
+            Writes    :       5 [4.24e+00 ~ 8.2%]
+    
+    Notes
+    
+        *Non-overlapping variables and spills may share stack space,
+         so the total stack size might be less than this.
+    
+
+===========================================================================
+
+Begin optimization report for: pdf_grainsize(double, double, double)
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINE REPORT: (pdf_grainsize(double, double, double)) [5/11=45.5%] tephra2_calc.c(380,93)
+  -> EXTERN: (389,14) exp(double)
+
+
+    Report from: Code generation optimizations [cg]
+
+tephra2_calc.c(380,93):remark #34051: REGISTER ALLOCATION : [pdf_grainsize] tephra2_calc.c:380
+
+    Hardware registers
+        Reserved     :    2[ rsp rip]
+        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
+        Callee-save  :    6[ rbx rbp r12-r15]
+        Assigned     :    3[ zmm0-zmm2]
+        
+    Routine temporaries
+        Total         :      22
+            Global    :       8
+            Local     :      14
+        Regenerable   :       0
+        Spilled       :       1
+        
+    Routine stack
+        Variables     :       0 bytes*
+            Reads     :       0 [0.00e+00 ~ 0.0%]
+            Writes    :       0 [0.00e+00 ~ 0.0%]
+        Spills        :       8 bytes*
+            Reads     :       1 [1.00e+00 ~ 4.3%]
+            Writes    :       1 [1.00e+00 ~ 4.3%]
+    
+    Notes
+    
+        *Non-overlapping variables and spills may share stack space,
+         so the total stack size might be less than this.
+    
+
+===========================================================================
+
+Begin optimization report for: strat_average(double, double, double, double, double, double)
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINE REPORT: (strat_average(double, double, double, double, double, double)) [6/11=54.5%] tephra2_calc.c(422,19)
+  -> EXTERN: (426,13) cos(double)
+  -> EXTERN: (427,13) sin(double)
+  -> EXTERN: (434,14) exp(double)
+
+
+    Report from: Code generation optimizations [cg]
+
+tephra2_calc.c(422,19):remark #34051: REGISTER ALLOCATION : [strat_average] tephra2_calc.c:422
+
+    Hardware registers
+        Reserved     :    2[ rsp rip]
+        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
+        Callee-save  :    6[ rbx rbp r12-r15]
+        Assigned     :    7[ zmm0-zmm6]
+        
+    Routine temporaries
+        Total         :      40
+            Global    :      14
+            Local     :      26
+        Regenerable   :       0
+        Spilled       :       5
+        
+    Routine stack
+        Variables     :       0 bytes*
+            Reads     :       0 [0.00e+00 ~ 0.0%]
+            Writes    :       0 [0.00e+00 ~ 0.0%]
+        Spills        :      40 bytes*
+            Reads     :       5 [5.00e+00 ~ 11.1%]
+            Writes    :       5 [5.00e+00 ~ 11.1%]
+    
+    Notes
+    
+        *Non-overlapping variables and spills may share stack space,
+         so the total stack size might be less than this.
+    
+
+===========================================================================
+
+Begin optimization report for: plume_pdf0(double, double, double, double, double)
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINE REPORT: (plume_pdf0(double, double, double, double, double)) [7/11=63.6%] tephra2_calc.c(447,92)
+
+
+    Report from: Loop nest, Vector & Auto-parallelization optimizations [loop, vec, par]
+
+
+LOOP BEGIN at tephra2_calc.c(457,9)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization
+   remark #15346: vector dependence: assumed ANTI dependence between num_slices_left (460:17) and num_slices_left (461:21)
+   remark #15346: vector dependence: assumed FLOW dependence between num_slices_left (461:21) and num_slices_left (460:17)
+   remark #15346: vector dependence: assumed ANTI dependence between num_slices_left (460:17) and num_slices_left (461:21)
+LOOP END
+
+    Report from: Code generation optimizations [cg]
+
+tephra2_calc.c(447,92):remark #34051: REGISTER ALLOCATION : [plume_pdf0] tephra2_calc.c:447
+
+    Hardware registers
+        Reserved     :    2[ rsp rip]
+        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
+        Callee-save  :    6[ rbx rbp r12-r15]
+        Assigned     :   10[ rax rdx rcx rsi zmm0-zmm5]
+        
+    Routine temporaries
+        Total         :      28
+            Global    :      17
+            Local     :      11
+        Regenerable   :       3
+        Spilled       :       0
+        
+    Routine stack
+        Variables     :       0 bytes*
+            Reads     :       0 [0.00e+00 ~ 0.0%]
+            Writes    :       0 [0.00e+00 ~ 0.0%]
+        Spills        :       0 bytes*
+            Reads     :       0 [0.00e+00 ~ 0.0%]
+            Writes    :       0 [0.00e+00 ~ 0.0%]
+    
+    Notes
+    
+        *Non-overlapping variables and spills may share stack space,
+         so the total stack size might be less than this.
+    
+
+===========================================================================
+
+Begin optimization report for: plume_pdf1(double, double, double, double, double)
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINE REPORT: (plume_pdf1(double, double, double, double, double)) [8/11=72.7%] tephra2_calc.c(502,84)
+  -> EXTERN: (510,11) log(double)
+  -> EXTERN: (513,12) exp(double)
+
+
+    Report from: Code generation optimizations [cg]
+
+tephra2_calc.c(502,84):remark #34051: REGISTER ALLOCATION : [plume_pdf1] tephra2_calc.c:502
+
+    Hardware registers
+        Reserved     :    2[ rsp rip]
+        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
+        Callee-save  :    6[ rbx rbp r12-r15]
+        Assigned     :    7[ zmm0-zmm6]
+        
+    Routine temporaries
+        Total         :      33
+            Global    :       9
+            Local     :      24
+        Regenerable   :       2
+        Spilled       :       1
+        
+    Routine stack
+        Variables     :       0 bytes*
+            Reads     :       0 [0.00e+00 ~ 0.0%]
+            Writes    :       0 [0.00e+00 ~ 0.0%]
+        Spills        :       8 bytes*
+            Reads     :       1 [1.00e+00 ~ 2.9%]
+            Writes    :       1 [1.00e+00 ~ 2.9%]
+    
+    Notes
+    
+        *Non-overlapping variables and spills may share stack space,
+         so the total stack size might be less than this.
+    
+
+===========================================================================
+
+Begin optimization report for: plume_pdf2(double, double, double, double, double)
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINE REPORT: (plume_pdf2(double, double, double, double, double)) [9/11=81.8%] tephra2_calc.c(549,91)
+  -> EXTERN: (567,24) pow(double, double)
+  -> EXTERN: (567,38) pow(double, double)
+  -> EXTERN: (572,24) pow(double, double)
+  -> EXTERN: (572,38) pow(double, double)
+  -> EXTERN: (576,24) pow(double, double)
+  -> EXTERN: (576,37) pow(double, double)
+  -> EXTERN: (586,23) pow(double, double)
+  -> EXTERN: (586,37) pow(double, double)
+  -> EXTERN: (590,9) __isnan(double)
+  -> EXTERN: (591,2) fprintf(FILE *__restrict__, const char *__restrict__, ...)
+
+
+    Report from: Loop nest, Vector & Auto-parallelization optimizations [loop, vec, par]
+
+
+LOOP BEGIN at tephra2_calc.c(561,9)
+   remark #15305: vectorization support: vector length 2
+   remark #15309: vectorization support: normalized vectorization overhead 0.320
+   remark #15300: LOOP WAS VECTORIZED
+   remark #15475: --- begin vector cost summary ---
+   remark #15476: scalar cost: 369 
+   remark #15477: vector cost: 328.500 
+   remark #15478: estimated potential speedup: 1.120 
+   remark #15482: vectorized math library calls: 6 
+   remark #15488: --- end vector cost summary ---
+LOOP END
+
+LOOP BEGIN at tephra2_calc.c(561,9)
+<Remainder loop for vectorization>
+LOOP END
+
+    Report from: Code generation optimizations [cg]
+
+tephra2_calc.c(549,91):remark #34051: REGISTER ALLOCATION : [plume_pdf2] tephra2_calc.c:549
+
+    Hardware registers
+        Reserved     :    2[ rsp rip]
+        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
+        Callee-save  :    6[ rbx rbp r12-r15]
+        Assigned     :   24[ rax rdx rcx rbx rbp rsi rdi r15 zmm0-zmm15]
+        
+    Routine temporaries
+        Total         :     192
+            Global    :      61
+            Local     :     131
+        Regenerable   :      11
+        Spilled       :      15
+        
+    Routine stack
+        Variables     :       0 bytes*
+            Reads     :       0 [0.00e+00 ~ 0.0%]
+            Writes    :       0 [0.00e+00 ~ 0.0%]
+        Spills        :     160 bytes*
+            Reads     :      24 [1.30e+01 ~ 9.1%]
+            Writes    :      18 [7.86e+00 ~ 5.5%]
+    
+    Notes
+    
+        *Non-overlapping variables and spills may share stack space,
+         so the total stack size might be less than this.
+    
+
+===========================================================================
+
+Begin optimization report for: set_global_values(FILE *)
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINE REPORT: (set_global_values(FILE *)) [10/11=90.9%] tephra2_calc.c(600,35)
+
+
+    Report from: Code generation optimizations [cg]
+
+tephra2_calc.c(600,35):remark #34051: REGISTER ALLOCATION : [set_global_values] tephra2_calc.c:600
+
+    Hardware registers
+        Reserved     :    2[ rsp rip]
+        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
+        Callee-save  :    6[ rbx rbp r12-r15]
+        Assigned     :    1[ rdi]
+        
+    Routine temporaries
+        Total         :       8
+            Global    :       0
+            Local     :       8
+        Regenerable   :       0
+        Spilled       :       0
+        
+    Routine stack
+        Variables     :       0 bytes*
+            Reads     :       0 [0.00e+00 ~ 0.0%]
+            Writes    :       0 [0.00e+00 ~ 0.0%]
+        Spills        :       0 bytes*
+            Reads     :       0 [0.00e+00 ~ 0.0%]
+            Writes    :       0 [0.00e+00 ~ 0.0%]
+    
+    Notes
+    
+        *Non-overlapping variables and spills may share stack space,
+         so the total stack size might be less than this.
+    
+
+===========================================================================
+
+Begin optimization report for: set_eruption_values(ERUPTION *, WIND *)
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINE REPORT: (set_eruption_values(ERUPTION *, WIND *)) [11/11=100.0%] tephra2_calc.c(613,55)
+  -> INDIRECT-: (698,20)  erupt_1198_V$a8.0.11->pdf_V$4a
+     [[ Unable to inline indirect callsite  <1>]]
+  -> INLINE: (703,16) pdf_grainsize(double, double, double) (isz = 10) (sz = 21)
+    -> EXTERN: (389,14) exp(double)
+  -> EXTERN: (718,23) GC_malloc(size_t)
+  -> EXTERN: (720,13) fprintf(FILE *__restrict__, const char *__restrict__, ...)
+  -> EXTERN: (721,66) strerror(int)
+  -> EXTERN: (721,75) __errno_location(void)
+  -> EXTERN: (722,13) exit(int)
+  -> EXTERN: (725,29) GC_malloc(size_t)
+  -> EXTERN: (727,17) fprintf(FILE *__restrict__, const char *__restrict__, ...)
+  -> EXTERN: (728,77) strerror(int)
+  -> EXTERN: (728,86) __errno_location(void)
+  -> EXTERN: (729,17) exit(int)
+  -> EXTERN: (734,23) GC_realloc(void *, size_t)
+  -> EXTERN: (736,13) fprintf(FILE *__restrict__, const char *__restrict__, ...)
+  -> EXTERN: (737,66) strerror(int)
+  -> EXTERN: (737,75) __errno_location(void)
+  -> EXTERN: (738,13) exit(int)
+  -> EXTERN: (741,29) GC_realloc(void *, size_t)
+  -> EXTERN: (743,17) fprintf(FILE *__restrict__, const char *__restrict__, ...)
+  -> EXTERN: (744,77) strerror(int)
+  -> EXTERN: (744,86) __errno_location(void)
+  -> EXTERN: (745,17) exit(int)
+  -> INLINE: (754,34) particle_density(double, double, double) (isz = 13) (sz = 24)
+  -> INLINE: (755,27) phi2m(double) (isz = 4) (sz = 11)
+    -> EXTERN: (245,18) exp2
+  -> INLINE: (757,21) pdf_grainsize(double, double, double) (isz = 10) (sz = 21)
+    -> EXTERN: (389,14) exp(double)
+  -> INLINE: (774,13) part_fall_time(double, double, double, double) (isz = 53) (sz = 66)
+    -> EXTERN: (315,24) exp(double)
+    -> EXTERN: (349,23) pow(double, double)
+  -> EXTERN: (779,53) pow(double, double)
+  -> EXTERN: (793,59) cos(double)
+  -> EXTERN: (796,59) sin(double)
+  -> INDIRECT-: (817,19)  erupt_1198_V$a8.0.11->pdf_V$4a
+     [[ Unable to inline indirect callsite  <1>]]
+  -> INDIRECT-: (821,20)  erupt_1198_V$a8.0.11->pdf_V$4a
+     [[ Unable to inline indirect callsite  <1>]]
+  -> INDIRECT-: (825,19)  erupt_1198_V$a8.0.11->pdf_V$4a
+     [[ Unable to inline indirect callsite  <1>]]
+
+
+    Report from: Loop nest, Vector & Auto-parallelization optimizations [loop, vec, par]
+
+
+LOOP BEGIN at tephra2_calc.c(702,5)
+   remark #15305: vectorization support: vector length 2
+   remark #15309: vectorization support: normalized vectorization overhead 0.632
+   remark #15300: LOOP WAS VECTORIZED
+   remark #15475: --- begin vector cost summary ---
+   remark #15476: scalar cost: 157 
+   remark #15477: vector cost: 47.500 
+   remark #15478: estimated potential speedup: 3.290 
+   remark #15482: vectorized math library calls: 1 
+   remark #15488: --- end vector cost summary ---
+LOOP END
+
+LOOP BEGIN at tephra2_calc.c(702,5)
+<Remainder loop for vectorization>
+LOOP END
+
+LOOP BEGIN at tephra2_calc.c(724,9)
+   remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+
+LOOP BEGIN at tephra2_calc.c(740,9)
+   remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
+LOOP END
+
+LOOP BEGIN at tephra2_calc.c(765,25)
+   remark #15541: outer loop was not auto-vectorized: consider using SIMD directive
+
+   LOOP BEGIN at tephra2_calc.c(765,9)
+      remark #15523: loop was not vectorized: loop control variable j was found, but loop iteration count cannot be computed before executing the loop
+      remark #25456: Number of Array Refs Scalar Replaced In Loop: 1
+   LOOP END
+LOOP END
+
+    Report from: Code generation optimizations [cg]
+
+tephra2_calc.c(613,55):remark #34051: REGISTER ALLOCATION : [set_eruption_values] tephra2_calc.c:613
+
+    Hardware registers
+        Reserved     :    2[ rsp rip]
+        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
+        Callee-save  :    6[ rbx rbp r12-r15]
+        Assigned     :   30[ rax rdx rcx rbx rbp rsi rdi r8-r10 r12-r15 zmm0-zmm15]
+        
+    Routine temporaries
+        Total         :     321
+            Global    :     105
+            Local     :     216
+        Regenerable   :      45
+        Spilled       :      28
+        
+    Routine stack
+        Variables     :       0 bytes*
+            Reads     :       0 [0.00e+00 ~ 0.0%]
+            Writes    :       0 [0.00e+00 ~ 0.0%]
+        Spills        :     184 bytes*
+            Reads     :      46 [2.63e+02 ~ 14.9%]
+            Writes    :      32 [1.33e+02 ~ 7.6%]
+    
+    Notes
+    
+        *Non-overlapping variables and spills may share stack space,
+         so the total stack size might be less than this.
+    
+
+===========================================================================
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINING FOOTNOTES:
+
+<1> The indirectly called function must be resolved to its targets before it 
+can be inlined.  Consider compiling with -ipo or -prof-gen followed by 
+-prof-use.
+
