@@ -1,0 +1,11 @@
+Running on host compute093.bc4.acrc.priv
+Time is Thu Mar 24 12:50:47 GMT 2022
+Directory is /mnt/storage/scratch/zs20225/tephra2Wrapper/src/grid
+Slurm job ID is 10169184
+This job runs on the following machines:
+compute093
+Traceback (most recent call last):
+  File "/mnt/storage/scratch/zs20225/tephra2Wrapper/src/grid/grid_gen.py", line 2, in <module>
+    import utm
+ModuleNotFoundError: No module named 'utm'
+Finish time is Thu Mar 24 12:50:48 GMT 2022

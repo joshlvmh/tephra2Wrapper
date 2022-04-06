@@ -165,23 +165,23 @@ def fill_matrix(utmx, utmy, grid):
   return utm_g, lin, col
 
 def updateNCsLatLon(volc_id, lat, lon):
-  for i in range(2,8):
+  for i in range(2,3):
     nc_file = '../t2_runner/'+str(volc_id)+'_VEI'+str(i)+'.nc'
     nc = netCDF4.Dataset(nc_file, 'r+')
-    if (nc_file != '../t2_runner/284160_VEI2.nc'):
-      nc.renameDimension(u'easting', u'longitude')
-      nc.renameVariable(u'easting', u'longitude')
-      nc.renameDimension(u'northing', u'latitude')
-      nc.renameVariable(u'northing', u'latitude')
-      nc.variables['latitude'].setncatts({'units': u'Decimal degrees'})
-      nc.variables['longitude'].setncatts({'units': u'Decimal degrees'})
-    else:
-      nc.renameDimension(u'longitude', u'latitude2')
-      nc.renameVariable(u'longitude', u'latitude2')
-      nc.renameDimension(u'latitude', u'longitude')
-      nc.renameVariable(u'latitude', u'longitude')
-      nc.renameDimension(u'latitude2', u'latitude')
-      nc.renameVariable(u'latitude2', u'latitude')
+    #if (nc_file != '../t2_runner/284160_VEI2.nc'):
+    #  nc.renameDimension(u'easting', u'longitude')
+    #  nc.renameVariable(u'easting', u'longitude')
+    #  nc.renameDimension(u'northing', u'latitude')
+    #  nc.renameVariable(u'northing', u'latitude')
+    #  nc.variables['latitude'].setncatts({'units': u'Decimal degrees'})
+    #  nc.variables['longitude'].setncatts({'units': u'Decimal degrees'})
+    #else:
+    #  nc.renameDimension(u'longitude', u'latitude2')
+    #  nc.renameVariable(u'longitude', u'latitude2')
+    #  nc.renameDimension(u'latitude', u'longitude')
+    #  nc.renameVariable(u'latitude', u'longitude')
+    #  nc.renameDimension(u'latitude2', u'latitude')
+    #  nc.renameVariable(u'latitude2', u'latitude')
 
     print(lat, lon)
     print(lat[:,0].shape, lon[0,:].shape)
@@ -254,8 +254,8 @@ def main():
   params = read_csv()
   for i in range(len(params)):
     grid = set_params(params[i]) # add loop for all volcs
-    #if (grid.id_num == '262000'):
-    northing, easting = create_grid(grid)
+    if (grid.id_num == '284160'):
+      northing, easting = create_grid(grid)
       #appendDims(northing, easting, grid.id_num)
     #print(i)
 
