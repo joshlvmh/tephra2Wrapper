@@ -4,6 +4,8 @@ import cdsapi
 import sys
 import os.path
 
+# output & input paths, command line args, default args
+
 def get_csv_coords():
   with open('volc_holo_mody.csv', 'r', encoding="ISO-8859-1") as csv_wind_f:
     csv_wind_r = csv.reader(csv_wind_f, )
