@@ -7,18 +7,18 @@ The script checks to see if the .nc file exists in the output location before re
 
 Input:
   Location: $INPUTS/
-  Format: CSV file, eg volc_wind.csv, example given in example_wind.csv
+  Format: CSV file, eg wind.csv, required column order given in example_wind.csv.
 Output: 
   Location: $OUTPUTS/wind/nc_files/
   Format: VOLCID_YEAR.nc eg 262000_2012.nc
 
-### Local:
+### Basic shell, blocking execution:
 
 ```
-python wind.py [YEAR] --csv-file="volcs.csv"
+python wind.py --wind-csv="volcs.csv" --year=2012
 ```
 
-### Slurm:
+### SLURM:
 Edit the job script to specify the years and CSV filename.
 
 ```
@@ -26,7 +26,7 @@ sbatch job_wind.sh
 ```
 
 ### PBS
-Edit the job script to specify the years and CSV filename.
+  Edit the job script to specify the years and CSV filename
 
 ```
 qsub job_wind_pbs.sh
