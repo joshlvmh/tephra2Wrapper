@@ -24,7 +24,7 @@ Edit the job script to specify the years and CSV filename.
 
 #### SLURM
 ```
-sbatch job_wind.sh
+sbatch job_wind_slurm.sh
 ```
 
 #### PBS
