@@ -20,6 +20,8 @@ echo This job runs on the following machines:
 echo $SLURM_JOB_NODELIST
 
 YEAR=$(($SLURM_ARRAY_TASK_ID+2000))
-python wind.py $YEAR
+CSV="wind.csv"
+
+python wind.py --year=${YEAR} --wind-csv=${CSV}
 
 echo Finish time is `date`

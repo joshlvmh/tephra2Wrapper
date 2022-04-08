@@ -33,7 +33,7 @@ def get_csv_coords(csv_file):
     N = []
     for row in csv_wind_r:
       C.append(row[6:10])
-      N.append(row[2])
+      N.append(row[1])
     C = np.vstack(C)
     N = np.vstack(N)
     C = np.delete(C, (0), axis=0)
@@ -59,15 +59,18 @@ def get_params():
   return pro, f, list(v), pre, m, d, list(t)
 
 def main(args):
+  print("args:")
+  print(args.year, args.wind_csv)
   y = args.year
   c = cdsapi.Client()
   NWSE, VOLC = get_csv_coords(args.wind_csv)
+  print(str(VOLC[:]).encode('utf-8'))
   pro, f, v, pre, m, d, t = get_params()
-  out_path = os.path.join(os.environ['OUT'], 'wind/nc_files')
+  out_path = os.path.join(os.environ['OUTPUT'], 'wind/nc_files')
   if not os.path.exists(out_path):
     os.makedirs(out_path)
   for i in range(0, len(NWSE)):
-    if os.path.exists(out_path + "/wind_{name}_{year}.nc".format(name=VOLC[i][0],year=y)) == False:
+    if os.path.exists(out_path + "/{name}_{year}.nc".format(name=VOLC[i][0],year=y)) == False:
       c.retrieve(
           'reanalysis-era5-pressure-levels',
           {
@@ -81,7 +84,7 @@ def main(args):
             'time': t,
             'area': NWSE[i],
           },
-          out_path+"{name}_{year}.nc".format(name=VOLC[i][0].replace(" ",""),year=y)
+          out_path+"/{name}_{year}.nc".format(name=VOLC[i][0].replace(" ",""),year=y)
           )
 
 if __name__ == '__main__':

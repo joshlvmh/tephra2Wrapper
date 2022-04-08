@@ -13,29 +13,28 @@ Output:
 &nbsp;&nbsp;Location: $OUTPUTS/wind/nc_files/  
 &nbsp;&nbsp;Format: VOLCID_YEAR.nc eg 262000_2012.nc  
 
-### Basic shell, blocking execution:
+### Local shell blocking execution:
 
 ```
 python wind.py --wind-csv="volcs.csv" --year=2012
 ```
 
-### SLURM:
+### Compute node non-blocking execution:
 Edit the job script to specify the years and CSV filename.
 
+#### SLURM
 ```
 sbatch job_wind.sh
 ```
 
-### PBS
-  Edit the job script to specify the years and CSV filename
+#### PBS
 
 ```
 qsub job_wind_pbs.sh
 ```
 
 ## Wind conversion
-
-### Local:
+Convert NetCDF wind files to ASCII files for Tephra2
 
 ```
 python netcdf_conv.py

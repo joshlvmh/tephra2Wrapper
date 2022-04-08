@@ -17,6 +17,7 @@ echo This job runs on the following machines:
 echo $PBS_NODEFILE
 
 YEAR=$(($PBS_ARRAYID+2000))
-python wind.py $YEAR
+CSV="wind.csv"
+python wind.py --year=$YEAR --wind-csv=$CSV
 
 echo Finish time is `date`
