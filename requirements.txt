@@ -21,7 +21,7 @@ bokeh==0.12.16
 boto==2.48.0
 Bottleneck==1.2.1
 cdsapi==0.5.1
-certifi==2019.3.9
+certifi==2022.12.7
 cffi==1.11.5
 cftime==1.0.0b1
 chardet==3.0.4
